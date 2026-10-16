@@ -18,6 +18,7 @@ Rules (same idea for every game):
 - Timeouts: anyone who didn't respond is out. If nobody responded, replay.
 
 Tournaments:
+- 2 players: one match. Winner is 1st, loser is 2nd, no 3rd place.
 - 3 players: one group round. If 2 advance, the 1 out gets 3rd and the 2 play the final.
   If only 1 advances, they're 1st and the 2 who are out play for 2nd and 3rd.
 - 4+ players: single elimination. The bracket is the next power of two (4, 8, 16);
@@ -28,7 +29,7 @@ Tournaments:
 import secrets
 
 # --- Settings you can tweak ---
-MIN_PLAYERS = 3
+MIN_PLAYERS = 2
 MAX_REPLAYS = 5   # after this many replays in one round, a random (fair) result is used
 
 RPS_SHAPES = {"rock": "🪨", "paper": "📄", "scissors": "✂️"}
@@ -174,10 +175,13 @@ class Engine:
         return advance[0], eliminated[0]
 
     async def run_tournament(self, players):
-        """Returns (first, second, third)."""
+        """Returns (first, second, third). third is None with only 2 players."""
         players = list(players)
         if len(players) < MIN_PLAYERS:
             raise NotEnoughPlayers()
+        if len(players) == 2:
+            first, second = await self.match(players[0], players[1], "Final")
+            return first, second, None
         if len(players) == 3:
             return await self._three_player_group(players)
         return await self._bracket(players)

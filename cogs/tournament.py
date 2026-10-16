@@ -4,7 +4,8 @@ cogs/tournament.py - /tournament, /duel and /duelstats (the Discord side).
 The rules live in tournament_engine.py. This file handles the buttons and messages:
 - /tournament (mods only): a lobby with Join / Leave / Start now. The host is NOT a
   player unless they press Join too. It starts when the join timer ends (or the host
-  presses Start now) with whoever joined. Max players is only a cap; at least 3 are needed.
+  presses Start now) with whoever joined. Max players is a hard cap; at least 2 are needed
+  (2 players = one final, no 3rd place).
   Then rounds are played in the channel with buttons.
 - /duel @member: a 1-vs-1 challenge using the same match rules. Duels give NO XP.
 - /duelstats [member]: duel wins/losses and tournament podium finishes.
@@ -279,19 +280,23 @@ class Session:
 
 class LobbyView(discord.ui.View):
     """
-    Join / Leave / Start now. Max players is only a cap.
+    Join / Leave / Start now. Max players is a hard cap (a full lobby refuses Join; leaving frees a spot).
     The host is NOT added automatically: they press Join like everyone else if they want to play.
     """
 
-    def __init__(self, host, kind, max_players, ends_at):
+    def __init__(self, host, kind, max_players, ends_at, test_mode=False):
         super().__init__(timeout=None)
         self.host = host
         self.kind = kind
         self.max_players = max_players
         self.ends_at = ends_at
+        self.test_mode = test_mode   # bots fill empty spots, so Start now works with anyone
         self.players = []   # only people who pressed Join (the host too, if they joined)
         self.start_now = asyncio.Event()
         self.message = None
+
+    def is_full(self):
+        return len(self.players) >= self.max_players
 
     def embed(self, closed=False):
         listing = "\n".join(f"{i}. {p.mention}" for i, p in enumerate(self.players, start=1)) or "_nobody yet - press **Join**!_"
@@ -300,10 +305,15 @@ class LobbyView(discord.ui.View):
         embed = t_embed(f"🏆 {GAMES[self.kind]} Tournament",
                         f"{status}\n\n"
                         f"Needs at least {te.MIN_PLAYERS} players. 🥇 {PODIUM_XP[0]} · 🥈 {PODIUM_XP[1]} · "
-                        f"🥉 {PODIUM_XP[2]} bonus game XP. No real prizes.")
+                        f"🥉 {PODIUM_XP[2]} bonus game XP (no 🥉 with only 2 players). No real prizes.")
         embed.add_field(name="🎙️ Host", value=f"Hosted by {self.host.mention}\n_(plays only if they press Join)_",
                         inline=False)
-        embed.add_field(name=f"👥 Players ({len(self.players)}/{self.max_players})", value=listing, inline=False)
+        count = f"{len(self.players)}/{self.max_players}"
+        embed.add_field(name=f"👥 Players ({'FULL ' + count if self.is_full() else count})", value=listing,
+                        inline=False)
+        if self.test_mode:
+            embed.add_field(name="🧪 Test mode", value="Empty spots will be filled with 🤖 bot players "
+                                                      "(they pick randomly and never get XP).")
         return embed
 
     async def refresh(self, interaction):
@@ -314,8 +324,8 @@ class LobbyView(discord.ui.View):
     async def join(self, interaction: discord.Interaction, button: discord.ui.Button):
         if any(p.id == interaction.user.id for p in self.players):
             await interaction.response.send_message("You're already in! 🎮", ephemeral=True)
-        elif len(self.players) >= self.max_players:
-            await interaction.response.send_message(f"Sorry, the tournament is full ({self.max_players}).", ephemeral=True)
+        elif self.is_full():
+            await interaction.response.send_message("Lobby is full.", ephemeral=True)
         else:
             self.players.append(interaction.user)
             await self.refresh(interaction)
@@ -333,6 +343,10 @@ class LobbyView(discord.ui.View):
     async def start(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.host.id:
             await interaction.response.send_message("Only the host can start the tournament early.", ephemeral=True)
+            return
+        if len(self.players) < te.MIN_PLAYERS and not self.test_mode:
+            await interaction.response.send_message(
+                f"Need at least {te.MIN_PLAYERS} players to start ({len(self.players)} joined so far).", ephemeral=True)
             return
         await interaction.response.defer()
         self.start_now.set()
@@ -389,14 +403,14 @@ class Tournament(commands.Cog):
 
     # ------------------------------------------------------------ /tournament
     @app_commands.command(name="tournament", description="🏆 [Mods] Host a tournament: RPS, dice or trivia")
-    @app_commands.describe(game="Which game", max_players=f"Most players allowed (3-{MAX_PLAYERS_LIMIT}); fewer is fine",
+    @app_commands.describe(game="Which game", max_players=f"Most players allowed (2-{MAX_PLAYERS_LIMIT}); fewer is fine",
                            join_seconds="How long people can join (15-300 seconds)",
                            test_mode="Fill empty spots with 🤖 bot players for a demo (they never get XP)")
     @app_commands.choices(game=GAME_CHOICES)
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 60)
     async def tournament(self, interaction: discord.Interaction, game: app_commands.Choice[str],
-                         max_players: app_commands.Range[int, 3, MAX_PLAYERS_LIMIT] = 8,
+                         max_players: app_commands.Range[int, 2, MAX_PLAYERS_LIMIT] = 8,
                          join_seconds: app_commands.Range[int, 15, 300] = 60,
                          test_mode: bool = False):
         if not is_mod(interaction.user):
@@ -410,11 +424,8 @@ class Tournament(commands.Cog):
             return
 
         self.busy_channels.add(interaction.channel.id)
-        lobby = LobbyView(interaction.user, game.value, max_players, int(time.time()) + join_seconds)
+        lobby = LobbyView(interaction.user, game.value, max_players, int(time.time()) + join_seconds, test_mode)
         embed = lobby.embed()
-        if test_mode:
-            embed.add_field(name="🧪 Test mode", value="Empty spots will be filled with 🤖 bot players "
-                                                      "(they pick randomly and never get XP).")
         await interaction.response.send_message(embed=embed, view=lobby,
                                                 allowed_mentions=discord.AllowedMentions.none())
         lobby.message = await interaction.original_response()
@@ -466,6 +477,8 @@ class Tournament(commands.Cog):
     async def finish_tournament(self, channel, guild, players, podium):
         lines = []
         for medal, player, xp in zip(("🥇", "🥈", "🥉"), podium, PODIUM_XP):
+            if player is None:
+                continue   # only 2 players: no 3rd place
             if is_bot(player):
                 lines.append(f"{medal} {player.mention} - test bot, no XP")
                 continue
@@ -479,11 +492,11 @@ class Tournament(commands.Cog):
             lines.append(f"{medal} {player.mention} - ✨ {bonus}")
 
         database.record_tournament(guild.id, [p.id for p in players if not is_bot(p)],
-                                   [None if is_bot(p) else p.id for p in podium])
+                                   [None if p is None or is_bot(p) else p.id for p in podium])
         embed = t_embed("🏆 Tournament results", "\n".join(lines) + f"\n\n{len(players)} players · thanks for playing!",
                         COLOR_GOLD)
         await channel.send(embed=embed, allowed_mentions=discord.AllowedMentions(
-            users=[p for p in podium if not is_bot(p)], everyone=False, roles=False))
+            users=[p for p in podium if p is not None and not is_bot(p)], everyone=False, roles=False))
         log.info("Tournament finished in #%s", channel.name)
 
     # ------------------------------------------------------------------ /duel

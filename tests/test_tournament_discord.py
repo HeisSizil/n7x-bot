@@ -67,7 +67,7 @@ class FakeChannel:
         return FakeMessage(embed, view)
 
     async def press(self, view, player, index):
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(0.01 + player.id / 1000)   # lower ids press first (keeps tests predictable)
         interaction = NS(user=player, response=NS(send_message=self.ignore))
         if await view.interaction_check(interaction):
             await view.children[index].callback(interaction)
@@ -111,13 +111,19 @@ class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
     def tearDown(self):
         database.DB_FILE = self.old_db
 
-    async def run_lobby(self, players, test_mode=False, max_players=8, kind="rps"):
-        """Run a tournament as if `players` pressed Join and the join timer ended."""
+    async def run_lobby(self, players, test_mode=False, max_players=8, kind="rps", host_starts=False):
+        """Run a tournament as if `players` pressed Join and the join timer ended (or the host pressed Start now)."""
         cog = self.tc.Tournament(None)
-        lobby = self.tc.LobbyView(self.host, kind, max_players, int(time.time()) + 60)
+        lobby = self.tc.LobbyView(self.host, kind, max_players, int(time.time()) + 60, test_mode)
         lobby.players = list(players)
         lobby.message = FakeMessage()
-        await cog.run_tournament(NS(channel=self.channel, guild=self.guild), lobby, 0.01, test_mode)
+        join_seconds = 0.01
+        if host_starts:
+            join_seconds = 60   # would wait a minute, but the host presses Start now
+            await lobby.start.callback(NS(user=self.host, response=NS(defer=self.channel.ignore)))
+            self.assertTrue(lobby.start_now.is_set())
+        await asyncio.wait_for(cog.run_tournament(NS(channel=self.channel, guild=self.guild), lobby,
+                                                  join_seconds, test_mode), 30)
 
     def podium_row(self, member):
         stats = database.get_duel_stats(1, member.id)
@@ -143,6 +149,7 @@ class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_only_host_can_start_now(self):
         lobby = self.tc.LobbyView(self.host, "rps", 8, int(time.time()) + 60)
+        lobby.players = [self.alt, self.kim]
         replies = []
 
         async def reply(text, **kwargs):
@@ -152,6 +159,97 @@ class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Only the host", replies[0])
         await lobby.start.callback(NS(user=self.host, response=NS(defer=self.channel.ignore)))
         self.assertTrue(lobby.start_now.is_set())
+
+    # ------------------------------------------------- hard cap / minimum 2
+    def lobby_response(self, replies):
+        async def send_message(text=None, **kwargs):
+            replies.append((text, kwargs.get("ephemeral")))
+        return NS(edit_message=self.channel.ignore, send_message=send_message)
+
+    def players_field(self, lobby):
+        return next(f.name for f in lobby.embed().fields if f.name.startswith("👥 Players"))
+
+    async def test_full_lobby_refuses_join_and_leave_frees_a_spot(self):
+        lobby = self.tc.LobbyView(self.host, "rps", 2, int(time.time()) + 60)
+        replies = []
+        for member in (self.alt, self.kim):
+            await lobby.join.callback(NS(user=member, response=self.lobby_response(replies)))
+        self.assertEqual(self.players_field(lobby), "👥 Players (FULL 2/2)")
+        await lobby.join.callback(NS(user=self.lee, response=self.lobby_response(replies)))
+        self.assertEqual(replies, [("Lobby is full.", True)])
+        self.assertEqual(lobby.players, [self.alt, self.kim])
+
+        await lobby.leave.callback(NS(user=self.kim, response=self.lobby_response(replies)))
+        self.assertEqual(self.players_field(lobby), "👥 Players (1/2)")
+        await lobby.join.callback(NS(user=self.lee, response=self.lobby_response(replies)))
+        self.assertEqual(lobby.players, [self.alt, self.lee])
+        self.assertEqual(len(replies), 1)
+
+    async def test_start_now_needs_two_players(self):
+        lobby = self.tc.LobbyView(self.host, "rps", 8, int(time.time()) + 60)
+        lobby.players = [self.alt]
+        replies = []
+        await lobby.start.callback(NS(user=self.host, response=self.lobby_response(replies)))
+        self.assertFalse(lobby.start_now.is_set())
+        self.assertIn("at least 2", replies[0][0])
+        self.assertTrue(replies[0][1])
+
+    async def test_host_starts_with_two_players(self):
+        self.channel.plan = {2: lambda v: ROCK, 3: lambda v: SCISSORS}
+        await self.run_lobby([self.alt, self.kim], host_starts=True)
+        self.assertEqual(self.podium_row(self.alt), (1, 0, 0, 1))
+        self.assertEqual(self.podium_row(self.kim), (0, 1, 0, 1))
+
+    async def test_host_starts_with_three_players(self):
+        self.channel.plan = {2: lambda v: SCISSORS if len(v.humans) == 3 else ROCK,
+                             3: lambda v: SCISSORS, 4: lambda v: PAPER}
+        await self.run_lobby([self.alt, self.kim, self.lee], host_starts=True)
+        self.assertEqual(self.channel.titles()[-1], "🏆 Tournament results")
+        self.assertEqual(self.podium_row(self.lee), (0, 0, 1, 1))
+
+    async def test_host_starts_with_max_players(self):
+        await self.run_lobby([], test_mode=True, max_players=16, host_starts=True)
+        self.assertEqual(self.channel.titles()[-1], "🏆 Tournament results")
+        self.assertIn("16 players", self.channel.all_text())
+
+    async def test_timer_end_with_two_players_starts(self):
+        self.channel.plan = {2: lambda v: PAPER, 3: lambda v: ROCK}
+        await self.run_lobby([self.alt, self.kim])
+        self.assertEqual(self.channel.titles()[-1], "🏆 Tournament results")
+        self.assertEqual(self.podium_row(self.alt), (1, 0, 0, 1))
+
+    async def check_two_player_card(self, kind, plan, winner, loser):
+        self.channel.plan = plan
+        await self.run_lobby([self.alt, self.kim], kind=kind)
+        results, _ = self.channel.sent[-1]
+        self.assertEqual(results.title, "🏆 Tournament results")
+        self.assertIn("🥇", results.description)
+        self.assertIn("🥈", results.description)
+        self.assertNotIn("🥉", results.description)
+        self.assertIn(f"🥇 {winner.mention} - ✨ +50 XP", results.description)
+        self.assertIn(f"🥈 {loser.mention} - ✨ +30 XP", results.description)
+        self.assertEqual(self.podium_row(winner), (1, 0, 0, 1))
+        self.assertEqual(self.podium_row(loser), (0, 1, 0, 1))
+        self.assertEqual(database.fetch_one("SELECT SUM(bronze) AS b FROM duel_stats")["b"], 0)
+        # Only one round title for a real match (no 3rd place match, no group round).
+        self.assertFalse(any("3rd" in title or "Group" in title for title in self.channel.titles()))
+
+    async def test_two_player_card_rps(self):
+        await self.check_two_player_card("rps", {2: lambda v: PAPER, 3: lambda v: ROCK}, self.alt, self.kim)
+
+    async def test_two_player_card_dice(self):
+        rolls = iter([2, 5])   # alt rolls 2, kim rolls 5
+        real = self.tc.secrets.randbelow
+        self.tc.secrets.randbelow = lambda n: next(rolls) - 1 if n == 6 else real(n)
+        try:
+            await self.check_two_player_card("dice", {2: lambda v: 0, 3: lambda v: 0}, self.kim, self.alt)
+        finally:
+            self.tc.secrets.randbelow = real
+
+    async def test_two_player_card_trivia(self):
+        right = lambda v: v.question["answer"]
+        wrong = lambda v: (v.question["answer"] + 1) % 4
+        await self.check_two_player_card("trivia", {2: wrong, 3: right}, self.kim, self.alt)
 
     # ---------------------------------------------------- host not playing
     async def test_host_not_joined_and_three_other_players(self):
@@ -173,12 +271,12 @@ class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn(self.host.id, pinged)
         self.assertNotIn("<@1>", self.channel.all_text())
 
-    async def test_host_not_joined_and_only_two_players_cancels(self):
-        await self.run_lobby([self.alt, self.kim])
+    async def test_only_one_player_cancels(self):
+        await self.run_lobby([self.alt])
         embed, _ = self.channel.sent[-1]
         self.assertIn("cancelled", embed.title)
-        self.assertIn("**2** player(s) joined", embed.description)
-        self.assertIn("at least **3** are needed", embed.description)
+        self.assertIn("**1** player(s) joined", embed.description)
+        self.assertIn("at least **2** are needed", embed.description)
         self.assertIn("only counts as a player if they pressed **Join**", embed.description)
         self.assertEqual(self.podium_row(self.alt), (0, 0, 0, 0))
 

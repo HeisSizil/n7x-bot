@@ -190,7 +190,40 @@ class Brackets(unittest.TestCase):
     def test_too_few_players(self):
         engine = te.Engine("rps", Script(lambda *a: {}).collect, Script(lambda *a: {}).announce)
         with self.assertRaises(te.NotEnoughPlayers):
-            run(engine.run_tournament(["A", "B"]))
+            run(engine.run_tournament(["A"]))
+
+
+class TwoPlayers(unittest.TestCase):
+    """Exactly 2 players: one match, winner 1st, loser 2nd, no 3rd place."""
+
+    def play(self, kind, answers):
+        script = Script(lambda players, label, attempt: answers[min(attempt, len(answers)) - 1])
+        engine = te.Engine(kind, script.collect, script.announce)
+        return run(engine.run_tournament(["A", "B"])), script
+
+    def test_rps_tie_replays_then_winner(self):
+        podium, script = self.play("rps", [{"A": "rock", "B": "rock"}, {"A": "rock", "B": "paper"}])
+        self.assertEqual(podium, ("B", "A", None))
+        self.assertEqual([r[0] for r in script.rounds], ["Final", "Final"])
+
+    def test_dice_higher_wins_tie_rerolls(self):
+        podium, script = self.play("dice", [{"A": 4, "B": 4}, {"A": 6, "B": 2}])
+        self.assertEqual(podium, ("A", "B", None))
+        self.assertEqual(len(script.rounds), 2)
+
+    def test_trivia_wrong_loses(self):
+        podium, _ = self.play("trivia", [{"A": (False, 2.0), "B": (True, 9.0)}])
+        self.assertEqual(podium, ("B", "A", None))
+
+    def test_trivia_both_right_faster_wins(self):
+        podium, _ = self.play("trivia", [{"A": (True, 5.0), "B": (True, 3.0)}])
+        self.assertEqual(podium, ("B", "A", None))
+
+    def test_trivia_both_wrong_new_question(self):
+        podium, script = self.play("trivia", [{"A": (False, 1.0), "B": (False, 1.0)},
+                                              {"A": (True, 4.0), "B": (False, 2.0)}])
+        self.assertEqual(podium, ("A", "B", None))
+        self.assertEqual(len(script.rounds), 2)
 
 
 class Timeouts(unittest.TestCase):
