@@ -1,0 +1,1689 @@
+{
+ "_how_to_edit": "One question per {...}. 'question': the text. 'answers': exactly 4. 'correct': the position of the right answer (0 = first, 1 = second, 2 = third, 3 = fourth). Optional 'explanation' (shown after answering) and 'image' (an https:// link, or a file name inside the images/ folder). Answers are shuffled when shown. The bot re-reads this file automatically. After editing, run: python check_trivia.py",
+ "category": "Movies",
+ "questions": [
+  {
+   "question": "Who directed the 1975 shark thriller Jaws?",
+   "answers": [
+    "Steven Spielberg",
+    "George Lucas",
+    "Martin Scorsese",
+    "Francis Ford Coppola"
+   ],
+   "correct": 0,
+   "explanation": "Jaws was one of Spielberg's first big hits and helped invent the summer blockbuster."
+  },
+  {
+   "question": "In The Wizard of Oz (1939), what color are Dorothy's magic slippers?",
+   "answers": [
+    "Silver",
+    "Gold",
+    "Emerald green",
+    "Ruby red"
+   ],
+   "correct": 3,
+   "explanation": "In the original book they were silver, but the film made them ruby to show off Technicolor."
+  },
+  {
+   "question": "What is the name of the toy cowboy in Toy Story?",
+   "answers": [
+    "Buzz Lightyear",
+    "Rex",
+    "Woody",
+    "Hamm"
+   ],
+   "correct": 2,
+   "explanation": "Sheriff Woody is Andy's favorite toy until Buzz Lightyear arrives."
+  },
+  {
+   "question": "Complete Buzz Lightyear's famous catchphrase: \"To infinity and...\"",
+   "answers": [
+    "...back!",
+    "...beyond!",
+    "...the stars!",
+    "...forever!"
+   ],
+   "correct": 1,
+   "explanation": "Buzz's rallying cry became one of Pixar's most famous lines."
+  },
+  {
+   "question": "Which studio made Toy Story (1995), the first fully computer-animated feature film?",
+   "answers": [
+    "DreamWorks Animation",
+    "Pixar",
+    "Blue Sky Studios",
+    "Illumination"
+   ],
+   "correct": 1,
+   "explanation": "Toy Story was Pixar's first feature, released with Disney."
+  },
+  {
+   "question": "In The Lion King, what is the name of Simba's father?",
+   "answers": [
+    "Mufasa",
+    "Scar",
+    "Rafiki",
+    "Zazu"
+   ],
+   "correct": 0,
+   "explanation": "Mufasa is the wise king of the Pride Lands."
+  },
+  {
+   "question": "In Frozen, what is the name of Elsa's younger sister?",
+   "answers": [
+    "Ariel",
+    "Belle",
+    "Moana",
+    "Anna"
+   ],
+   "correct": 3,
+   "explanation": "Anna sets off on a snowy adventure to bring her sister home."
+  },
+  {
+   "question": "What is the name of the friendly snowman in Frozen?",
+   "answers": [
+    "Sven",
+    "Kristoff",
+    "Olaf",
+    "Hans"
+   ],
+   "correct": 2,
+   "explanation": "Olaf loves warm hugs, which is funny for a snowman!"
+  },
+  {
+   "question": "In Finding Nemo, what kind of fish is Nemo?",
+   "answers": [
+    "A blue tang",
+    "A goldfish",
+    "A clownfish",
+    "A pufferfish"
+   ],
+   "correct": 2,
+   "explanation": "Clownfish are orange and white and live among sea anemones."
+  },
+  {
+   "question": "In Finding Nemo, what is the name of the forgetful blue tang fish?",
+   "answers": [
+    "Marlin",
+    "Dory",
+    "Gill",
+    "Bruce"
+   ],
+   "correct": 1,
+   "explanation": "Dory famously suffers from short-term memory loss."
+  },
+  {
+   "question": "What kind of creature is Shrek?",
+   "answers": [
+    "An ogre",
+    "A troll",
+    "A giant",
+    "A goblin"
+   ],
+   "correct": 0,
+   "explanation": "Shrek explains that ogres are like onions: they have layers."
+  },
+  {
+   "question": "Which talking animal is Shrek's chatty best friend in the first Shrek film?",
+   "answers": [
+    "A horse",
+    "A goat",
+    "A pig",
+    "Donkey"
+   ],
+   "correct": 3,
+   "explanation": "Donkey talks nonstop and becomes Shrek's loyal sidekick."
+  },
+  {
+   "question": "Which animation studio made Shrek?",
+   "answers": [
+    "Pixar",
+    "Studio Ghibli",
+    "Walt Disney Animation Studios",
+    "DreamWorks Animation"
+   ],
+   "correct": 3,
+   "explanation": "Shrek (2001) won the very first Oscar for Best Animated Feature."
+  },
+  {
+   "question": "Who directed the Studio Ghibli film Spirited Away?",
+   "answers": [
+    "Makoto Shinkai",
+    "Mamoru Hosoda",
+    "Hayao Miyazaki",
+    "Satoshi Kon"
+   ],
+   "correct": 2,
+   "explanation": "Miyazaki wrote and directed Spirited Away (2001)."
+  },
+  {
+   "question": "Which was the first anime film to win the Oscar for Best Animated Feature?",
+   "answers": [
+    "Princess Mononoke",
+    "Spirited Away",
+    "Akira",
+    "Your Name"
+   ],
+   "correct": 1,
+   "explanation": "Spirited Away won the award in 2003."
+  },
+  {
+   "question": "In Kiki's Delivery Service, what is Kiki?",
+   "answers": [
+    "A young witch",
+    "A princess",
+    "A pilot",
+    "A mermaid"
+   ],
+   "correct": 0,
+   "explanation": "Kiki starts a flying delivery service on her broomstick."
+  },
+  {
+   "question": "Who directed Titanic (1997)?",
+   "answers": [
+    "James Cameron",
+    "Steven Spielberg",
+    "Ridley Scott",
+    "Christopher Nolan"
+   ],
+   "correct": 0,
+   "explanation": "James Cameron also directed Avatar and The Terminator."
+  },
+  {
+   "question": "Who played Jack Dawson in Titanic (1997)?",
+   "answers": [
+    "Brad Pitt",
+    "Matt Damon",
+    "Johnny Depp",
+    "Leonardo DiCaprio"
+   ],
+   "correct": 3,
+   "explanation": "Titanic made DiCaprio a huge global star."
+  },
+  {
+   "question": "Who played Rose in Titanic (1997)?",
+   "answers": [
+    "Gwyneth Paltrow",
+    "Nicole Kidman",
+    "Kate Winslet",
+    "Keira Knightley"
+   ],
+   "correct": 2,
+   "explanation": "Kate Winslet was nominated for an Oscar for the role."
+  },
+  {
+   "question": "In the Star Wars films, who is revealed to be Luke Skywalker's father?",
+   "answers": [
+    "Obi-Wan Kenobi",
+    "Darth Vader",
+    "Han Solo",
+    "Emperor Palpatine"
+   ],
+   "correct": 1,
+   "explanation": "This twist from The Empire Strikes Back is one of the most famous in film."
+  },
+  {
+   "question": "In Star Wars, what species is Chewbacca?",
+   "answers": [
+    "An Ewok",
+    "A Wookiee",
+    "A Jawa",
+    "A Hutt"
+   ],
+   "correct": 1,
+   "explanation": "Chewie is Han Solo's tall, furry co-pilot."
+  },
+  {
+   "question": "Who created Star Wars?",
+   "answers": [
+    "George Lucas",
+    "Steven Spielberg",
+    "J.J. Abrams",
+    "Ridley Scott"
+   ],
+   "correct": 0,
+   "explanation": "George Lucas wrote and directed the first Star Wars film in 1977."
+  },
+  {
+   "question": "Who played Han Solo in the original Star Wars films?",
+   "answers": [
+    "Mark Hamill",
+    "Kurt Russell",
+    "Tom Selleck",
+    "Harrison Ford"
+   ],
+   "correct": 3,
+   "explanation": "Harrison Ford also became famous as Indiana Jones."
+  },
+  {
+   "question": "Which tiny green Jedi Master trains Luke Skywalker?",
+   "answers": [
+    "Mace Windu",
+    "Qui-Gon Jinn",
+    "Yoda",
+    "Grogu"
+   ],
+   "correct": 2,
+   "explanation": "Yoda trains Luke on the swampy planet Dagobah."
+  },
+  {
+   "question": "Which famous archaeologist adventurer did Harrison Ford play?",
+   "answers": [
+    "Lara Croft",
+    "Allan Quatermain",
+    "Indiana Jones",
+    "Rick O'Connell"
+   ],
+   "correct": 2,
+   "explanation": "Indy first appeared in Raiders of the Lost Ark (1981)."
+  },
+  {
+   "question": "What animal is Indiana Jones famously afraid of?",
+   "answers": [
+    "Spiders",
+    "Snakes",
+    "Rats",
+    "Bats"
+   ],
+   "correct": 1,
+   "explanation": "Indy's fear makes the snake-filled tomb in Raiders extra scary for him."
+  },
+  {
+   "question": "What is the name of the wizarding school in the Harry Potter films?",
+   "answers": [
+    "Hogwarts",
+    "Beauxbatons",
+    "Durmstrang",
+    "Brakebills"
+   ],
+   "correct": 0,
+   "explanation": "Hogwarts School of Witchcraft and Wizardry is in Scotland in the story."
+  },
+  {
+   "question": "Who played Harry Potter in the film series?",
+   "answers": [
+    "Rupert Grint",
+    "Tom Felton",
+    "Elijah Wood",
+    "Daniel Radcliffe"
+   ],
+   "correct": 3,
+   "explanation": "Daniel Radcliffe played Harry in all eight films."
+  },
+  {
+   "question": "Who played Hermione Granger in the Harry Potter films?",
+   "answers": [
+    "Emma Stone",
+    "Bonnie Wright",
+    "Emma Roberts",
+    "Emma Watson"
+   ],
+   "correct": 3,
+   "explanation": "Emma Watson was just a child when filming began."
+  },
+  {
+   "question": "Which Hogwarts house is Harry Potter sorted into?",
+   "answers": [
+    "Slytherin",
+    "Hufflepuff",
+    "Gryffindor",
+    "Ravenclaw"
+   ],
+   "correct": 2,
+   "explanation": "Gryffindor is the house of the brave."
+  },
+  {
+   "question": "What shape is the scar on Harry Potter's forehead?",
+   "answers": [
+    "A star",
+    "A lightning bolt",
+    "A crescent moon",
+    "A cross"
+   ],
+   "correct": 1,
+   "explanation": "Harry got the scar from Voldemort's curse as a baby."
+  },
+  {
+   "question": "In The Lord of the Rings, which hobbit carries the One Ring to Mordor?",
+   "answers": [
+    "Frodo Baggins",
+    "Samwise Gamgee",
+    "Meriadoc Brandybuck",
+    "Peregrin Took"
+   ],
+   "correct": 0,
+   "explanation": "Frodo inherits the Ring from his uncle Bilbo."
+  },
+  {
+   "question": "Who directed The Lord of the Rings film trilogy?",
+   "answers": [
+    "Peter Jackson",
+    "Guillermo del Toro",
+    "Sam Raimi",
+    "Ridley Scott"
+   ],
+   "correct": 0,
+   "explanation": "Peter Jackson also directed The Hobbit trilogy."
+  },
+  {
+   "question": "In which country were The Lord of the Rings films mainly filmed?",
+   "answers": [
+    "Ireland",
+    "Canada",
+    "Iceland",
+    "New Zealand"
+   ],
+   "correct": 3,
+   "explanation": "New Zealand's landscapes became Middle-earth."
+  },
+  {
+   "question": "In Jurassic Park, what creatures fill the island theme park?",
+   "answers": [
+    "Robots",
+    "Aliens",
+    "Cloned dinosaurs",
+    "Giant insects"
+   ],
+   "correct": 2,
+   "explanation": "Scientists bring dinosaurs back using DNA from ancient mosquitoes."
+  },
+  {
+   "question": "In E.T. the Extra-Terrestrial, what does the little alien famously want to do?",
+   "answers": [
+    "Eat pizza",
+    "Phone home",
+    "Learn to ride a bike",
+    "Become famous"
+   ],
+   "correct": 1,
+   "explanation": "E.T. builds a gadget to contact his people."
+  },
+  {
+   "question": "In Back to the Future, what car is turned into a time machine?",
+   "answers": [
+    "A Ford Mustang",
+    "A DeLorean",
+    "A Chevrolet Corvette",
+    "A Volkswagen Beetle"
+   ],
+   "correct": 1,
+   "explanation": "Doc Brown built the time machine out of a stainless-steel DeLorean."
+  },
+  {
+   "question": "Who played Marty McFly in Back to the Future?",
+   "answers": [
+    "Michael J. Fox",
+    "Tom Hanks",
+    "Matthew Broderick",
+    "Tom Cruise"
+   ],
+   "correct": 0,
+   "explanation": "Michael J. Fox filmed the movie while also starring in a TV show."
+  },
+  {
+   "question": "Who played Neo in The Matrix?",
+   "answers": [
+    "Will Smith",
+    "Brad Pitt",
+    "Tom Cruise",
+    "Keanu Reeves"
+   ],
+   "correct": 3,
+   "explanation": "Keanu Reeves also starred in the John Wick films."
+  },
+  {
+   "question": "In The Matrix, what color pill does Neo take to learn the truth?",
+   "answers": [
+    "Blue",
+    "Green",
+    "Red",
+    "Yellow"
+   ],
+   "correct": 2,
+   "explanation": "The blue pill would have sent him back to his normal life."
+  },
+  {
+   "question": "Who played the title role in Forrest Gump?",
+   "answers": [
+    "Kevin Costner",
+    "Robin Williams",
+    "Tom Hanks",
+    "Bill Murray"
+   ],
+   "correct": 2,
+   "explanation": "Tom Hanks won the Best Actor Oscar for the role."
+  },
+  {
+   "question": "Who voiced the Genie in Disney's animated Aladdin (1992)?",
+   "answers": [
+    "Eddie Murphy",
+    "Robin Williams",
+    "Jim Carrey",
+    "Steve Martin"
+   ],
+   "correct": 1,
+   "explanation": "Robin Williams improvised many of the Genie's jokes."
+  },
+  {
+   "question": "What is the name of the small dragon who helps Mulan?",
+   "answers": [
+    "Mushu",
+    "Sisu",
+    "Toothless",
+    "Elliott"
+   ],
+   "correct": 0,
+   "explanation": "Mushu was voiced by Eddie Murphy."
+  },
+  {
+   "question": "In The Little Mermaid, what is the name of Ariel's crab friend?",
+   "answers": [
+    "Flounder",
+    "Scuttle",
+    "Crush",
+    "Sebastian"
+   ],
+   "correct": 3,
+   "explanation": "Sebastian is a crab who works for King Triton."
+  },
+  {
+   "question": "In Beauty and the Beast, what is the name of the kind teapot?",
+   "answers": [
+    "Lumiere",
+    "Cogsworth",
+    "Madame Wardrobe",
+    "Mrs. Potts"
+   ],
+   "correct": 3,
+   "explanation": "Lumiere is the candlestick and Cogsworth is the clock."
+  },
+  {
+   "question": "How many dwarfs live with Snow White?",
+   "answers": [
+    "Five",
+    "Six",
+    "Seven",
+    "Eight"
+   ],
+   "correct": 2,
+   "explanation": "They include Doc, Grumpy, Happy, Sleepy, Bashful, Sneezy and Dopey."
+  },
+  {
+   "question": "What was Walt Disney's first full-length animated feature film?",
+   "answers": [
+    "Cinderella",
+    "Snow White and the Seven Dwarfs",
+    "Pinocchio",
+    "Fantasia"
+   ],
+   "correct": 1,
+   "explanation": "Snow White came out in 1937."
+  },
+  {
+   "question": "What does Cinderella leave behind on the palace stairs?",
+   "answers": [
+    "A glass slipper",
+    "A silver necklace",
+    "A gold ring",
+    "A crystal tiara"
+   ],
+   "correct": 0,
+   "explanation": "The prince uses the slipper to find her."
+  },
+  {
+   "question": "What happens to Pinocchio's nose when he tells a lie?",
+   "answers": [
+    "It grows longer",
+    "It turns red",
+    "It shrinks",
+    "It falls off"
+   ],
+   "correct": 0,
+   "explanation": "Pinocchio learns that honesty matters."
+  },
+  {
+   "question": "Which phrase from The Lion King means \"no worries\"?",
+   "answers": [
+    "Asante Sana",
+    "Circle of Life",
+    "Jambo Bwana",
+    "Hakuna Matata"
+   ],
+   "correct": 3,
+   "explanation": "Timon and Pumbaa teach young Simba this carefree motto."
+  },
+  {
+   "question": "In The Lion King, what kind of animal is Pumbaa?",
+   "answers": [
+    "A meerkat",
+    "A hyena",
+    "A warthog",
+    "A baboon"
+   ],
+   "correct": 2,
+   "explanation": "Timon, his best friend, is the meerkat."
+  },
+  {
+   "question": "What lets Dumbo fly in the Disney classic?",
+   "answers": [
+    "A jetpack",
+    "His huge ears",
+    "Big wings",
+    "A hot-air balloon"
+   ],
+   "correct": 1,
+   "explanation": "Dumbo's ears were teased at first but turned out to be his superpower."
+  },
+  {
+   "question": "In The Jungle Book, what is the name of the fun-loving bear?",
+   "answers": [
+    "Bagheera",
+    "Baloo",
+    "Shere Khan",
+    "Kaa"
+   ],
+   "correct": 1,
+   "explanation": "Bagheera is the panther and Shere Khan is the tiger."
+  },
+  {
+   "question": "Who voices Maui in Disney's Moana?",
+   "answers": [
+    "Dwayne Johnson",
+    "Vin Diesel",
+    "Jason Momoa",
+    "Kevin Hart"
+   ],
+   "correct": 0,
+   "explanation": "Dwayne \"The Rock\" Johnson also sings in the film."
+  },
+  {
+   "question": "In Pixar's Coco, Miguel's family lives in which country?",
+   "answers": [
+    "Spain",
+    "Argentina",
+    "Cuba",
+    "Mexico"
+   ],
+   "correct": 3,
+   "explanation": "The story is built around Mexico's Day of the Dead."
+  },
+  {
+   "question": "In Pixar's Up, what lifts Carl's house into the sky?",
+   "answers": [
+    "A rocket",
+    "Giant kites",
+    "Thousands of balloons",
+    "A helicopter"
+   ],
+   "correct": 2,
+   "explanation": "Carl was a balloon salesman, after all!"
+  },
+  {
+   "question": "In Monsters, Inc., what do the monsters collect from children to power their city?",
+   "answers": [
+    "Toys",
+    "Dreams",
+    "Screams",
+    "Teeth"
+   ],
+   "correct": 2,
+   "explanation": "Later they discover that laughter is even more powerful."
+  },
+  {
+   "question": "In Monsters, Inc., what is the name of the small, round, one-eyed green monster?",
+   "answers": [
+    "Randall Boggs",
+    "Mike Wazowski",
+    "James P. Sullivan",
+    "Roz"
+   ],
+   "correct": 1,
+   "explanation": "Mike is best friends with the big blue monster Sulley."
+  },
+  {
+   "question": "In which city does Pixar's Ratatouille take place?",
+   "answers": [
+    "Paris",
+    "Rome",
+    "London",
+    "New York"
+   ],
+   "correct": 0,
+   "explanation": "Remy dreams of cooking at Gusteau's restaurant in Paris."
+  },
+  {
+   "question": "What is the name of the red race car star of Pixar's Cars?",
+   "answers": [
+    "Mater",
+    "Doc Hudson",
+    "Chick Hicks",
+    "Lightning McQueen"
+   ],
+   "correct": 3,
+   "explanation": "Lightning learns about friendship in the small town of Radiator Springs."
+  },
+  {
+   "question": "In Pixar's Inside Out, which emotion is blue?",
+   "answers": [
+    "Joy",
+    "Fear",
+    "Disgust",
+    "Sadness"
+   ],
+   "correct": 3,
+   "explanation": "Joy, Sadness, Fear, Anger and Disgust live inside Riley's mind."
+  },
+  {
+   "question": "Pixar's Brave is set in which country?",
+   "answers": [
+    "Ireland",
+    "Norway",
+    "Scotland",
+    "Wales"
+   ],
+   "correct": 2,
+   "explanation": "Princess Merida is a skilled archer in the Scottish Highlands."
+  },
+  {
+   "question": "In Zootopia, what is the name of the rabbit police officer?",
+   "answers": [
+    "Nick Wilde",
+    "Judy Hopps",
+    "Bonnie Bunny",
+    "Clawhauser"
+   ],
+   "correct": 1,
+   "explanation": "Nick Wilde is the sly fox who becomes her partner."
+  },
+  {
+   "question": "Disney's Encanto takes place in which country?",
+   "answers": [
+    "Colombia",
+    "Mexico",
+    "Peru",
+    "Brazil"
+   ],
+   "correct": 0,
+   "explanation": "The magical Madrigal family lives in the mountains of Colombia."
+  },
+  {
+   "question": "What is the name of the long-haired princess in Disney's Tangled?",
+   "answers": [
+    "Rapunzel",
+    "Aurora",
+    "Merida",
+    "Cinderella"
+   ],
+   "correct": 0,
+   "explanation": "Her magical hair is 70 feet long."
+  },
+  {
+   "question": "In Big Hero 6, what is the name of the inflatable healthcare robot?",
+   "answers": [
+    "WALL-E",
+    "EVE",
+    "Bolt",
+    "Baymax"
+   ],
+   "correct": 3,
+   "explanation": "Baymax is soft, huggable and always asks how you're feeling."
+  },
+  {
+   "question": "Who voices Po in Kung Fu Panda?",
+   "answers": [
+    "Seth Rogen",
+    "Jackie Chan",
+    "Jack Black",
+    "Kevin Hart"
+   ],
+   "correct": 2,
+   "explanation": "Po is a noodle-loving panda who becomes the Dragon Warrior."
+  },
+  {
+   "question": "In How to Train Your Dragon, what is the name of Hiccup's dragon?",
+   "answers": [
+    "Smaug",
+    "Toothless",
+    "Norbert",
+    "Mushu"
+   ],
+   "correct": 1,
+   "explanation": "Toothless is a rare Night Fury."
+  },
+  {
+   "question": "In which film did the Minions first appear?",
+   "answers": [
+    "Shrek 2",
+    "Despicable Me",
+    "Ice Age",
+    "Megamind"
+   ],
+   "correct": 1,
+   "explanation": "Despicable Me came out in 2010 from Illumination."
+  },
+  {
+   "question": "In Ice Age, what is the name of the squirrel always chasing an acorn?",
+   "answers": [
+    "Scrat",
+    "Sid",
+    "Manny",
+    "Diego"
+   ],
+   "correct": 0,
+   "explanation": "Scrat's acorn chases are a running gag in the series."
+  },
+  {
+   "question": "In Wallace & Gromit, what kind of animal is Gromit?",
+   "answers": [
+    "A cat",
+    "A sheep",
+    "A rabbit",
+    "A dog"
+   ],
+   "correct": 3,
+   "explanation": "Gromit never speaks but says a lot with his eyebrows."
+  },
+  {
+   "question": "Paddington Bear comes from which country?",
+   "answers": [
+    "Brazil",
+    "Mexico",
+    "Peru",
+    "Canada"
+   ],
+   "correct": 2,
+   "explanation": "Paddington travels from darkest Peru to London."
+  },
+  {
+   "question": "What kind of animal terrorizes the beach in Jaws?",
+   "answers": [
+    "A killer whale",
+    "A giant squid",
+    "A great white shark",
+    "A crocodile"
+   ],
+   "correct": 2,
+   "explanation": "Jaws made many people nervous about swimming in the sea."
+  },
+  {
+   "question": "In Rocky, which city is the boxer Rocky Balboa from?",
+   "answers": [
+    "Boston",
+    "Philadelphia",
+    "Chicago",
+    "Detroit"
+   ],
+   "correct": 1,
+   "explanation": "His run up the art museum steps is a famous movie moment."
+  },
+  {
+   "question": "Who played Rocky Balboa?",
+   "answers": [
+    "Sylvester Stallone",
+    "Arnold Schwarzenegger",
+    "Bruce Willis",
+    "Dolph Lundgren"
+   ],
+   "correct": 0,
+   "explanation": "Stallone also wrote the script for Rocky."
+  },
+  {
+   "question": "Who played the cyborg assassin in The Terminator (1984)?",
+   "answers": [
+    "Sylvester Stallone",
+    "Jean-Claude Van Damme",
+    "Dolph Lundgren",
+    "Arnold Schwarzenegger"
+   ],
+   "correct": 3,
+   "explanation": "Arnold returned as a good Terminator in the sequel."
+  },
+  {
+   "question": "Who directed The Godfather (1972)?",
+   "answers": [
+    "Martin Scorsese",
+    "Brian De Palma",
+    "Sergio Leone",
+    "Francis Ford Coppola"
+   ],
+   "correct": 3,
+   "explanation": "Coppola also directed The Godfather Part II and III."
+  },
+  {
+   "question": "Who directed the classic thriller Psycho (1960)?",
+   "answers": [
+    "Orson Welles",
+    "Stanley Kubrick",
+    "Alfred Hitchcock",
+    "Billy Wilder"
+   ],
+   "correct": 2,
+   "explanation": "Hitchcock was known as the Master of Suspense."
+  },
+  {
+   "question": "The Shining (1980) is based on a novel by which author?",
+   "answers": [
+    "Dean Koontz",
+    "Stephen King",
+    "Anne Rice",
+    "Edgar Allan Poe"
+   ],
+   "correct": 1,
+   "explanation": "Stanley Kubrick directed the film."
+  },
+  {
+   "question": "Who directed Pulp Fiction (1994)?",
+   "answers": [
+    "Quentin Tarantino",
+    "Guy Ritchie",
+    "Robert Rodriguez",
+    "Martin Scorsese"
+   ],
+   "correct": 0,
+   "explanation": "Tarantino also directed Kill Bill and Django Unchained."
+  },
+  {
+   "question": "Who directed Inception (2010)?",
+   "answers": [
+    "Christopher Nolan",
+    "Denis Villeneuve",
+    "Ridley Scott",
+    "David Fincher"
+   ],
+   "correct": 0,
+   "explanation": "Nolan also directed The Dark Knight trilogy."
+  },
+  {
+   "question": "Who played the Joker in The Dark Knight (2008)?",
+   "answers": [
+    "Jared Leto",
+    "Jack Nicholson",
+    "Joaquin Phoenix",
+    "Heath Ledger"
+   ],
+   "correct": 3,
+   "explanation": "Heath Ledger won an Oscar for the role."
+  },
+  {
+   "question": "Which city does Batman protect?",
+   "answers": [
+    "Metropolis",
+    "Star City",
+    "Gotham City",
+    "Central City"
+   ],
+   "correct": 2,
+   "explanation": "Metropolis is Superman's city."
+  },
+  {
+   "question": "What is the name of Superman's home planet?",
+   "answers": [
+    "Vulcan",
+    "Krypton",
+    "Tatooine",
+    "Oa"
+   ],
+   "correct": 1,
+   "explanation": "Baby Kal-El was sent to Earth as Krypton was destroyed."
+  },
+  {
+   "question": "In Spider-Man, what is the name of Peter Parker's uncle?",
+   "answers": [
+    "Uncle Bob",
+    "Uncle Ben",
+    "Uncle Joe",
+    "Uncle Sam"
+   ],
+   "correct": 1,
+   "explanation": "Uncle Ben teaches Peter about power and responsibility."
+  },
+  {
+   "question": "Who played Tony Stark in the Marvel Cinematic Universe's Iron Man films?",
+   "answers": [
+    "Robert Downey Jr.",
+    "Chris Evans",
+    "Chris Hemsworth",
+    "Mark Ruffalo"
+   ],
+   "correct": 0,
+   "explanation": "Iron Man (2008) launched the Marvel Cinematic Universe."
+  },
+  {
+   "question": "Who played Captain America in the Marvel Cinematic Universe?",
+   "answers": [
+    "Chris Pratt",
+    "Chris Hemsworth",
+    "Chris Pine",
+    "Chris Evans"
+   ],
+   "correct": 3,
+   "explanation": "Lots of Chrises in superhero films, but Evans carried the shield."
+  },
+  {
+   "question": "What is the name of Thor's magical hammer?",
+   "answers": [
+    "Excalibur",
+    "Gungnir",
+    "Mjolnir",
+    "Durendal"
+   ],
+   "correct": 2,
+   "explanation": "Only someone worthy can lift it."
+  },
+  {
+   "question": "What is the name of the hidden African nation in Black Panther?",
+   "answers": [
+    "Genovia",
+    "Latveria",
+    "Wakanda",
+    "Zamunda"
+   ],
+   "correct": 2,
+   "explanation": "Wakanda is powered by the rare metal vibranium."
+  },
+  {
+   "question": "What is the Hulk's real name?",
+   "answers": [
+    "Bruce Wayne",
+    "Bruce Banner",
+    "Tony Stark",
+    "Steve Rogers"
+   ],
+   "correct": 1,
+   "explanation": "Bruce Banner turns into the Hulk when he gets angry."
+  },
+  {
+   "question": "Which Guardians of the Galaxy character is a talking raccoon?",
+   "answers": [
+    "Rocket",
+    "Groot",
+    "Drax",
+    "Gamora"
+   ],
+   "correct": 0,
+   "explanation": "Rocket loves big guns and gadgets."
+  },
+  {
+   "question": "Who played Wonder Woman in the 2017 film?",
+   "answers": [
+    "Brie Larson",
+    "Scarlett Johansson",
+    "Margot Robbie",
+    "Gal Gadot"
+   ],
+   "correct": 3,
+   "explanation": "Gal Gadot first played the role in Batman v Superman."
+  },
+  {
+   "question": "In The Wizard of Oz, what is the name of Dorothy's little dog?",
+   "answers": [
+    "Benji",
+    "Lassie",
+    "Spot",
+    "Toto"
+   ],
+   "correct": 3,
+   "explanation": "Toto is a small Cairn Terrier."
+  },
+  {
+   "question": "Who played Dorothy in The Wizard of Oz (1939)?",
+   "answers": [
+    "Shirley Temple",
+    "Julie Andrews",
+    "Judy Garland",
+    "Audrey Hepburn"
+   ],
+   "correct": 2,
+   "explanation": "Judy Garland was 16 during filming."
+  },
+  {
+   "question": "In The Wizard of Oz, what does the Scarecrow want from the Wizard?",
+   "answers": [
+    "A heart",
+    "A brain",
+    "Courage",
+    "A home"
+   ],
+   "correct": 1,
+   "explanation": "The Tin Man wants a heart and the Lion wants courage."
+  },
+  {
+   "question": "Who played Mary Poppins in the 1964 film?",
+   "answers": [
+    "Julie Andrews",
+    "Judy Garland",
+    "Audrey Hepburn",
+    "Doris Day"
+   ],
+   "correct": 0,
+   "explanation": "Julie Andrews won the Best Actress Oscar for the role."
+  },
+  {
+   "question": "The Sound of Music takes place in which country?",
+   "answers": [
+    "Austria",
+    "Switzerland",
+    "Germany",
+    "Norway"
+   ],
+   "correct": 0,
+   "explanation": "The story is set in and around Salzburg."
+  },
+  {
+   "question": "Which actress starred as Holly Golightly in Breakfast at Tiffany's?",
+   "answers": [
+    "Marilyn Monroe",
+    "Grace Kelly",
+    "Elizabeth Taylor",
+    "Audrey Hepburn"
+   ],
+   "correct": 3,
+   "explanation": "Her little black dress became a fashion icon."
+  },
+  {
+   "question": "Which actor plays Rick in Casablanca (1942)?",
+   "answers": [
+    "Cary Grant",
+    "Clark Gable",
+    "Humphrey Bogart",
+    "James Stewart"
+   ],
+   "correct": 2,
+   "explanation": "Rick runs a nightclub in wartime Morocco."
+  },
+  {
+   "question": "Scarlett O'Hara is the heroine of which classic 1939 film?",
+   "answers": [
+    "Casablanca",
+    "Gone with the Wind",
+    "Ben-Hur",
+    "Citizen Kane"
+   ],
+   "correct": 1,
+   "explanation": "Vivien Leigh won an Oscar for playing Scarlett."
+  },
+  {
+   "question": "What was Charlie Chaplin's most famous movie character called?",
+   "answers": [
+    "The Clown",
+    "The Tramp",
+    "The Gentleman",
+    "The Jester"
+   ],
+   "correct": 1,
+   "explanation": "The Tramp wore a bowler hat, had a cane and a small mustache."
+  },
+  {
+   "question": "Who played Captain Jack Sparrow in Pirates of the Caribbean?",
+   "answers": [
+    "Johnny Depp",
+    "Orlando Bloom",
+    "Geoffrey Rush",
+    "Javier Bardem"
+   ],
+   "correct": 0,
+   "explanation": "Johnny Depp based parts of Jack on rock star Keith Richards."
+  },
+  {
+   "question": "In Home Alone (1990), Kevin's family flies off on vacation to which city without him?",
+   "answers": [
+    "London",
+    "Rome",
+    "Miami",
+    "Paris"
+   ],
+   "correct": 3,
+   "explanation": "In Home Alone 2, Kevin ends up in New York instead."
+  },
+  {
+   "question": "In Ghostbusters (1984), what giant creature stomps through New York?",
+   "answers": [
+    "The Michelin Man",
+    "Mr. Fluffy",
+    "The Stay Puft Marshmallow Man",
+    "The Pillsbury Doughboy"
+   ],
+   "correct": 2,
+   "explanation": "He was the most harmless thing Ray could think of!"
+  },
+  {
+   "question": "In Charlie and the Chocolate Factory, who works in Willy Wonka's factory?",
+   "answers": [
+    "The Minions",
+    "The Smurfs",
+    "The Oompa-Loompas",
+    "The Munchkins"
+   ],
+   "correct": 2,
+   "explanation": "The Munchkins live in Oz, not in Wonka's factory."
+  },
+  {
+   "question": "Which villain wants a coat made from puppies in 101 Dalmatians?",
+   "answers": [
+    "Ursula",
+    "Cruella de Vil",
+    "Maleficent",
+    "Madame Medusa"
+   ],
+   "correct": 1,
+   "explanation": "Cruella is crazy about spotted fur."
+  },
+  {
+   "question": "In Jumanji (1995), what pulls players into a world of jungle danger?",
+   "answers": [
+    "A board game",
+    "A magic mirror",
+    "A music box",
+    "A treasure map"
+   ],
+   "correct": 0,
+   "explanation": "Robin Williams' character was trapped inside the game for 26 years."
+  },
+  {
+   "question": "Which actor dresses up as a Scottish nanny in Mrs. Doubtfire?",
+   "answers": [
+    "Steve Martin",
+    "Dustin Hoffman",
+    "Eddie Murphy",
+    "Robin Williams"
+   ],
+   "correct": 3,
+   "explanation": "He does it to spend more time with his kids."
+  },
+  {
+   "question": "In The Truman Show, what has Truman's whole life secretly been?",
+   "answers": [
+    "A dream",
+    "A video game",
+    "A school play",
+    "A reality TV show"
+   ],
+   "correct": 3,
+   "explanation": "Jim Carrey plays Truman."
+  },
+  {
+   "question": "Who played Hannibal Lecter in The Silence of the Lambs?",
+   "answers": [
+    "Gary Oldman",
+    "Jack Nicholson",
+    "Anthony Hopkins",
+    "Christopher Walken"
+   ],
+   "correct": 2,
+   "explanation": "He won an Oscar despite having fairly little screen time."
+  },
+  {
+   "question": "Who played Ellen Ripley in Alien (1979)?",
+   "answers": [
+    "Jamie Lee Curtis",
+    "Sigourney Weaver",
+    "Linda Hamilton",
+    "Carrie Fisher"
+   ],
+   "correct": 1,
+   "explanation": "Ripley became one of cinema's greatest action heroines."
+  },
+  {
+   "question": "Who starred as the Roman general Maximus in Gladiator (2000)?",
+   "answers": [
+    "Russell Crowe",
+    "Mel Gibson",
+    "Gerard Butler",
+    "Brad Pitt"
+   ],
+   "correct": 0,
+   "explanation": "Russell Crowe won Best Actor for the role."
+  },
+  {
+   "question": "Braveheart tells the story of which Scottish hero?",
+   "answers": [
+    "William Wallace",
+    "Rob Roy",
+    "Bonnie Prince Charlie",
+    "Macbeth"
+   ],
+   "correct": 0,
+   "explanation": "Mel Gibson directed and starred in the film."
+  },
+  {
+   "question": "Who plays agent Ethan Hunt in the Mission: Impossible films?",
+   "answers": [
+    "Matt Damon",
+    "Keanu Reeves",
+    "Daniel Craig",
+    "Tom Cruise"
+   ],
+   "correct": 3,
+   "explanation": "Tom Cruise is famous for doing his own dangerous stunts."
+  },
+  {
+   "question": "What is Tom Cruise's pilot call sign in Top Gun?",
+   "answers": [
+    "Ghost Rider",
+    "Falcon",
+    "Maverick",
+    "Viper"
+   ],
+   "correct": 2,
+   "explanation": "Top Gun: Maverick continued his story in 2022."
+  },
+  {
+   "question": "What is James Bond's famous code number?",
+   "answers": [
+    "009",
+    "007",
+    "700",
+    "101"
+   ],
+   "correct": 1,
+   "explanation": "The \"00\" means he has a licence to kill."
+  },
+  {
+   "question": "Who was the first actor to play James Bond in the official film series?",
+   "answers": [
+    "Roger Moore",
+    "Sean Connery",
+    "Pierce Brosnan",
+    "Daniel Craig"
+   ],
+   "correct": 1,
+   "explanation": "Connery first played Bond in Dr. No (1962)."
+  },
+  {
+   "question": "How does James Bond famously like his martini?",
+   "answers": [
+    "Shaken, not stirred",
+    "Stirred, not shaken",
+    "With extra ice",
+    "With a slice of lemon"
+   ],
+   "correct": 0,
+   "explanation": "It's one of the most quoted lines from the Bond films."
+  },
+  {
+   "question": "Who played Danny Zuko in Grease (1978)?",
+   "answers": [
+    "Patrick Swayze",
+    "Kevin Bacon",
+    "Tom Cruise",
+    "John Travolta"
+   ],
+   "correct": 3,
+   "explanation": "Olivia Newton-John played Sandy."
+  },
+  {
+   "question": "In The Karate Kid (1984), who trains Daniel in karate?",
+   "answers": [
+    "Master Shifu",
+    "Splinter",
+    "Mr. Miyagi",
+    "Pai Mei"
+   ],
+   "correct": 2,
+   "explanation": "His chores like waxing cars were secret training."
+  },
+  {
+   "question": "Which actor plays Dominic Toretto in the Fast & Furious films?",
+   "answers": [
+    "Jason Statham",
+    "Dwayne Johnson",
+    "Vin Diesel",
+    "Tyrese Gibson"
+   ],
+   "correct": 2,
+   "explanation": "Dom is known for fast cars and loving his family."
+  },
+  {
+   "question": "Which actress played Katniss Everdeen in The Hunger Games films?",
+   "answers": [
+    "Shailene Woodley",
+    "Jennifer Lawrence",
+    "Emma Stone",
+    "Kristen Stewart"
+   ],
+   "correct": 1,
+   "explanation": "Katniss is a skilled archer from District 12."
+  },
+  {
+   "question": "Who played Barbie in the 2023 film Barbie?",
+   "answers": [
+    "Margot Robbie",
+    "Emma Stone",
+    "Anne Hathaway",
+    "Florence Pugh"
+   ],
+   "correct": 0,
+   "explanation": "Ryan Gosling played Ken alongside her."
+  },
+  {
+   "question": "In the 2009 film Avatar, what color is the skin of the Na'vi?",
+   "answers": [
+    "Green",
+    "Purple",
+    "Grey",
+    "Blue"
+   ],
+   "correct": 3,
+   "explanation": "The tall Na'vi live in harmony with nature."
+  },
+  {
+   "question": "The musical film Mamma Mia! is built around songs by which band?",
+   "answers": [
+    "The Beatles",
+    "Queen",
+    "Bee Gees",
+    "ABBA"
+   ],
+   "correct": 3,
+   "explanation": "ABBA is the famous Swedish pop group."
+  },
+  {
+   "question": "The 2018 film Bohemian Rhapsody tells the story of which band?",
+   "answers": [
+    "The Rolling Stones",
+    "Led Zeppelin",
+    "Queen",
+    "The Who"
+   ],
+   "correct": 2,
+   "explanation": "Rami Malek won an Oscar for playing Freddie Mercury."
+  },
+  {
+   "question": "Which film studio's logo features a roaring lion?",
+   "answers": [
+    "Paramount Pictures",
+    "MGM (Metro-Goldwyn-Mayer)",
+    "Universal Pictures",
+    "Warner Bros."
+   ],
+   "correct": 1,
+   "explanation": "The MGM lion has been roaring at audiences for about a century."
+  },
+  {
+   "question": "What hopping object appears in Pixar's opening logo?",
+   "answers": [
+    "A desk lamp",
+    "A teapot",
+    "A toy robot",
+    "A paper airplane"
+   ],
+   "correct": 0,
+   "explanation": "The lamp is Luxo Jr., star of an early Pixar short."
+  },
+  {
+   "question": "What is the nickname of the Academy Award statuette?",
+   "answers": [
+    "Oscar",
+    "Emmy",
+    "Tony",
+    "Grammy"
+   ],
+   "correct": 0,
+   "explanation": "Emmys are for TV, Tonys for theater and Grammys for music."
+  },
+  {
+   "question": "The famous Cannes Film Festival is held in which country?",
+   "answers": [
+    "Italy",
+    "Spain",
+    "Monaco",
+    "France"
+   ],
+   "correct": 3,
+   "explanation": "Its top prize is the Palme d'Or."
+  },
+  {
+   "question": "The famous HOLLYWOOD sign stands in the hills of which city?",
+   "answers": [
+    "San Francisco",
+    "San Diego",
+    "Los Angeles",
+    "Las Vegas"
+   ],
+   "correct": 2,
+   "explanation": "Hollywood is a neighborhood of Los Angeles."
+  },
+  {
+   "question": "What is a film that continues the story of an earlier film called?",
+   "answers": [
+    "A prequel",
+    "A sequel",
+    "A remake",
+    "A trailer"
+   ],
+   "correct": 1,
+   "explanation": "A prequel tells what happened before."
+  },
+  {
+   "question": "What word does a director usually shout to start the acting in a scene?",
+   "answers": [
+    "Cut!",
+    "Action!",
+    "Wrap!",
+    "Freeze!"
+   ],
+   "correct": 1,
+   "explanation": "\"Cut!\" is what they shout to stop."
+  },
+  {
+   "question": "A famous person's brief surprise appearance in a film is called a what?",
+   "answers": [
+    "A cameo",
+    "An encore",
+    "A montage",
+    "A blooper"
+   ],
+   "correct": 0,
+   "explanation": "Marvel creator Stan Lee made cameos in many Marvel films."
+  },
+  {
+   "question": "India's Hindi-language film industry, based mainly in Mumbai, is better known as what?",
+   "answers": [
+    "Nollywood",
+    "Tollywood",
+    "Kollywood",
+    "Bollywood"
+   ],
+   "correct": 3,
+   "explanation": "The name blends Bombay, Mumbai's old name, with Hollywood."
+  },
+  {
+   "question": "Nollywood is the nickname of which country's film industry?",
+   "answers": [
+    "Ghana",
+    "Kenya",
+    "Nigeria",
+    "South Africa"
+   ],
+   "correct": 2,
+   "explanation": "Nollywood makes a huge number of films every year."
+  },
+  {
+   "question": "Which 1992 film is widely credited with launching Nollywood's home-video boom?",
+   "answers": [
+    "The Wedding Party",
+    "Lionheart",
+    "Living in Bondage",
+    "King of Boys"
+   ],
+   "correct": 2,
+   "explanation": "Living in Bondage was a smash hit on VHS in Nigeria."
+  },
+  {
+   "question": "Nollywood actor Funke Akindele is famous for playing which comic character?",
+   "answers": [
+    "Aki",
+    "Jenifa",
+    "Osuofia",
+    "Pawpaw"
+   ],
+   "correct": 1,
+   "explanation": "Jenifa is a lovable village girl trying to fit in at university."
+  },
+  {
+   "question": "Nollywood actors Chinedu Ikedieze and Osita Iheme are famous as which comedy duo?",
+   "answers": [
+    "Aki and Pawpaw",
+    "Bob and Tunde",
+    "Chike and Obi",
+    "Tinko and Tanko"
+   ],
+   "correct": 0,
+   "explanation": "The duo became stars after the film Aki na Ukwa."
+  },
+  {
+   "question": "Which Nollywood comedy follows a villager who travels to England to claim his late brother's fortune?",
+   "answers": [
+    "Living in Bondage",
+    "Jenifa",
+    "The Wedding Party",
+    "Osuofia in London"
+   ],
+   "correct": 3,
+   "explanation": "Nkem Owoh plays the hilarious Osuofia."
+  },
+  {
+   "question": "The hit Nollywood comedy The Wedding Party (2016) is set in which city?",
+   "answers": [
+    "Abuja",
+    "Accra",
+    "Port Harcourt",
+    "Lagos"
+   ],
+   "correct": 3,
+   "explanation": "It follows a big, chaotic Lagos wedding."
+  },
+  {
+   "question": "Bollywood movies are especially famous for including what?",
+   "answers": [
+    "No dialogue at all",
+    "Only black-and-white scenes",
+    "Big song-and-dance numbers",
+    "Running under 30 minutes"
+   ],
+   "correct": 2,
+   "explanation": "Colorful musical numbers are a Bollywood trademark."
+  },
+  {
+   "question": "Bollywood films are mostly made in which language?",
+   "answers": [
+    "Tamil",
+    "Hindi",
+    "Bengali",
+    "Punjabi"
+   ],
+   "correct": 1,
+   "explanation": "Tamil films are known as Kollywood, and Telugu films as Tollywood."
+  },
+  {
+   "question": "Which Bollywood star is often called \"King Khan\"?",
+   "answers": [
+    "Shah Rukh Khan",
+    "Amitabh Bachchan",
+    "Hrithik Roshan",
+    "Ranbir Kapoor"
+   ],
+   "correct": 0,
+   "explanation": "Shah Rukh Khan is also called the King of Bollywood."
+  },
+  {
+   "question": "Which legendary Bollywood actor is nicknamed \"Big B\"?",
+   "answers": [
+    "Amitabh Bachchan",
+    "Dharmendra",
+    "Shah Rukh Khan",
+    "Anil Kapoor"
+   ],
+   "correct": 0,
+   "explanation": "Amitabh Bachchan has starred in films since the late 1960s."
+  },
+  {
+   "question": "Which pair starred in the classic Bollywood romance Dilwale Dulhania Le Jayenge (1995)?",
+   "answers": [
+    "Aamir Khan and Juhi Chawla",
+    "Salman Khan and Madhuri Dixit",
+    "Hrithik Roshan and Kareena Kapoor",
+    "Shah Rukh Khan and Kajol"
+   ],
+   "correct": 3,
+   "explanation": "The film ran for decades at Mumbai's Maratha Mandir cinema."
+  },
+  {
+   "question": "The villain Gabbar Singh comes from which classic 1975 Bollywood film?",
+   "answers": [
+    "Deewaar",
+    "Mughal-e-Azam",
+    "Sholay",
+    "Don"
+   ],
+   "correct": 2,
+   "explanation": "Sholay is one of the most loved Indian films ever made."
+  },
+  {
+   "question": "Which actor plays the free-spirited engineering student Rancho in 3 Idiots (2009)?",
+   "answers": [
+    "Salman Khan",
+    "Aamir Khan",
+    "Shah Rukh Khan",
+    "Akshay Kumar"
+   ],
+   "correct": 1,
+   "explanation": "3 Idiots pokes fun at pressure-cooker exams."
+  },
+  {
+   "question": "In Lagaan (2001), villagers challenge British officers to a match of which sport?",
+   "answers": [
+    "Football",
+    "Cricket",
+    "Hockey",
+    "Polo"
+   ],
+   "correct": 1,
+   "explanation": "If the villagers win, they won't have to pay the tax."
+  },
+  {
+   "question": "The Bollywood film Dangal (2016) is about which sport?",
+   "answers": [
+    "Wrestling",
+    "Boxing",
+    "Cricket",
+    "Kabaddi"
+   ],
+   "correct": 0,
+   "explanation": "Aamir Khan plays a father who trains his daughters to wrestle."
+  },
+  {
+   "question": "Which Indian film's song \"Naatu Naatu\" won the Oscar for Best Original Song?",
+   "answers": [
+    "Baahubali: The Beginning",
+    "Lagaan",
+    "Dangal",
+    "RRR"
+   ],
+   "correct": 3,
+   "explanation": "RRR is a Telugu-language action epic from 2022."
+  },
+  {
+   "question": "In Slumdog Millionaire, Jamal appears on which TV quiz show?",
+   "answers": [
+    "Jeopardy!",
+    "Wheel of Fortune",
+    "Who Wants to Be a Millionaire?",
+    "The Weakest Link"
+   ],
+   "correct": 2,
+   "explanation": "Each question reminds Jamal of a moment from his life."
+  },
+  {
+   "question": "Which Bollywood actress was crowned Miss World in 2000 and later starred in Hollywood?",
+   "answers": [
+    "Deepika Padukone",
+    "Katrina Kaif",
+    "Priyanka Chopra",
+    "Alia Bhatt"
+   ],
+   "correct": 2,
+   "explanation": "Priyanka Chopra also starred in the TV series Quantico."
+  }
+ ]
+}
