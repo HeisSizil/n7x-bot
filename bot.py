@@ -30,6 +30,8 @@ log = logging.getLogger("n7x")
 # message_content and members are "privileged": you MUST also switch them on in the
 # Developer Portal (your app -> Bot -> Privileged Gateway Intents), or the bot won't start.
 intents = discord.Intents.default()
+intents.guilds = True           # see servers and channels (on by default, set to be sure)
+intents.guild_messages = True   # receive messages sent in servers (on by default, set to be sure)
 intents.message_content = True  # read message text (spam filter, /summarize)
 intents.members = True          # see members joining (welcome messages)
 intents.voice_states = True     # see who is in voice channels (voice ranks)
@@ -71,11 +73,40 @@ class N7XBot(commands.Bot):
 
     async def on_ready(self):
         log.info("Logged in as %s (ID: %s)", self.user, self.user.id)
-        log.info(
-            "Intents: message_content=%s members=%s voice_states=%s",
-            self.intents.message_content, self.intents.members, self.intents.voice_states,
-        )
+
+        # Show every intent and whether it's on. (Debug help: if guild_messages
+        # is False, the bot will never hear messages from members.)
+        enabled = ", ".join(f"{name}={value}" for name, value in self.intents)
+        log.info("Intents value=%s: %s", self.intents.value, enabled)
+
+        # List every server the bot is in, plus channels it can't read.
+        log.info("Bot is in %d server(s):", len(self.guilds))
+        for guild in self.guilds:
+            log.info("  Server: %s (ID: %s)", guild.name, guild.id)
+            for channel in guild.text_channels:
+                perms = channel.permissions_for(guild.me)
+                if not (perms.view_channel and perms.read_message_history):
+                    log.warning(
+                        "    Can't read #%s (ID: %s): view_channel=%s read_message_history=%s",
+                        channel.name, channel.id, perms.view_channel, perms.read_message_history,
+                    )
         await self.change_presence(activity=discord.Game(name="/help | N7X"))
+
+    async def on_message(self, message: discord.Message):
+        """
+        Debug log for EVERY message the bot receives, before any other check.
+        Feature code (like XP in cogs/ranks.py) runs in the cogs, not here.
+        We never log the message text - only whether it was empty.
+        """
+        log.info(
+            "on_message: server_id=%s channel_id=%s channel=#%s author_id=%s is_bot=%s content_empty=%s",
+            message.guild.id if message.guild else None,
+            message.channel.id,
+            getattr(message.channel, "name", "DM"),
+            message.author.id,
+            message.author.bot,
+            not message.content,
+        )
 
 
 bot = N7XBot()

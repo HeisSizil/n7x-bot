@@ -89,7 +89,9 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 ## Troubleshooting
 
 - **"privileged intents are switched off":** do step 2.3 above (turn on Server Members Intent and Message Content Intent), then restart the bot.
-- **Messages aren't counted for XP:** watch the terminal while you chat. Each message prints a `Counted message...` or `Skipped message...` line. If **nothing** prints, the bot can't see that channel: give its role **View Channels** and **Read Message History** there.
+- **Messages aren't counted for XP:** watch the terminal while you chat. Every message the bot receives prints an `on_message:` line, then `Counted message...` or `Skipped message...`. If **nothing** prints, Discord isn't sending that channel to the bot:
+  - At startup the bot lists every server it's in. Check your test server is there with the right ID.
+  - At startup it also prints `Can't read #channel` for each channel it can't see. Give its role **View Channels** and **Read Message History** there.
 - **Commands don't appear:** check `GUILD_ID` is set, restart the bot, then restart Discord (Ctrl + R).
 - **"DISCORD_TOKEN is missing":** your `.env` file is missing or the token line is empty.
 - **"Improper token has been passed":** reset the token in the Developer Portal and paste the new one.
