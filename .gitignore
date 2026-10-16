@@ -1,0 +1,12 @@
+# Secrets - NEVER commit this file
+.env
+
+# The SQLite database (it holds your server's data, not code)
+*.db
+*.db-journal
+
+# Python junk
+__pycache__/
+*.pyc
+venv/
+.venv/
