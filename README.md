@@ -20,6 +20,7 @@ cogs/             One file per feature (add a file here to add a feature)
   voice.py        Voice time, /voicerank, /voiceleaderboard
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
+  games.py        /flip, /dice, /rps, /wheel, /gamesleaderboard
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
   mod_assistant.py  AI mod assistant: mods ask in plain words, confirm with a button
@@ -91,6 +92,11 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/voiceleaderboard` | Top 10 members by voice time |
 | `/price <coin>` | Current price and 24h change, e.g. `/price btc` |
 | `/ask <question>` | AI answer about AI agents, crypto, Web3 or N7X |
+| `/flip <heads/tails>` | Guess the coin flip |
+| `/dice` | Roll a die against N7X Bot; higher number wins |
+| `/rps` | Rock, paper, scissors against N7X Bot (buttons) |
+| `/wheel` | Spin the lucky wheel for a chance at XP |
+| `/gamesleaderboard` | Top 10 by game wins, with plays and win rate |
 
 **Mod commands** (hidden from regular members; Discord checks the mod's permissions):
 
@@ -132,6 +138,17 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Each member can ask **3 questions per minute** (setting at the top of `cogs/ask.py`).
 - Members only see "N7X Bot" under answers. **Which AI answered is shown only in the terminal**, e.g. `/ask by sam: answered by Groq (llama-3.3-70b-versatile) in 2.1s`, along with why any provider failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
 - The bot shows "N7X Bot is thinking..." instantly, so slow AI answers never time out. Discord itself blocks questions over 500 characters.
+
+### How the games work
+- **Fair:** every result uses Python's `secrets` module (secure randomness), so nobody can predict or rig it. In `/rps` the bot picks only *after* you press your button.
+- **XP:** wins give a little XP that goes into the **same XP as chatting**, so games count toward `/rank`:
+  - `/flip` win: 5 XP · `/dice` win: 5 XP · `/rps` win: 8 XP · `/wheel`: 0-20 XP depending on where it lands (65% chance of some XP).
+  - Draws and losses give no XP.
+  - **Daily cap: 100 game XP per member** (resets at 00:00 UTC), so nobody can farm it. Games still count for the leaderboard after the cap.
+- **Cooldown:** each game can be played once every **5 seconds** per member.
+- `/rps` buttons only work for the player who started it and expire after 30 seconds.
+- **Prizes are XP and bragging rights only.** No money, tokens or crypto.
+- To change the XP rewards, the cap, the cooldown or the wheel's slots and odds, edit the settings at the top of `cogs/games.py`.
 
 ### How the mod helper works
 - **Set up a mod-log channel:** create a private channel only mods can see, give the bot **View Channel**, **Send Messages** and **Embed Links** there, then put its ID in `.env` as `MOD_LOG_CHANNEL_ID` (right-click the channel → Copy Channel ID).

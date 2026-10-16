@@ -67,6 +67,26 @@ TABLES = [
         result        TEXT
     )
     """,
+    # Stage 7: games. Total plays and wins per member (for /gamesleaderboard).
+    """
+    CREATE TABLE IF NOT EXISTS game_stats (
+        guild_id  INTEGER NOT NULL,
+        user_id   INTEGER NOT NULL,
+        plays     INTEGER NOT NULL DEFAULT 0,
+        wins      INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (guild_id, user_id)
+    )
+    """,
+    # Stage 7: how much game XP each member earned per day (UTC), to enforce the daily cap.
+    """
+    CREATE TABLE IF NOT EXISTS game_xp_daily (
+        guild_id  INTEGER NOT NULL,
+        user_id   INTEGER NOT NULL,
+        day       TEXT    NOT NULL,   -- e.g. "2026-10-16"
+        xp        INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (guild_id, user_id, day)
+    )
+    """,
     # Stage 3: voice ranks. Total seconds spent in voice with at least one other person.
     """
     CREATE TABLE IF NOT EXISTS voice_stats (
@@ -358,3 +378,53 @@ def delete_pending_steps_for_member(guild_id, member_id):
             "DELETE FROM scheduled_actions WHERE guild_id = ? AND member_id = ? AND status = 'pending'",
             (guild_id, member_id),
         ).rowcount
+
+
+# =====================================================================
+# Stage 7: Games
+# =====================================================================
+
+def record_game(guild_id, user_id, won, xp_reward, day, daily_cap):
+    """
+    Save one game: +1 play, +1 win if won, and give XP (only for wins) without
+    going over `daily_cap` game XP today. The XP goes into the SAME total as chat
+    XP (message_stats), so games count toward /rank.
+    Returns (xp actually given, game XP earned today after this game).
+    """
+    with connect() as conn:
+        conn.execute("INSERT OR IGNORE INTO game_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
+        conn.execute(
+            "UPDATE game_stats SET plays = plays + 1, wins = wins + ? WHERE guild_id = ? AND user_id = ?",
+            (1 if won else 0, guild_id, user_id),
+        )
+
+        # Old days aren't needed anymore.
+        conn.execute("DELETE FROM game_xp_daily WHERE guild_id = ? AND user_id = ? AND day < ?",
+                     (guild_id, user_id, day))
+        row = conn.execute("SELECT xp FROM game_xp_daily WHERE guild_id = ? AND user_id = ? AND day = ?",
+                           (guild_id, user_id, day)).fetchone()
+        earned_today = row["xp"] if row else 0
+
+        given = max(0, min(xp_reward if won else 0, daily_cap - earned_today))
+        if given:
+            conn.execute("INSERT OR IGNORE INTO game_xp_daily (guild_id, user_id, day) VALUES (?, ?, ?)",
+                         (guild_id, user_id, day))
+            conn.execute("UPDATE game_xp_daily SET xp = xp + ? WHERE guild_id = ? AND user_id = ? AND day = ?",
+                         (given, guild_id, user_id, day))
+            conn.execute("INSERT OR IGNORE INTO message_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
+            conn.execute("UPDATE message_stats SET xp = xp + ? WHERE guild_id = ? AND user_id = ?",
+                         (given, guild_id, user_id))
+        return given, earned_today + given
+
+
+def top_by_game_wins(guild_id, limit=10):
+    """Top players by wins (ties: better win rate, then more plays)."""
+    return fetch_all(
+        """
+        SELECT user_id, plays, wins FROM game_stats
+        WHERE guild_id = ? AND plays > 0
+        ORDER BY wins DESC, CAST(wins AS REAL) / plays DESC, plays DESC
+        LIMIT ?
+        """,
+        (guild_id, limit),
+    )
