@@ -45,6 +45,7 @@ ACTION_RULES = {
     "warn":           {"mod_perm": "moderate_members", "bot_perm": None,               "bot_above": False},
     "clear_warnings": {"mod_perm": "moderate_members", "bot_perm": None,               "bot_above": False},
     "timeout":        {"mod_perm": "moderate_members", "bot_perm": "moderate_members", "bot_above": True},
+    "remove_timeout": {"mod_perm": "moderate_members", "bot_perm": "moderate_members", "bot_above": True},
     "kick":           {"mod_perm": "kick_members",     "bot_perm": "kick_members",     "bot_above": True},
     "summarize":      {"mod_perm": "manage_messages",  "bot_perm": None,               "bot_above": False},
 }
@@ -283,6 +284,26 @@ async def do_timeout(guild, moderator, member, minutes, reason):
     log.info("%s timed out %s (%s) for %d min", moderator, member, member.id, minutes)
 
     return True, f"⏳ Timed out **{member}** until <t:{ends}:f>."
+
+
+async def do_remove_timeout(guild, moderator, member, reason=None):
+    """End a member's timeout early."""
+    problem = check_action(guild, moderator, "remove_timeout", member)
+    if problem:
+        return False, problem
+    if not member.is_timed_out():
+        return False, f"{member.mention} isn't timed out (anymore)."
+
+    await member.timeout(None, reason=f"{reason or 'Timeout removed'} (by {moderator})")
+
+    note = discord.Embed(title="🔊 Timeout removed", color=COLOR_INFO, timestamp=discord.utils.utcnow())
+    note.add_field(name="Member", value=f"{member.mention} ({member})")
+    note.add_field(name="By", value=moderator.mention)
+    note.add_field(name="Reason", value=reason or "No reason given", inline=False)
+    await send_mod_log(guild, note)
+    log.info("%s removed the timeout of %s (%s)", moderator, member, member.id)
+
+    return True, f"🔊 Removed {member.mention}'s timeout."
 
 
 async def do_kick(guild, moderator, member, reason):

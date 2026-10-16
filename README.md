@@ -11,6 +11,8 @@ config.py         Reads settings from .env
 database.py       All SQLite database code
 ai_providers.py   Talks to Gemini / Groq / OpenRouter with automatic fallback
 mod_tools.py      Shared moderation actions + safety checks (used by slash commands, auto-mod and assistant)
+assistant_plan.py Mod assistant: checks the AI's plan (steps, delays, dependencies)
+assistant_text.py Mod assistant: everything it says, in English, Spanish, French, Portuguese and German
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
@@ -156,14 +158,33 @@ Without the channel, mods can still **@mention the bot** in any channel.
 - `show warnings for @user`
 - `warn @user for spamming links`
 - `clear warning 2 from @user` / `clear all warnings for @user because appeal accepted`
-- `timeout @user for 2 hours, spam`
+- `timeout @user for 2 hours, spam` / `remove @user's timeout`
 - `kick @user for scam DMs`
 - `summarize #general`
+
+**Multi-step requests** (up to 3 steps in one sentence):
+- `warn @user for spam and timeout them for 10 minutes`
+- `timeout @user for 30 minutes then remove it after 20 minutes`
+
+The bot shows **one** numbered plan to confirm, e.g.
+```
+Please confirm this plan:
+1. Timeout @user for 30m — reason: spam (starts now)
+2. Remove @user's timeout (after 20m)
+ℹ️ The timeout would run for 30m, but it will be removed after 20m.
+```
+- Delays count from the moment you press **Confirm** (max **7 days**). Steps with no delay run right away; delayed steps are saved in the database (`scheduled_actions`), so they still run after a restart, and the result is posted in the channel where you asked.
+- **Every step re-runs all safety checks when it runs**, not just at Confirm. If a step fails (e.g. the member left, or their timeout was already removed), the steps that depend on it are skipped, and each step's result is posted in mod-log.
+- A step can only depend on an **earlier** step of the same request: e.g. "remove the timeout" needs the member to be timed out already, or an earlier "timeout" step. Nothing can come after kicking the same member.
+- If **any** step is unclear or invalid, or the AI is less than **90% sure**, nothing runs and the bot asks what you meant.
+- Replies are in your language when it's English, Spanish, French, Portuguese or German (otherwise English). Details coming from the action itself (e.g. "has the same or a higher role than you") stay in English. To add a language, copy the `"en"` block in `assistant_text.py`.
+- Showing warnings and summaries can't be part of a multi-step plan; ask for them on their own.
+- A delayed step that was running when the bot crashed is marked failed, never re-run blindly. There's no command yet to cancel a confirmed delayed step, so double-check delayed kicks before confirming.
 
 **Rules it follows:**
 - Only members with **Timeout Members** or **Manage Messages** can use it; anyone else is ignored silently. Each tool still needs the same permission as its slash command (e.g. kicking needs **Kick Members**).
 - Members must be **@mentioned** (or given by user ID). If you just type a name, it asks you to mention them.
-- It can only do these 6 things: show warnings, warn, clear warnings, timeout (max 28 days), kick, summarize. **No bans, no role changes.** Anything else gets "I didn't understand that, try rephrasing."
+- It can only do these 7 things: show warnings, warn, clear warnings, timeout (max 28 days), remove a timeout, kick, summarize. **No bans, no role changes.** Anything else gets "I didn't understand that, try rephrasing."
 - Warn, clear, timeout and kick show **Confirm / Cancel** buttons. Only the mod who asked can press them, they expire after **60 seconds**, and every safety check runs **again** when Confirm is pressed.
 - Showing warnings and summaries are private: outside the assistant/mod-log channels, the result is sent to you by **DM**.
 - **5 requests per minute** per mod.

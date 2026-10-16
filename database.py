@@ -46,6 +46,27 @@ TABLES = [
         created_at    REAL    NOT NULL    -- unix time
     )
     """,
+    # Mod assistant: steps of confirmed plans. Delayed steps wait here until run_at,
+    # so they still run after a bot restart. Only IDs and the step's arguments are stored.
+    """
+    CREATE TABLE IF NOT EXISTS scheduled_actions (
+        id            INTEGER PRIMARY KEY AUTOINCREMENT,
+        plan_id       TEXT    NOT NULL,             -- groups the steps of one confirmed plan
+        step_number   INTEGER NOT NULL,             -- 1, 2, 3 (in the order they run)
+        total_steps   INTEGER NOT NULL,
+        guild_id      INTEGER NOT NULL,
+        channel_id    INTEGER NOT NULL,             -- where the mod asked (results are reported there)
+        moderator_id  INTEGER NOT NULL,
+        member_id     INTEGER NOT NULL,
+        tool          TEXT    NOT NULL,
+        args_json     TEXT    NOT NULL,
+        depends_on    INTEGER,                      -- step_number this step needs to succeed first (or NULL)
+        language      TEXT    NOT NULL,
+        run_at        REAL    NOT NULL,             -- unix time
+        status        TEXT    NOT NULL DEFAULT 'pending',  -- pending, running, done, failed, skipped
+        result        TEXT
+    )
+    """,
     # Stage 3: voice ranks. Total seconds spent in voice with at least one other person.
     """
     CREATE TABLE IF NOT EXISTS voice_stats (
@@ -262,3 +283,61 @@ def delete_all_warnings(guild_id, user_id):
             (guild_id, user_id),
         )
         return result.rowcount
+
+
+# =====================================================================
+# Mod assistant: scheduled plan steps
+# =====================================================================
+
+def add_scheduled_steps(steps):
+    """Save all steps of a confirmed plan. `steps` is a list of dicts with the table's columns."""
+    with connect() as conn:
+        for step in steps:
+            conn.execute(
+                """
+                INSERT INTO scheduled_actions
+                    (plan_id, step_number, total_steps, guild_id, channel_id, moderator_id, member_id,
+                     tool, args_json, depends_on, language, run_at)
+                VALUES (:plan_id, :step_number, :total_steps, :guild_id, :channel_id, :moderator_id, :member_id,
+                        :tool, :args_json, :depends_on, :language, :run_at)
+                """,
+                step,
+            )
+
+
+def get_due_steps(now):
+    """Pending steps whose time has come, earliest first."""
+    return fetch_all(
+        "SELECT * FROM scheduled_actions WHERE status = 'pending' AND run_at <= ? ORDER BY run_at, step_number",
+        (now,),
+    )
+
+
+def get_plan_step(plan_id, step_number):
+    return fetch_one(
+        "SELECT * FROM scheduled_actions WHERE plan_id = ? AND step_number = ?",
+        (plan_id, step_number),
+    )
+
+
+def claim_step(step_id):
+    """Mark a step as running. Returns False if someone else already took it (so it never runs twice)."""
+    with connect() as conn:
+        result = conn.execute(
+            "UPDATE scheduled_actions SET status = 'running' WHERE id = ? AND status = 'pending'",
+            (step_id,),
+        )
+        return result.rowcount == 1
+
+
+def finish_step(step_id, status, result):
+    execute("UPDATE scheduled_actions SET status = ?, result = ? WHERE id = ?", (status, result, step_id))
+
+
+def fail_interrupted_steps():
+    """Steps left 'running' by a crash or restart are marked failed (never re-run blindly)."""
+    with connect() as conn:
+        return conn.execute(
+            "UPDATE scheduled_actions SET status = 'failed', result = 'Interrupted by a bot restart' "
+            "WHERE status = 'running'"
+        ).rowcount
