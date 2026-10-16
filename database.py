@@ -87,6 +87,20 @@ TABLES = [
         PRIMARY KEY (guild_id, user_id, day)
     )
     """,
+    # Stage 10: duels and tournaments (real members only, never test bots).
+    """
+    CREATE TABLE IF NOT EXISTS duel_stats (
+        guild_id            INTEGER NOT NULL,
+        user_id             INTEGER NOT NULL,
+        duel_wins           INTEGER NOT NULL DEFAULT 0,
+        duel_losses         INTEGER NOT NULL DEFAULT 0,
+        tournaments_played  INTEGER NOT NULL DEFAULT 0,
+        gold                INTEGER NOT NULL DEFAULT 0,   -- 1st places
+        silver              INTEGER NOT NULL DEFAULT 0,   -- 2nd places
+        bronze              INTEGER NOT NULL DEFAULT 0,   -- 3rd places
+        PRIMARY KEY (guild_id, user_id)
+    )
+    """,
     # Stage 3: voice ranks. Total seconds spent in voice with at least one other person.
     """
     CREATE TABLE IF NOT EXISTS voice_stats (
@@ -423,25 +437,40 @@ def record_game(guild_id, user_id, outcome, xp_reward, day, daily_cap, highlow_s
             (1 if won else 0, highlow_streak or 0, guild_id, user_id),
         )
 
-        # Old days aren't needed anymore.
-        conn.execute("DELETE FROM game_xp_daily WHERE guild_id = ? AND user_id = ? AND day < ?",
-                     (guild_id, user_id, day))
-        row = conn.execute("SELECT xp FROM game_xp_daily WHERE guild_id = ? AND user_id = ? AND day = ?",
-                           (guild_id, user_id, day)).fetchone()
-        earned_today = row["xp"] if row else 0
+        return _grant_game_xp(conn, guild_id, user_id, xp_reward, day, daily_cap)
 
-        given = max(0, min(xp_reward, daily_cap - earned_today))
-        if given:
-            conn.execute("INSERT OR IGNORE INTO game_xp_daily (guild_id, user_id, day) VALUES (?, ?, ?)",
-                         (guild_id, user_id, day))
-            conn.execute("UPDATE game_xp_daily SET xp = xp + ? WHERE guild_id = ? AND user_id = ? AND day = ?",
-                         (given, guild_id, user_id, day))
-            conn.execute("UPDATE game_stats SET game_xp = game_xp + ? WHERE guild_id = ? AND user_id = ?",
-                         (given, guild_id, user_id))
-            conn.execute("INSERT OR IGNORE INTO message_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
-            conn.execute("UPDATE message_stats SET xp = xp + ? WHERE guild_id = ? AND user_id = ?",
-                         (given, guild_id, user_id))
-        return given, earned_today + given
+
+def _grant_game_xp(conn, guild_id, user_id, xp, day, daily_cap):
+    """
+    Give game XP without going over `daily_cap` game XP today (UTC). The XP goes into
+    the same total as chat XP, and into the lifetime game XP. Returns (given, earned today).
+    """
+    # Old days aren't needed anymore.
+    conn.execute("DELETE FROM game_xp_daily WHERE guild_id = ? AND user_id = ? AND day < ?",
+                 (guild_id, user_id, day))
+    row = conn.execute("SELECT xp FROM game_xp_daily WHERE guild_id = ? AND user_id = ? AND day = ?",
+                       (guild_id, user_id, day)).fetchone()
+    earned_today = row["xp"] if row else 0
+
+    given = max(0, min(xp, daily_cap - earned_today))
+    if given:
+        conn.execute("INSERT OR IGNORE INTO game_xp_daily (guild_id, user_id, day) VALUES (?, ?, ?)",
+                     (guild_id, user_id, day))
+        conn.execute("UPDATE game_xp_daily SET xp = xp + ? WHERE guild_id = ? AND user_id = ? AND day = ?",
+                     (given, guild_id, user_id, day))
+        conn.execute("INSERT OR IGNORE INTO game_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
+        conn.execute("UPDATE game_stats SET game_xp = game_xp + ? WHERE guild_id = ? AND user_id = ?",
+                     (given, guild_id, user_id))
+        conn.execute("INSERT OR IGNORE INTO message_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
+        conn.execute("UPDATE message_stats SET xp = xp + ? WHERE guild_id = ? AND user_id = ?",
+                     (given, guild_id, user_id))
+    return given, earned_today + given
+
+
+def give_game_xp(guild_id, user_id, xp, day, daily_cap):
+    """Bonus game XP (tournament podium, duel win), respecting the daily cap. Returns (given, earned today)."""
+    with connect() as conn:
+        return _grant_game_xp(conn, guild_id, user_id, xp, day, daily_cap)
 
 
 def get_game_profile(guild_id, user_id, day):
@@ -484,3 +513,43 @@ def top_by_game_wins(guild_id, limit=10):
         """,
         (guild_id, limit),
     )
+
+
+# =====================================================================
+# Stage 10: Duels and tournaments
+# =====================================================================
+
+def _ensure_duel_row(conn, guild_id, user_id):
+    conn.execute("INSERT OR IGNORE INTO duel_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
+
+
+def record_duel(guild_id, winner_id, loser_id):
+    with connect() as conn:
+        for user_id in (winner_id, loser_id):
+            _ensure_duel_row(conn, guild_id, user_id)
+        conn.execute("UPDATE duel_stats SET duel_wins = duel_wins + 1 WHERE guild_id = ? AND user_id = ?",
+                     (guild_id, winner_id))
+        conn.execute("UPDATE duel_stats SET duel_losses = duel_losses + 1 WHERE guild_id = ? AND user_id = ?",
+                     (guild_id, loser_id))
+
+
+def record_tournament(guild_id, player_ids, podium_ids):
+    """
+    player_ids: every real member who played. podium_ids: (1st, 2nd, 3rd) - None for a test bot.
+    """
+    with connect() as conn:
+        for user_id in player_ids:
+            _ensure_duel_row(conn, guild_id, user_id)
+            conn.execute("UPDATE duel_stats SET tournaments_played = tournaments_played + 1 "
+                         "WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
+        for column, user_id in zip(("gold", "silver", "bronze"), podium_ids):
+            if user_id is not None:
+                _ensure_duel_row(conn, guild_id, user_id)
+                conn.execute(f"UPDATE duel_stats SET {column} = {column} + 1 WHERE guild_id = ? AND user_id = ?",
+                             (guild_id, user_id))
+
+
+def get_duel_stats(guild_id, user_id):
+    row = fetch_one("SELECT * FROM duel_stats WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
+    keys = ("duel_wins", "duel_losses", "tournaments_played", "gold", "silver", "bronze")
+    return {key: (row[key] if row else 0) for key in keys}

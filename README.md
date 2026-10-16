@@ -14,6 +14,7 @@ mod_tools.py      Shared moderation actions + safety checks (used by slash comma
 assistant_plan.py Mod assistant: checks the AI's plan (steps, delays, dependencies)
 assistant_text.py Mod assistant: everything it says (5 built-in languages, others translated by the AI)
 assistant_memory.py Mod assistant: short per-mod conversation memory (5 messages / 5 minutes)
+tournament_engine.py Tournament & duel rules (no Discord code, fully tested)
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
@@ -21,6 +22,7 @@ cogs/             One file per feature (add a file here to add a feature)
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
   games.py        N7X Arcade: /flip, /dice, /rps, /wheel, /trivia, /highlow, /gameprofile, /gamesleaderboard
+  tournament.py   /tournament, /duel, /duelstats
   welcome.py      Welcome embed for new members, /testwelcome
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
@@ -31,6 +33,7 @@ welcome.md        The welcome message text (edit freely; {member} = the new memb
 trivia.json       /trivia questions about AI and Web3 (edit freely)
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
+tests/            Automatic tests: python -m unittest discover tests -v
 ```
 
 ## How to run the bot
@@ -103,6 +106,9 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/highlow` | 🃏 Higher or Lower: guess the next number (1-13) and build a streak |
 | `/gameprofile [member]` | 🎮 Level, title, game XP, wins and best streaks |
 | `/gamesleaderboard` | 🏆 Top 10 by game wins, with plays and win rate |
+| `/tournament <game> [max_players] [join_seconds] [test_mode]` | 🏆 Host an RPS, dice or trivia tournament (3+ players) |
+| `/duel <member> <game>` | ⚔️ Challenge a member to a 1-vs-1 RPS, dice or trivia duel |
+| `/duelstats [member]` | 📊 Duel wins/losses and tournament 🥇🥈🥉 finishes |
 
 **Mod commands** (hidden from regular members; Discord checks the mod's permissions):
 
@@ -180,6 +186,32 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - **Trivia questions** are in `trivia.json`. Each one needs a `question`, exactly 4 `choices` and the `answer` letter (A-D, in the order you wrote the choices), plus an optional `explain`. The bot re-reads the file automatically. Broken questions are skipped (the terminal says which), and if the whole file is broken the bot keeps the last good version. Keep it to general AI and Web3 knowledge: facts about N7X belong in `facts.md`.
 - XP amounts, timers, the cap, the cooldown, the titles and the wheel's slots and odds are settings at the top of `cogs/games.py`.
 - Upgrading from Stage 7: your existing game stats are kept. Lifetime game XP and streaks start counting from this version.
+
+### How tournaments and duels work
+**Starting a tournament:** `/tournament game:<RPS/Dice/Trivia>` with optional `max_players` (3-16, default 8), `join_seconds` (15-300, default 60) and `test_mode`.
+- A lobby appears with **Join**, **Leave** and **Start now**. The host is in automatically.
+- `max_players` is only a **cap**: the tournament starts when the join timer ends with whoever joined, or earlier when the **host** presses **Start now**.
+- At least **3 players** are needed; otherwise it's cancelled with a clear message.
+- One tournament per channel at a time.
+
+**Playing a round:** the players in the round are pinged and press buttons (others can watch but not press). Picks stay hidden until everyone has chosen. **No answer within 30 seconds = you lose that round.**
+- **RPS:** if exactly two different shapes are played, the winning shape goes through and the others are out (e.g. 2 scissors + 1 paper → the scissors players go through). All the same, or all three shapes → replay.
+- **Dice:** press Roll. The lowest roll is out; a tied lowest roll → roll again.
+- **Trivia:** the same question for everyone. Wrong answers are out; if everyone is right, the slowest is out; if nobody is right → new question.
+- If a round is still undecided after 5 replays, a fair random draw decides (so a game can't get stuck).
+
+**Brackets and the podium**
+- **3 players:** one group round. The player who's out gets 🥉 and the other two play the final for 🥇/🥈. (If only one player survives the group round, they get 🥇 and the other two play for 🥈/🥉.)
+- **4+ players:** single elimination. If the number of players doesn't fit the bracket (5, 6, 7, 9...), random **free passes (byes)** are given in round 1 only, so nobody gets two byes and every semi-final is a real match. The two semi-final losers play a **3rd place match**, then the **final**.
+- **Results card:** 🥇 🥈 🥉 with mentions and bonus game XP: **50 / 30 / 20**, still limited by the 100 game XP daily cap. Podium finishes are saved and shown in `/duelstats`.
+
+**Test mode** (mods only: Timeout Members or Manage Messages): empty spots up to `max_players` are filled with **🤖 bot players** that pick randomly, so you can demo a whole tournament alone. Bots never get XP and are never saved in stats.
+
+**Duels:** `/duel @member game:<RPS/Dice/Trivia>`. They have 30 seconds to **Accept**. Same round rules as tournaments (ties replay). The winner gets **+10 game XP** (daily cap applies) and the result is saved for `/duelstats`.
+
+**Tests:** the tournament rules have automatic tests. Run them with `python -m unittest discover tests -v` (no extra installs). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes and timeouts.
+
+Settings (round time, podium XP, duel XP, max players) are at the top of `cogs/tournament.py`; the rules are in `tournament_engine.py`.
 
 ### How the mod helper works
 - **Set up a mod-log channel:** create a private channel only mods can see, give the bot **View Channel**, **Send Messages** and **Embed Links** there, then put its ID in `.env` as `MOD_LOG_CHANNEL_ID` (right-click the channel → Copy Channel ID).
