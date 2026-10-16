@@ -341,3 +341,20 @@ def fail_interrupted_steps():
             "UPDATE scheduled_actions SET status = 'failed', result = 'Interrupted by a bot restart' "
             "WHERE status = 'running'"
         ).rowcount
+
+
+def get_pending_steps_for_member(guild_id, member_id):
+    """Pending (not yet run) scheduled steps that target this member, earliest first."""
+    return fetch_all(
+        "SELECT * FROM scheduled_actions WHERE guild_id = ? AND member_id = ? AND status = 'pending' ORDER BY run_at",
+        (guild_id, member_id),
+    )
+
+
+def delete_pending_steps_for_member(guild_id, member_id):
+    """Delete a member's pending scheduled steps. Returns how many were deleted."""
+    with connect() as conn:
+        return conn.execute(
+            "DELETE FROM scheduled_actions WHERE guild_id = ? AND member_id = ? AND status = 'pending'",
+            (guild_id, member_id),
+        ).rowcount

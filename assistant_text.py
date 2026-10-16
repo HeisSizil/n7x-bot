@@ -5,11 +5,33 @@ The confirmation text is always built by CODE from the checked plan (never
 written by the AI), so what the mod confirms is exactly what will run.
 
 To add a language: copy the "en" block, translate the right-hand side,
-and keep the {placeholders} unchanged. Unknown languages fall back to English.
+and keep the {placeholders} unchanged. Other languages are translated by the AI
+once (see ensure_language) and fall back to English if that fails.
+Mod-log notes always stay in English.
 """
+
+import asyncio
+import json
+import logging
+import re
+import string
+import time
+
+log = logging.getLogger("n7x.assistant")
 
 TEXTS = {
     "en": {
+        "what_to_do": "What would you like to do with {member}? For example:",
+        "opt_show_warnings": "show their warnings",
+        "opt_warn": "warn them (say why)",
+        "opt_timeout": "time them out (say for how long)",
+        "opt_remove_timeout": "remove their timeout",
+        "opt_clear_warnings": "clear their warnings",
+        "opt_kick": "kick them (say why)",
+        "opt_cancel_scheduled": "cancel their scheduled steps",
+        "cancel_scheduled": "Cancel {count} scheduled step(s) for {member}",
+        "no_scheduled": "{member} has no scheduled steps to cancel.",
+        "cancel_alone": "Cancelling scheduled steps can't be combined with other steps or delayed. Ask for it on its own.",
         "not_understood": "I didn't understand that, try rephrasing.",
         "unsure": "I'm not sure what you meant, so I did nothing. Did you mean:",
         "rephrase": "Please rephrase your request.",
@@ -55,6 +77,17 @@ TEXTS = {
         "not_timed_out_now": "{member} isn't timed out anymore, so there was nothing to remove.",
     },
     "es": {
+        "what_to_do": "¿Qué quieres hacer con {member}? Por ejemplo:",
+        "opt_show_warnings": "ver sus advertencias",
+        "opt_warn": "advertirle (di por qué)",
+        "opt_timeout": "aislarlo (di por cuánto tiempo)",
+        "opt_remove_timeout": "quitarle el aislamiento",
+        "opt_clear_warnings": "borrar sus advertencias",
+        "opt_kick": "expulsarlo (di por qué)",
+        "opt_cancel_scheduled": "cancelar sus pasos programados",
+        "cancel_scheduled": "Cancelar {count} paso(s) programado(s) para {member}",
+        "no_scheduled": "{member} no tiene pasos programados que cancelar.",
+        "cancel_alone": "Cancelar pasos programados no se puede combinar con otros pasos ni retrasar. Pídelo por separado.",
         "not_understood": "No entendí eso, intenta reformularlo.",
         "unsure": "No estoy seguro de lo que querías decir, así que no hice nada. ¿Quisiste decir:",
         "rephrase": "Por favor, reformula tu solicitud.",
@@ -100,6 +133,17 @@ TEXTS = {
         "not_timed_out_now": "{member} ya no está aislado, así que no había nada que quitar.",
     },
     "fr": {
+        "what_to_do": "Que veux-tu faire avec {member} ? Par exemple :",
+        "opt_show_warnings": "voir ses avertissements",
+        "opt_warn": "l'avertir (dis pourquoi)",
+        "opt_timeout": "l'exclure temporairement (dis pour combien de temps)",
+        "opt_remove_timeout": "lever son exclusion",
+        "opt_clear_warnings": "effacer ses avertissements",
+        "opt_kick": "l'expulser (dis pourquoi)",
+        "opt_cancel_scheduled": "annuler ses étapes programmées",
+        "cancel_scheduled": "Annuler {count} étape(s) programmée(s) pour {member}",
+        "no_scheduled": "{member} n'a aucune étape programmée à annuler.",
+        "cancel_alone": "Annuler des étapes programmées ne peut pas être combiné à d'autres étapes ni retardé. Demande-le séparément.",
         "not_understood": "Je n'ai pas compris, essaie de reformuler.",
         "unsure": "Je ne suis pas sûr de ce que tu voulais dire, donc je n'ai rien fait. Voulais-tu dire :",
         "rephrase": "Merci de reformuler ta demande.",
@@ -145,6 +189,17 @@ TEXTS = {
         "not_timed_out_now": "{member} n'est plus exclu, il n'y avait donc rien à lever.",
     },
     "pt": {
+        "what_to_do": "O que você quer fazer com {member}? Por exemplo:",
+        "opt_show_warnings": "ver as advertências",
+        "opt_warn": "advertir (diga o motivo)",
+        "opt_timeout": "colocar de castigo (diga por quanto tempo)",
+        "opt_remove_timeout": "remover o castigo",
+        "opt_clear_warnings": "apagar as advertências",
+        "opt_kick": "expulsar (diga o motivo)",
+        "opt_cancel_scheduled": "cancelar as etapas agendadas",
+        "cancel_scheduled": "Cancelar {count} etapa(s) agendada(s) para {member}",
+        "no_scheduled": "{member} não tem etapas agendadas para cancelar.",
+        "cancel_alone": "Cancelar etapas agendadas não pode ser combinado com outras etapas nem atrasado. Peça separadamente.",
         "not_understood": "Não entendi, tente reformular.",
         "unsure": "Não tenho certeza do que você quis dizer, então não fiz nada. Você quis dizer:",
         "rephrase": "Por favor, reformule o seu pedido.",
@@ -190,6 +245,17 @@ TEXTS = {
         "not_timed_out_now": "{member} não está mais de castigo, então não havia nada para remover.",
     },
     "de": {
+        "what_to_do": "Was möchtest du mit {member} machen? Zum Beispiel:",
+        "opt_show_warnings": "Verwarnungen anzeigen",
+        "opt_warn": "verwarnen (sag warum)",
+        "opt_timeout": "ein Timeout geben (sag wie lange)",
+        "opt_remove_timeout": "das Timeout aufheben",
+        "opt_clear_warnings": "Verwarnungen löschen",
+        "opt_kick": "kicken (sag warum)",
+        "opt_cancel_scheduled": "geplante Schritte abbrechen",
+        "cancel_scheduled": "{count} geplante(n) Schritt(e) für {member} abbrechen",
+        "no_scheduled": "{member} hat keine geplanten Schritte zum Abbrechen.",
+        "cancel_alone": "Geplante Schritte abbrechen kann nicht mit anderen Schritten kombiniert oder verzögert werden. Frag separat danach.",
         "not_understood": "Das habe ich nicht verstanden, bitte formuliere es anders.",
         "unsure": "Ich bin nicht sicher, was du meinst, daher habe ich nichts getan. Meintest du:",
         "rephrase": "Bitte formuliere deine Anfrage neu.",
@@ -238,14 +304,67 @@ TEXTS = {
 
 SUPPORTED = set(TEXTS)
 
+# Other languages (e.g. "yo", "ha", "ig", "pcm", "ja") are translated by the AI the
+# first time they're needed, then kept here in memory until the bot restarts.
+TRANSLATED = {}        # language -> {key: translated sentence}
+_failed_at = {}        # language -> time of the last failed translation (to avoid retrying constantly)
+_locks = {}            # language -> asyncio.Lock (so two requests don't translate at once)
+RETRY_FAILED_AFTER = 600  # seconds
+
+TRANSLATE_PROMPT = """You translate the user-interface sentences of a Discord moderation bot.
+You get a JSON object of English sentences. Reply with ONLY a JSON object with the SAME keys,
+each value translated into the language with code "{language}".
+Rules: keep every {{placeholder}} in curly braces EXACTLY as it is (do not translate them);
+keep emoji, **bold**, _italics_, `code`, numbers and line breaks; keep it short and natural."""
+
 
 def normalize_language(code):
-    """'pt-BR' -> 'pt'. Unknown or missing -> 'en'."""
+    """'pt-BR' -> 'pt', 'PCM' -> 'pcm'. Anything that isn't a 2-3 letter code -> 'en'."""
     code = str(code or "").strip().lower().replace("_", "-").split("-")[0]
-    return code if code in SUPPORTED else "en"
+    return code if code.isalpha() and 2 <= len(code) <= 3 else "en"
+
+
+def _placeholders(text):
+    return sorted(name for _, name, _, _ in string.Formatter().parse(text) if name)
+
+
+async def ensure_language(language, ai):
+    """
+    Make sure sentences exist for `language`. Built-in languages need nothing.
+    Other languages are translated ONCE through the AI chain and cached.
+    If that fails, t() simply falls back to English.
+    """
+    if language in SUPPORTED or language in TRANSLATED:
+        return
+    if time.time() - _failed_at.get(language, 0) < RETRY_FAILED_AFTER:
+        return
+    lock = _locks.setdefault(language, asyncio.Lock())
+    async with lock:
+        if language in TRANSLATED:
+            return
+        english = TEXTS["en"]
+        try:
+            answer, source = await ai.ask(TRANSLATE_PROMPT.format(language=language),
+                                          json.dumps(english, ensure_ascii=False), json_mode=True, max_tokens=4000)
+            data = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", answer.strip()))
+        except Exception as error:  # AI down or bad JSON -> English for now
+            _failed_at[language] = time.time()
+            log.warning("Couldn't translate bot sentences into %r (%s); using English", language, type(error).__name__)
+            return
+        good = {}
+        for key, text in english.items():
+            value = data.get(key) if isinstance(data, dict) else None
+            # Only keep a translation if its {placeholders} match the English exactly.
+            if isinstance(value, str) and value.strip() and _placeholders(value) == _placeholders(text):
+                good[key] = value
+        TRANSLATED[language] = good
+        log.info("Translated %d/%d bot sentences into %r [%s]", len(good), len(english), language, source)
 
 
 def t(language, key, **values):
-    """Get a sentence in the mod's language, with {placeholders} filled in."""
-    text = TEXTS.get(language, TEXTS["en"]).get(key) or TEXTS["en"][key]
-    return text.format(**values)
+    """Get a sentence in the mod's language, with {placeholders} filled in. Falls back to English."""
+    text = (TEXTS.get(language) or TRANSLATED.get(language) or {}).get(key) or TEXTS["en"][key]
+    try:
+        return text.format(**values)
+    except (KeyError, IndexError, ValueError):
+        return TEXTS["en"][key].format(**values)

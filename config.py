@@ -43,8 +43,9 @@ COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "").strip()
 # --- Channels ---
 # Where the bot posts moderation notes (deleted spam, warnings, kicks...).
 MOD_LOG_CHANNEL_ID = _get_int("MOD_LOG_CHANNEL_ID")
-# Optional. Every message mods send in this channel goes to the AI mod assistant.
-# (Mods can also @mention the bot anywhere.)
+# Optional. A mods-only channel where the mod assistant shows private results
+# (warnings lists, summaries). Elsewhere they're sent by DM. The assistant only
+# answers when a mod @mentions the bot or replies to one of its messages.
 MOD_ASSISTANT_CHANNEL_ID = _get_int("MOD_ASSISTANT_CHANNEL_ID")
 
 # --- Branding ---

@@ -69,11 +69,12 @@ class AIClient:
                 log.warning("OPENROUTER_MODEL %r doesn't end in ':free', skipping OpenRouter", config.OPENROUTER_MODEL)
         return chain
 
-    async def ask(self, system_prompt, user_prompt, json_mode=False):
+    async def ask(self, system_prompt, user_prompt, json_mode=False, max_tokens=None):
         """
         Ask each provider in turn until one answers.
         json_mode=True asks providers that support it to reply with JSON only
         (the caller must still check the JSON - never trust it blindly).
+        max_tokens: optional longer answer limit for this one call.
         Returns (answer text, "Provider (model)").
         """
         chain = self.providers()
@@ -86,7 +87,7 @@ class AIClient:
 
         for name, model, ask_function in chain:
             try:
-                answer = await ask_function(model, system_prompt, user_prompt, json_mode)
+                answer = await ask_function(model, system_prompt, user_prompt, json_mode, max_tokens or MAX_TOKENS)
                 answer = (answer or "").strip()
                 if not answer:
                     raise ProviderError("empty answer")
@@ -121,7 +122,7 @@ class AIClient:
             raise ProviderError(f"error in reply: {str(data['error'])[:200]}")
         return data
 
-    async def _ask_gemini(self, model, system_prompt, user_prompt, json_mode=False):
+    async def _ask_gemini(self, model, system_prompt, user_prompt, json_mode=False, max_tokens=MAX_TOKENS):
         generation_config = {"temperature": TEMPERATURE}
         if json_mode:
             generation_config["responseMimeType"] = "application/json"
@@ -143,7 +144,7 @@ class AIClient:
         return "".join(part.get("text", "") for part in parts if not part.get("thought"))
 
     async def _ask_openai_style(self, url, api_key, model, system_prompt, user_prompt,
-                                extra_headers=None, json_mode=False):
+                                extra_headers=None, json_mode=False, max_tokens=MAX_TOKENS):
         """Groq and OpenRouter both use the same request format as OpenAI."""
         headers = {"Authorization": f"Bearer {api_key}"}
         headers.update(extra_headers or {})
@@ -154,7 +155,7 @@ class AIClient:
                 {"role": "user", "content": user_prompt},
             ],
             "temperature": TEMPERATURE,
-            "max_tokens": MAX_TOKENS,
+            "max_tokens": max_tokens,
         }
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
@@ -164,15 +165,15 @@ class AIClient:
             raise ProviderError("no choices in reply")
         return choices[0].get("message", {}).get("content", "")
 
-    async def _ask_groq(self, model, system_prompt, user_prompt, json_mode=False):
+    async def _ask_groq(self, model, system_prompt, user_prompt, json_mode=False, max_tokens=MAX_TOKENS):
         return await self._ask_openai_style(GROQ_URL, config.GROQ_API_KEY, model, system_prompt, user_prompt,
-                                            json_mode=json_mode)
+                                            json_mode=json_mode, max_tokens=max_tokens)
 
-    async def _ask_openrouter(self, model, system_prompt, user_prompt, json_mode=False):
+    async def _ask_openrouter(self, model, system_prompt, user_prompt, json_mode=False, max_tokens=MAX_TOKENS):
         # JSON mode is not sent to OpenRouter: many free models reject it.
         # The prompt still asks for JSON, and the caller checks it.
         return await self._ask_openai_style(
             OPENROUTER_URL, config.OPENROUTER_API_KEY, model, system_prompt, user_prompt,
             # Optional headers OpenRouter uses to show your app name on their site.
-            extra_headers={"X-Title": "N7X Discord Bot"},
+            extra_headers={"X-Title": "N7X Discord Bot"}, max_tokens=max_tokens,
         )

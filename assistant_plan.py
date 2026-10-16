@@ -36,6 +36,7 @@ TOOLS = {
     "timeout_member":    {"args": {"member": True, "minutes": True, "reason": True},  "action": "timeout"},
     "remove_timeout":    {"args": {"member": True, "reason": False},                  "action": "remove_timeout"},
     "kick_member":       {"args": {"member": True, "reason": True},                   "action": "kick"},
+    "cancel_scheduled":  {"args": {"member": True},                                   "action": "cancel_scheduled"},
     "summarize_channel": {"args": {"channel": False},                                 "action": "summarize"},
 }
 READ_ONLY_TOOLS = {"show_warnings", "summarize_channel"}
@@ -71,6 +72,7 @@ class Step:
     delay: int             # minutes after Confirm
     number: int = 0        # position in the order steps run: 1, 2, 3
     depends_on: int = None  # number of an earlier step that must succeed first
+    info: dict = field(default_factory=dict)  # display-only details (never saved or executed)
 
     @property
     def member_id(self):
@@ -155,9 +157,12 @@ def parse_plan(text):
 
     plan = Plan(language, float(confidence), steps, alternatives)
 
-    # Showing warnings / summaries only on their own, right away.
-    if any(step.tool in READ_ONLY_TOOLS for step in steps) and not (len(steps) == 1 and steps[0].delay == 0):
+    # Showing warnings / summaries, and cancelling scheduled steps, only on their own, right away.
+    alone = len(steps) == 1 and steps[0].delay == 0
+    if any(step.tool in READ_ONLY_TOOLS for step in steps) and not alone:
         raise PlanProblem("readonly_alone", language)
+    if any(step.tool == "cancel_scheduled" for step in steps) and not alone:
+        raise PlanProblem("cancel_alone", language)
     return plan
 
 
@@ -227,13 +232,15 @@ def parse_step(raw):
 # 2. Rules between steps (uses the server's current state)
 # =====================================================================
 
-def check_dependencies(plan, is_timed_out, warning_count, label):
+def check_dependencies(plan, is_timed_out, warning_count, label, pending_count=lambda member_id: 0):
     """
     - Nothing can come after a kick of the same member.
     - remove_timeout needs the member to be timed out now, or an EARLIER step in this plan that times them out.
     - clear_warnings needs warnings now, or an EARLIER step in this plan that warns them.
     Sets step.depends_on, or raises PlanProblem.
-    is_timed_out(member_id) -> bool, warning_count(member_id) -> int, label(member_id) -> "@name"
+    - cancel_scheduled needs the member to have pending scheduled steps.
+    is_timed_out(member_id) -> bool, warning_count(member_id) -> int, label(member_id) -> "@name",
+    pending_count(member_id) -> int
     """
     lang = plan.language
     for step in plan.steps:
@@ -248,6 +255,13 @@ def check_dependencies(plan, is_timed_out, warning_count, label):
                 step.depends_on = timeouts[-1].number
             elif not is_timed_out(step.member_id):
                 raise PlanProblem("not_timed_out", lang, member=label(step.member_id))
+
+        if step.tool == "cancel_scheduled":
+            count = pending_count(step.member_id)
+            step.info["count"] = count
+            if count == 0:
+                raise PlanProblem("no_scheduled", lang, member=label(step.member_id))
+            step.info["count"] = count
 
         if step.tool == "clear_warnings":
             warns = [s for s in earlier if s.tool == "add_warning"]
@@ -305,6 +319,8 @@ def describe_step(step, language, label, t):
         text = t(language, "remove_timeout", member=who)
     elif step.tool == "kick_member":
         text = t(language, "kick", member=who)
+    elif step.tool == "cancel_scheduled":
+        text = t(language, "cancel_scheduled", member=who, count=step.info.get("count", "?"))
     else:
         text = step.tool
 

@@ -12,7 +12,8 @@ database.py       All SQLite database code
 ai_providers.py   Talks to Gemini / Groq / OpenRouter with automatic fallback
 mod_tools.py      Shared moderation actions + safety checks (used by slash commands, auto-mod and assistant)
 assistant_plan.py Mod assistant: checks the AI's plan (steps, delays, dependencies)
-assistant_text.py Mod assistant: everything it says, in English, Spanish, French, Portuguese and German
+assistant_text.py Mod assistant: everything it says (5 built-in languages, others translated by the AI)
+assistant_memory.py Mod assistant: short per-mod conversation memory (5 messages / 5 minutes)
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
@@ -20,7 +21,7 @@ cogs/             One file per feature (add a file here to add a feature)
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
   automod.py      Auto-deletes spam and bad words, warns, logs
-  moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /summarize
+  moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
   mod_assistant.py  AI mod assistant: mods ask in plain words, confirm with a button
 facts.md          Facts about N7X that /ask is allowed to use
 bad_words.txt     Words the auto-mod deletes (edit freely)
@@ -100,6 +101,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/clearwarnings <member> [number] [reason]` | Timeout Members | Clears ALL of a member's warnings, or just one by its number from `/warnings` |
 | `/kick <member> <reason>` | Kick Members | Kicks a member (they can rejoin with an invite) |
 | `/timeout <member> <minutes> <reason>` | Timeout Members | Mutes a member for up to 28 days |
+| `/untimeout <member> [reason]` | Timeout Members | Ends a member's timeout early (same code as the assistant's "unmute") |
 | `/summarize [channel]` | Manage Messages | Private AI summary of a channel's last 50 messages |
 
 ### How message XP works
@@ -147,24 +149,31 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 ### How the mod assistant works
 Mods can ask the bot to do moderation in plain words instead of slash commands.
 
-**Setup (optional channel):**
+**It only answers when you tag it:** **@mention the bot**, or use Discord's **Reply** on one of the bot's messages. Normal chat, even in the mod-assistant channel, is never sent to the AI.
+
+**Optional private channel:** `MOD_ASSISTANT_CHANNEL_ID` only decides where *private* results (warnings lists, summaries) are shown. Asked there (or in mod-log), they're posted in the channel; asked anywhere else, they're sent to you by **DM**.
 1. Create a private channel only mods can see, e.g. `#mod-assistant`. Give the bot **View Channel**, **Send Messages**, **Embed Links** and **Read Message History** there.
 2. Right-click it → **Copy Channel ID** and add it to `.env`: `MOD_ASSISTANT_CHANNEL_ID=123456789012345678`
 3. Restart the bot.
 
-Without the channel, mods can still **@mention the bot** in any channel.
+**Say it however you like.** The AI matches meaning, not exact words, and handles typos, slang and Nigerian Pidgin. Some examples (always start with `@N7X Bot`):
 
-**Using it:** in the assistant channel (or by @mentioning the bot), write things like:
-- `show warnings for @user`
-- `warn @user for spamming links`
-- `clear warning 2 from @user` / `clear all warnings for @user because appeal accepted`
-- `timeout @user for 2 hours, spam` / `remove @user's timeout`
-- `kick @user for scam DMs`
-- `summarize #general`
+| What | Examples |
+|---|---|
+| Show warnings | `what has @user done`, `check @user's record`, `how many warnings does @user have`, `any strikes on @user` |
+| Warn | `warn @user for spamming`, `give @user a warning for links`, `strike @user for links`, `caution @user, rude` |
+| Clear warnings | `wipe warnings for @user`, `reset @user record`, `forgive @user`, `pardon @user`, `remove warning 2 from @user` |
+| Timeout | `mute @user for 10 minutes`, `silence @user for a day`, `shush @user 30 mins`, `put @user on timeout for 2h`, `gag @user 15m`, `abeg mute @user for 10 mins` |
+| Remove timeout | `unmute @user`, `untimeout @user`, `free @user`, `let @user talk again`, `lift the mute on @user`, `release @user` |
+| Kick | `boot @user for scams`, `throw @user out, spam bot`, `remove @user from the server, raiding` |
+| Summarize | `what happened in #general`, `catch me up on #general`, `recap #general`, `tldr #general` |
+| Cancel a scheduled step | `cancel the scheduled removal for @user`, `stop the planned unmute for @user` |
+
+Durations like `10m`, `ten minutes`, `an hour`, `2 days` and `a week` all work.
 
 **Multi-step requests** (up to 3 steps in one sentence):
-- `warn @user for spam and timeout them for 10 minutes`
-- `timeout @user for 30 minutes then remove it after 20 minutes`
+- `@N7X Bot warn @user for spam and timeout them for 10 minutes`
+- `@N7X Bot timeout @user for 30 minutes then remove it after 20 minutes`
 
 The bot shows **one** numbered plan to confirm, e.g.
 ```
@@ -177,19 +186,28 @@ Please confirm this plan:
 - **Every step re-runs all safety checks when it runs**, not just at Confirm. If a step fails (e.g. the member left, or their timeout was already removed), the steps that depend on it are skipped, and each step's result is posted in mod-log.
 - A step can only depend on an **earlier** step of the same request: e.g. "remove the timeout" needs the member to be timed out already, or an earlier "timeout" step. Nothing can come after kicking the same member.
 - If **any** step is unclear or invalid, or the AI is less than **90% sure**, nothing runs and the bot asks what you meant.
-- Replies are in your language when it's English, Spanish, French, Portuguese or German (otherwise English). Details coming from the action itself (e.g. "has the same or a higher role than you") stay in English. To add a language, copy the `"en"` block in `assistant_text.py`.
+- **Changed your mind?** `@N7X Bot cancel the scheduled removal for @user` deletes that member's pending scheduled steps (after you Confirm) and notes it in mod-log. It can't be combined with other steps.
 - Showing warnings and summaries can't be part of a multi-step plan; ask for them on their own.
-- A delayed step that was running when the bot crashed is marked failed, never re-run blindly. There's no command yet to cancel a confirmed delayed step, so double-check delayed kicks before confirming.
+- A delayed step that was running when the bot crashed is marked failed, never re-run blindly.
+
+**Conversation memory (follow-ups):**
+- The bot remembers your last **5 messages** to it in that channel (and its replies) for **5 minutes** of silence. Other members' messages are never remembered. Memory is per mod and per channel, and is forgotten when the bot restarts.
+- Vague requests get a question back: `@N7X Bot deal with @user` → "What would you like to do with @user? For example: show their warnings, warn them, time them out…"
+- Then just reply (or tag the bot): `timeout him for 30 mins`. Words like **him / her / them / this guy / that user** only ever mean the member **you** @mentioned earlier in that window, and only if you mentioned exactly one. Otherwise the bot asks you to @mention the member.
+
+**Languages:**
+- Replies are in your language. English, Spanish, French, Portuguese and German are built in (`assistant_text.py`).
+- Any other language (e.g. Yoruba, Hausa, Igbo, Nigerian Pidgin) is translated by the AI **once**, kept in memory until the bot restarts, and falls back to English if the AI can't translate. Mod-log notes always stay in English.
+- Details coming from the action itself (e.g. "has the same or a higher role than you") stay in English.
 
 **Rules it follows:**
 - Only members with **Timeout Members** or **Manage Messages** can use it; anyone else is ignored silently. Each tool still needs the same permission as its slash command (e.g. kicking needs **Kick Members**).
-- Members must be **@mentioned** (or given by user ID). If you just type a name, it asks you to mention them.
-- It can only do these 7 things: show warnings, warn, clear warnings, timeout (max 28 days), remove a timeout, kick, summarize. **No bans, no role changes.** Anything else gets "I didn't understand that, try rephrasing."
-- Warn, clear, timeout and kick show **Confirm / Cancel** buttons. Only the mod who asked can press them, they expire after **60 seconds**, and every safety check runs **again** when Confirm is pressed.
-- Showing warnings and summaries are private: outside the assistant/mod-log channels, the result is sent to you by **DM**.
+- Members must be **@mentioned** (or given by user ID), or be the one you mentioned earlier in the conversation (see above). If you just type a name, it asks you to mention them.
+- It can only do these 8 things: show warnings, warn, clear warnings, timeout (max 28 days), remove a timeout, kick, summarize, cancel scheduled steps. **No bans, no role changes.**
+- Anything that changes something shows **Confirm / Cancel** buttons. Only the mod who asked can press them, they expire after **60 seconds**, and every safety check runs **again** when each step runs.
 - **5 requests per minute** per mod.
-- Every request is posted in mod-log: who asked, what was understood, and the outcome (done, cancelled, expired or blocked).
-- Only the mod's own message is sent to the AI (plus the channel's messages for `summarize`). The terminal logs IDs and outcomes, never message text.
+- Every request and every step's result is posted in mod-log: who asked, what was understood, and the outcome.
+- Only your own messages (and the bot's replies) are sent to the AI, plus the channel's messages for `summarize`. The terminal logs IDs and outcomes, never message text.
 
 ## Adding a new feature
 

@@ -47,6 +47,7 @@ ACTION_RULES = {
     "timeout":        {"mod_perm": "moderate_members", "bot_perm": "moderate_members", "bot_above": True},
     "remove_timeout": {"mod_perm": "moderate_members", "bot_perm": "moderate_members", "bot_above": True},
     "kick":           {"mod_perm": "kick_members",     "bot_perm": "kick_members",     "bot_above": True},
+    "cancel_scheduled": {"mod_perm": "moderate_members", "bot_perm": None,             "bot_above": False},
     "summarize":      {"mod_perm": "manage_messages",  "bot_perm": None,               "bot_above": False},
 }
 
@@ -304,6 +305,29 @@ async def do_remove_timeout(guild, moderator, member, reason=None):
     log.info("%s removed the timeout of %s (%s)", moderator, member, member.id)
 
     return True, f"🔊 Removed {member.mention}'s timeout."
+
+
+async def do_cancel_scheduled(guild, moderator, member):
+    """Delete a member's pending scheduled steps (from mod assistant plans)."""
+    problem = check_action(guild, moderator, "cancel_scheduled", member)
+    if problem:
+        return False, problem
+    pending = database.get_pending_steps_for_member(guild.id, member.id)
+    if not pending:
+        return False, f"{member.mention} has no scheduled steps to cancel."
+
+    cancelled = database.delete_pending_steps_for_member(guild.id, member.id)
+    which = "\n".join(f"• {row['tool']} (plan {row['plan_id']}, was due <t:{int(row['run_at'])}:R>)" for row in pending)
+
+    note = discord.Embed(title="🗓️ Scheduled steps cancelled", color=COLOR_INFO, timestamp=discord.utils.utcnow())
+    note.add_field(name="Member", value=f"{member.mention} ({member})")
+    note.add_field(name="By", value=moderator.mention)
+    note.add_field(name="Cancelled", value=str(cancelled))
+    note.add_field(name="Which", value=which[:1000], inline=False)
+    await send_mod_log(guild, note)
+    log.info("%s cancelled %d scheduled step(s) for %s (%s)", moderator, cancelled, member, member.id)
+
+    return True, f"🗓️ Cancelled {cancelled} scheduled step(s) for {member.mention}."
 
 
 async def do_kick(guild, moderator, member, reason):

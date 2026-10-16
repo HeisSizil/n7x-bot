@@ -2,7 +2,7 @@
 cogs/moderation.py - Slash commands for mods.
 
 Every command checks Discord permissions, so only mods can use them:
-- /warn, /warnings, /clearwarnings, /timeout  need "Timeout Members" (Moderate Members)
+- /warn, /warnings, /clearwarnings, /timeout, /untimeout  need "Timeout Members" (Moderate Members)
 - /kick                                       needs "Kick Members"
 - /summarize                                  needs "Manage Messages"
 
@@ -101,6 +101,16 @@ class Moderation(commands.Cog):
                       reason: app_commands.Range[str, 1, 300]):
         await reply(interaction, await mod_tools.do_timeout(
             interaction.guild, interaction.user, member, minutes, reason))
+
+    @app_commands.command(name="untimeout", description="[Mods] End a member's timeout early")
+    @app_commands.describe(member="Whose timeout to remove", reason="Why (posted in mod-log)")
+    @app_commands.guild_only()
+    @app_commands.default_permissions(moderate_members=True)
+    @app_commands.checks.has_permissions(moderate_members=True)
+    async def untimeout(self, interaction: discord.Interaction, member: discord.Member,
+                        reason: app_commands.Range[str, 1, 300] = None):
+        # Same shared code as the mod assistant's remove_timeout tool.
+        await reply(interaction, await mod_tools.do_remove_timeout(interaction.guild, interaction.user, member, reason))
 
     @app_commands.command(name="summarize", description="[Mods] AI summary of a channel's last 50 messages")
     @app_commands.describe(channel="Which channel (leave empty for this one)")
