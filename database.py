@@ -118,11 +118,26 @@ def connect():
         conn.close()
 
 
+# Columns added after a table was first created. setup_database() adds any that are
+# missing, so an existing n7x.db is upgraded automatically (old data is kept).
+NEW_COLUMNS = [
+    # Stage 9: game profile
+    ("game_stats", "game_xp", "INTEGER NOT NULL DEFAULT 0"),          # lifetime game XP
+    ("game_stats", "win_streak", "INTEGER NOT NULL DEFAULT 0"),       # current wins in a row
+    ("game_stats", "best_win_streak", "INTEGER NOT NULL DEFAULT 0"),  # best wins in a row
+    ("game_stats", "best_highlow", "INTEGER NOT NULL DEFAULT 0"),     # best /highlow streak
+]
+
+
 def setup_database():
-    """Create all tables. Safe to run every time the bot starts."""
+    """Create all tables (and add any new columns). Safe to run every time the bot starts."""
     with connect() as conn:
         for table_sql in TABLES:
             conn.execute(table_sql)
+        for table, column, definition in NEW_COLUMNS:
+            existing = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})")}
+            if column not in existing:
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
 
 
 # --- Small helpers so the cogs stay short ---
@@ -384,18 +399,28 @@ def delete_pending_steps_for_member(guild_id, member_id):
 # Stage 7: Games
 # =====================================================================
 
-def record_game(guild_id, user_id, won, xp_reward, day, daily_cap):
+def record_game(guild_id, user_id, outcome, xp_reward, day, daily_cap, highlow_streak=None):
     """
-    Save one game: +1 play, +1 win if won, and give XP (only for wins) without
-    going over `daily_cap` game XP today. The XP goes into the SAME total as chat
-    XP (message_stats), so games count toward /rank.
+    Save one finished game.
+    - outcome: "win", "loss" or "draw". Wins and losses update the win streak; draws don't.
+    - xp_reward: XP earned (0 for losses). Never more than `daily_cap` game XP per day in total.
+      The XP goes into the SAME total as chat XP (message_stats), so games count toward /rank.
+    - highlow_streak: the final streak of a /highlow game (to keep the best one).
     Returns (xp actually given, game XP earned today after this game).
     """
+    won = outcome == "win"
     with connect() as conn:
         conn.execute("INSERT OR IGNORE INTO game_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
+        if outcome == "win":
+            streak_sql = "win_streak = win_streak + 1, best_win_streak = MAX(best_win_streak, win_streak + 1)"
+        elif outcome == "loss":
+            streak_sql = "win_streak = 0"
+        else:
+            streak_sql = "win_streak = win_streak"  # a draw keeps the streak
         conn.execute(
-            "UPDATE game_stats SET plays = plays + 1, wins = wins + ? WHERE guild_id = ? AND user_id = ?",
-            (1 if won else 0, guild_id, user_id),
+            f"UPDATE game_stats SET plays = plays + 1, wins = wins + ?, {streak_sql}, "
+            f"best_highlow = MAX(best_highlow, ?) WHERE guild_id = ? AND user_id = ?",
+            (1 if won else 0, highlow_streak or 0, guild_id, user_id),
         )
 
         # Old days aren't needed anymore.
@@ -405,16 +430,47 @@ def record_game(guild_id, user_id, won, xp_reward, day, daily_cap):
                            (guild_id, user_id, day)).fetchone()
         earned_today = row["xp"] if row else 0
 
-        given = max(0, min(xp_reward if won else 0, daily_cap - earned_today))
+        given = max(0, min(xp_reward, daily_cap - earned_today))
         if given:
             conn.execute("INSERT OR IGNORE INTO game_xp_daily (guild_id, user_id, day) VALUES (?, ?, ?)",
                          (guild_id, user_id, day))
             conn.execute("UPDATE game_xp_daily SET xp = xp + ? WHERE guild_id = ? AND user_id = ? AND day = ?",
                          (given, guild_id, user_id, day))
+            conn.execute("UPDATE game_stats SET game_xp = game_xp + ? WHERE guild_id = ? AND user_id = ?",
+                         (given, guild_id, user_id))
             conn.execute("INSERT OR IGNORE INTO message_stats (guild_id, user_id) VALUES (?, ?)", (guild_id, user_id))
             conn.execute("UPDATE message_stats SET xp = xp + ? WHERE guild_id = ? AND user_id = ?",
                          (given, guild_id, user_id))
         return given, earned_today + given
+
+
+def get_game_profile(guild_id, user_id, day):
+    """Everything /gameprofile shows. Missing rows count as zeros."""
+    stats = fetch_one("SELECT * FROM game_stats WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
+    xp_row = fetch_one("SELECT xp FROM message_stats WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
+    today_row = fetch_one("SELECT xp FROM game_xp_daily WHERE guild_id = ? AND user_id = ? AND day = ?",
+                          (guild_id, user_id, day))
+    profile = {key: (stats[key] if stats else 0)
+               for key in ("plays", "wins", "game_xp", "win_streak", "best_win_streak", "best_highlow")}
+    profile["total_xp"] = xp_row["xp"] if xp_row else 0
+    profile["game_xp_today"] = today_row["xp"] if today_row else 0
+    return profile
+
+
+def game_leaderboard_position(guild_id, user_id):
+    """A member's position on /gamesleaderboard (same order), or None if they haven't played."""
+    rows = fetch_all(
+        """
+        SELECT user_id FROM game_stats
+        WHERE guild_id = ? AND plays > 0
+        ORDER BY wins DESC, CAST(wins AS REAL) / plays DESC, plays DESC
+        """,
+        (guild_id,),
+    )
+    for position, row in enumerate(rows, start=1):
+        if row["user_id"] == user_id:
+            return position
+    return None
 
 
 def top_by_game_wins(guild_id, limit=10):

@@ -20,7 +20,7 @@ cogs/             One file per feature (add a file here to add a feature)
   voice.py        Voice time, /voicerank, /voiceleaderboard
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
-  games.py        /flip, /dice, /rps, /wheel, /gamesleaderboard
+  games.py        N7X Arcade: /flip, /dice, /rps, /wheel, /trivia, /highlow, /gameprofile, /gamesleaderboard
   welcome.py      Welcome embed for new members, /testwelcome
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
@@ -28,6 +28,7 @@ cogs/             One file per feature (add a file here to add a feature)
 facts.md          Facts about N7X that /ask is allowed to use
 bad_words.txt     Words the auto-mod deletes (edit freely)
 welcome.md        The welcome message text (edit freely; {member} = the new member)
+trivia.json       /trivia questions about AI and Web3 (edit freely)
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
 ```
@@ -94,11 +95,14 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/voiceleaderboard` | Top 10 members by voice time |
 | `/price <coin>` | Current price and 24h change, e.g. `/price btc` |
 | `/ask <question>` | AI answer about AI agents, crypto, Web3 or N7X |
-| `/flip <heads/tails>` | Guess the coin flip |
-| `/dice` | Roll a die against N7X Bot; higher number wins |
-| `/rps` | Rock, paper, scissors against N7X Bot (buttons) |
-| `/wheel` | Spin the lucky wheel for a chance at XP |
-| `/gamesleaderboard` | Top 10 by game wins, with plays and win rate |
+| `/flip <heads/tails>` | 🪙 Guess the coin flip (animated) |
+| `/dice` | 🎲 Roll a die against N7X Bot; higher number wins (animated) |
+| `/rps` | ✂️ Rock, paper, scissors against N7X Bot (buttons) |
+| `/wheel` | 🎡 Spin the lucky wheel for a chance at XP (animated) |
+| `/trivia` | 🧠 AI & Web3 multiple choice with A/B/C/D buttons and a 20-second timer |
+| `/highlow` | 🃏 Higher or Lower: guess the next number (1-13) and build a streak |
+| `/gameprofile [member]` | 🎮 Level, title, game XP, wins and best streaks |
+| `/gamesleaderboard` | 🏆 Top 10 by game wins, with plays and win rate |
 
 **Mod commands** (hidden from regular members; Discord checks the mod's permissions):
 
@@ -151,16 +155,31 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - If the bot can't post (missing permissions or a wrong channel ID), it prints one short line in the terminal and keeps running.
 - **Preview:** `/testwelcome` (mods only) shows you a private preview, as if you just joined, and tells you if the bot is missing permissions in the welcome channel. Use `/testwelcome post_in_channel:True` to post a real test welcome.
 
-### How the games work
-- **Fair:** every result uses Python's `secrets` module (secure randomness), so nobody can predict or rig it. In `/rps` the bot picks only *after* you press your button.
-- **XP:** wins give a little XP that goes into the **same XP as chatting**, so games count toward `/rank`:
-  - `/flip` win: 5 XP · `/dice` win: 5 XP · `/rps` win: 8 XP · `/wheel`: 0-20 XP depending on where it lands (65% chance of some XP).
-  - Draws and losses give no XP.
-  - **Daily cap: 100 game XP per member** (resets at 00:00 UTC), so nobody can farm it. Games still count for the leaderboard after the cap.
-- **Cooldown:** each game can be played once every **5 seconds** per member.
-- `/rps` buttons only work for the player who started it and expire after 30 seconds.
+### How the games work (N7X Arcade)
+**The games**
+- `/flip`, `/dice` and `/wheel` play a short animation (the message updates 3 times, 0.7 seconds apart) before showing the result.
+- `/rps`: press **Rock**, **Paper** or **Scissors**. The bot picks only *after* you press, so it can't cheat. Buttons are disabled after the result, or after 30 seconds.
+- `/trivia`: a random question about AI agents and Web3 with **A/B/C/D** buttons. You have **20 seconds**. The answers are shuffled each time, recently asked questions aren't repeated, and the right answer (plus a short explanation) is shown at the end. Running out of time counts as a loss.
+- `/highlow`: you see a number from 1 to 13. Tap **Higher** or **Lower** for the next one. Each right guess adds to your streak (+2 XP, up to 20 per game). Same number = free pass. One wrong guess ends the game; a streak of **3 or more counts as a win**. You have 30 seconds per guess (if time runs out, the game ends and your streak still counts).
+- `/gameprofile [member]`: level (the same level as `/rank`), a **title** that grows with your level, lifetime game XP, today's game XP, wins and win rate, best win streak, best Higher/Lower streak and leaderboard position.
+  - Titles: 🐣 Rookie (level 0+), 🎮 Player (3+), ⚡ Pro (6+), 👑 Master (10+), 🌌 N7X Legend (15+).
+- `/gamesleaderboard`: top 10 by wins with 🥇🥈🥉 for the podium, plays and win rate. If you're outside the top 10 it shows your position.
+
+**Rules**
+- **Fair:** every result uses Python's `secrets` module (secure randomness).
+- **XP:** wins go into the **same XP as chatting**, so games count toward `/rank`:
+  `/flip` 5 · `/dice` 5 · `/rps` 8 · `/trivia` 10 · `/highlow` 2 per right guess (max 20) · `/wheel` 0-20.
+  Draws and losses give no XP.
+- **Daily cap: 100 game XP per member**, resetting at 00:00 UTC, so nobody can farm it. Games still count for wins and the leaderboard after the cap.
+- **Cooldown:** each game can be started once every **5 seconds** per member.
+- Buttons only work for the player who started the game.
 - **Prizes are XP and bragging rights only.** No money, tokens or crypto.
-- To change the XP rewards, the cap, the cooldown or the wheel's slots and odds, edit the settings at the top of `cogs/games.py`.
+- Look: violet while a game is running, **green** for a win, **red** for a loss, amber for a draw, "N7X Bot" in the footer.
+
+**Editing**
+- **Trivia questions** are in `trivia.json`. Each one needs a `question`, exactly 4 `choices` and the `answer` letter (A-D, in the order you wrote the choices), plus an optional `explain`. The bot re-reads the file automatically. Broken questions are skipped (the terminal says which), and if the whole file is broken the bot keeps the last good version. Keep it to general AI and Web3 knowledge: facts about N7X belong in `facts.md`.
+- XP amounts, timers, the cap, the cooldown, the titles and the wheel's slots and odds are settings at the top of `cogs/games.py`.
+- Upgrading from Stage 7: your existing game stats are kept. Lifetime game XP and streaks start counting from this version.
 
 ### How the mod helper works
 - **Set up a mod-log channel:** create a private channel only mods can see, give the bot **View Channel**, **Send Messages** and **Embed Links** there, then put its ID in `.env` as `MOD_LOG_CHANNEL_ID` (right-click the channel → Copy Channel ID).
