@@ -11,6 +11,7 @@ config.py         Reads settings from .env
 database.py       All SQLite database code
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
+  ranks.py        Message XP, /rank, /leaderboard
 facts.md          Facts about N7X that /ask is allowed to use
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
@@ -71,6 +72,13 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 |---|---|
 | `/help` | Lists every command |
 | `/ping` | Checks the bot is online |
+| `/rank [member]` | Shows level, XP, message count and position |
+| `/leaderboard` | Top 10 members by messages |
+
+### How message XP works
+- Every message is counted. XP (15-25 per message) is given at most **once every 60 seconds** per member, so spamming doesn't farm XP.
+- Only counts and XP are stored. **Message text is never saved.**
+- To change the reward or cooldown, edit the settings at the top of `cogs/ranks.py`.
 
 ## Adding a new feature
 

@@ -24,6 +24,17 @@ TABLES = [
         value TEXT
     )
     """,
+    # Stage 2: message ranks. We store ONLY counts and XP, never message text.
+    """
+    CREATE TABLE IF NOT EXISTS message_stats (
+        guild_id    INTEGER NOT NULL,
+        user_id     INTEGER NOT NULL,
+        messages    INTEGER NOT NULL DEFAULT 0,  -- total messages sent
+        xp          INTEGER NOT NULL DEFAULT 0,  -- total XP earned
+        last_xp_at  REAL    NOT NULL DEFAULT 0,  -- when they last got XP (unix time)
+        PRIMARY KEY (guild_id, user_id)
+    )
+    """,
 ]
 
 
@@ -71,3 +82,64 @@ def fetch_all(sql, params=()):
     """Run a query and return all rows as a list."""
     with connect() as conn:
         return conn.execute(sql, params).fetchall()
+
+
+# =====================================================================
+# Stage 2: Message ranks
+# =====================================================================
+
+def record_message(guild_id, user_id, xp_amount, now, cooldown_seconds):
+    """
+    Count one message for a user, and give them XP if their cooldown is over.
+    Returns True if XP was given, False if they were still on cooldown.
+    """
+    with connect() as conn:
+        # Make sure the user has a row (does nothing if it already exists).
+        conn.execute(
+            "INSERT OR IGNORE INTO message_stats (guild_id, user_id) VALUES (?, ?)",
+            (guild_id, user_id),
+        )
+        # Always count the message.
+        conn.execute(
+            "UPDATE message_stats SET messages = messages + 1 WHERE guild_id = ? AND user_id = ?",
+            (guild_id, user_id),
+        )
+        # Only give XP if enough time has passed since the last XP.
+        result = conn.execute(
+            """
+            UPDATE message_stats
+            SET xp = xp + ?, last_xp_at = ?
+            WHERE guild_id = ? AND user_id = ? AND last_xp_at <= ?
+            """,
+            (xp_amount, now, guild_id, user_id, now - cooldown_seconds),
+        )
+        return result.rowcount > 0
+
+
+def get_message_stats(guild_id, user_id):
+    """Return a user's messages, xp and position (1 = top) by XP, or None."""
+    row = fetch_one(
+        "SELECT messages, xp FROM message_stats WHERE guild_id = ? AND user_id = ?",
+        (guild_id, user_id),
+    )
+    if row is None:
+        return None
+    # Position = how many people have more XP than you, plus one.
+    above = fetch_one(
+        "SELECT COUNT(*) AS n FROM message_stats WHERE guild_id = ? AND xp > ?",
+        (guild_id, row["xp"]),
+    )
+    return {"messages": row["messages"], "xp": row["xp"], "position": above["n"] + 1}
+
+
+def top_by_messages(guild_id, limit=10):
+    """Return the top users by message count."""
+    return fetch_all(
+        """
+        SELECT user_id, messages, xp FROM message_stats
+        WHERE guild_id = ?
+        ORDER BY messages DESC, xp DESC
+        LIMIT ?
+        """,
+        (guild_id, limit),
+    )
