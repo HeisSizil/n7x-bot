@@ -10,13 +10,17 @@ bot.py            Starts the bot, loads features, catches errors
 config.py         Reads settings from .env
 database.py       All SQLite database code
 ai_providers.py   Talks to Gemini / Groq / OpenRouter with automatic fallback
+mod_tools.py      Shared moderation helpers (warnings, mod-log)
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
   voice.py        Voice time, /voicerank, /voiceleaderboard
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
+  automod.py      Auto-deletes spam and bad words, warns, logs
+  moderation.py   /warn, /warnings, /kick, /timeout, /summarize
 facts.md          Facts about N7X that /ask is allowed to use
+bad_words.txt     Words the auto-mod deletes (edit freely)
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
 ```
@@ -35,8 +39,9 @@ On Windows, tick **"Add Python to PATH"** during install.
 ### 3. Invite the bot to your test server
 1. Open **OAuth2 → URL Generator**.
 2. Under **Scopes**, tick `bot` and `applications.commands`.
-3. Under **Bot Permissions**, tick: `View Channels`, `Send Messages`, `Embed Links`, `Read Message History`.
-   (Later stages add a few more; you'll be told which.)
+3. Under **Bot Permissions**, tick: `View Channels`, `Send Messages`, `Embed Links`, `Read Message History`,
+   `Manage Messages` (delete spam), `Kick Members` (/kick) and `Moderate Members` (/timeout).
+   No admin and no ban permission: the bot never bans anyone.
 4. Copy the URL at the bottom, open it in your browser, and pick your test server.
 
 ### 4. Download the code and install packages
@@ -83,6 +88,16 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/price <coin>` | Current price and 24h change, e.g. `/price btc` |
 | `/ask <question>` | AI answer about AI agents, crypto, Web3 or N7X |
 
+**Mod commands** (hidden from regular members; Discord checks the mod's permissions):
+
+| Command | Who can use it | What it does |
+|---|---|---|
+| `/warn <member> <reason>` | Timeout Members | Saves a warning, DMs the member, posts to mod-log |
+| `/warnings <member>` | Timeout Members | Shows a member's warnings |
+| `/kick <member> <reason>` | Kick Members | Kicks a member (they can rejoin with an invite) |
+| `/timeout <member> <minutes> <reason>` | Timeout Members | Mutes a member for up to 28 days |
+| `/summarize [channel]` | Manage Messages | Private AI summary of a channel's last 50 messages |
+
 ### How message XP works
 - Every message is counted. XP (15-25 per message) is given at most **once every 60 seconds** per member, so spamming doesn't farm XP.
 - Only counts and XP are stored. **Message text is never saved.**
@@ -111,6 +126,18 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Each member can ask **3 questions per minute** (setting at the top of `cogs/ask.py`).
 - Members only see "N7X Bot" under answers. **Which AI answered is shown only in the terminal**, e.g. `/ask by sam: answered by Groq (llama-3.3-70b-versatile) in 2.1s`, along with why any provider failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
 - The bot shows "N7X Bot is thinking..." instantly, so slow AI answers never time out. Discord itself blocks questions over 500 characters.
+
+### How the mod helper works
+- **Set up a mod-log channel:** create a private channel only mods can see, give the bot **View Channel**, **Send Messages** and **Embed Links** there, then put its ID in `.env` as `MOD_LOG_CHANNEL_ID` (right-click the channel → Copy Channel ID).
+- **Auto-mod** checks every message from non-mods (anyone with Manage Messages is trusted):
+  - **Repeated messages:** the same message 3 times within 30 seconds.
+  - **Too many links:** more than 3 links in one message.
+  - **Bad words:** anything in `bad_words.txt` (whole words only, so "ass" won't catch "class"). Edit the file anytime; no restart needed.
+  - It **deletes** the message, posts a short notice in the channel (it disappears after 10s), **DMs a warning**, saves it, and posts a note in mod-log with a hidden excerpt so mods can judge. During a spam burst it keeps deleting but warns only once a minute.
+  - Settings are at the top of `cogs/automod.py`.
+- **The bot suggests, humans decide:** when a member reaches 3 warnings, mod-log suggests a human review. The bot has no ban command and never bans.
+- Mods can't act on themselves, the owner, the bot, or anyone with an equal or higher role. For `/kick` and `/timeout`, the **bot's role must be above the member's role** (Server Settings → Roles → drag the bot's role up).
+- **`/summarize` privacy:** the last 50 messages are sent to the AI provider to make the summary. Nothing is saved. Mods can only summarize channels they can read themselves.
 
 ## Adding a new feature
 

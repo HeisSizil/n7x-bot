@@ -40,5 +40,9 @@ OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "").strip() or "meta-llama/llam
 # Optional. The bot works without it; a free CoinGecko "demo" key just raises the rate limit.
 COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "").strip()
 
+# --- Channels ---
+# Where the bot posts moderation notes (deleted spam, warnings, kicks...).
+MOD_LOG_CHANNEL_ID = _get_int("MOD_LOG_CHANNEL_ID")
+
 # --- Branding ---
 BRAND_COLOR = 0x7B2FF7  # N7X purple, used for embeds

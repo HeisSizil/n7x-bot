@@ -1,0 +1,11 @@
+# BAD WORD LIST for the auto-mod.
+#
+# - Put one word or phrase per line. Capital letters don't matter.
+# - Whole words only: "ass" will NOT match "class" or "pass".
+# - Lines starting with # are ignored (like this one).
+# - Save the file; the bot notices changes automatically, no restart needed.
+#
+# The examples below are placeholders. Replace them with the words your community bans.
+badword1
+badword2
+some bad phrase

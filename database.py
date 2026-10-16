@@ -35,6 +35,17 @@ TABLES = [
         PRIMARY KEY (guild_id, user_id)
     )
     """,
+    # Stage 6: warnings given by mods (or by the auto-mod). Only the reason is stored.
+    """
+    CREATE TABLE IF NOT EXISTS warnings (
+        id            INTEGER PRIMARY KEY AUTOINCREMENT,
+        guild_id      INTEGER NOT NULL,
+        user_id       INTEGER NOT NULL,
+        moderator_id  INTEGER NOT NULL,   -- who gave it (the bot's ID for auto-mod)
+        reason        TEXT    NOT NULL,
+        created_at    REAL    NOT NULL    -- unix time
+    )
+    """,
     # Stage 3: voice ranks. Total seconds spent in voice with at least one other person.
     """
     CREATE TABLE IF NOT EXISTS voice_stats (
@@ -197,4 +208,38 @@ def top_by_voice(guild_id, limit=10):
         LIMIT ?
         """,
         (guild_id, limit),
+    )
+
+
+# =====================================================================
+# Stage 6: Warnings
+# =====================================================================
+
+def add_warning(guild_id, user_id, moderator_id, reason, now):
+    """Save a warning and return the member's new total number of warnings."""
+    execute(
+        "INSERT INTO warnings (guild_id, user_id, moderator_id, reason, created_at) VALUES (?, ?, ?, ?, ?)",
+        (guild_id, user_id, moderator_id, reason, now),
+    )
+    return count_warnings(guild_id, user_id)
+
+
+def count_warnings(guild_id, user_id):
+    row = fetch_one(
+        "SELECT COUNT(*) AS n FROM warnings WHERE guild_id = ? AND user_id = ?",
+        (guild_id, user_id),
+    )
+    return row["n"]
+
+
+def get_warnings(guild_id, user_id, limit=10):
+    """Return a member's most recent warnings, newest first."""
+    return fetch_all(
+        """
+        SELECT moderator_id, reason, created_at FROM warnings
+        WHERE guild_id = ? AND user_id = ?
+        ORDER BY created_at DESC
+        LIMIT ?
+        """,
+        (guild_id, user_id, limit),
     )
