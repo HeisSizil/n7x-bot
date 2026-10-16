@@ -329,7 +329,8 @@ class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
 
     # ------------------------------------------------------------- duels
     async def test_duel_gives_no_xp(self):
-        cog = self.tc.Tournament(None)
+        import cogs.duels
+        cog = cogs.duels.Duels(None)
         invite = self.tc.DuelInvite(self.host, self.alt)
         self.channel.plan = {1: lambda v: PAPER, 2: lambda v: ROCK}
 
@@ -350,14 +351,15 @@ class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("XP", self.channel.all_text())
 
     async def test_duel_invite_mentions_no_xp(self):
-        cog = self.tc.Tournament(None)
-        cog.run_in_background = lambda coro: coro.close()
+        import cogs.duels
+        cog = cogs.duels.Duels(None)
+        cog.run_in_background = lambda coro, channel: coro.close()
         shown = []
 
         async def send_message(content=None, embed=None, **kwargs):
             shown.append(embed)
-        interaction = NS(user=self.host, response=NS(send_message=send_message))
-        await cog.duel.callback(cog, interaction, self.alt, NS(value="rps"))
+        interaction = NS(user=self.host, channel=self.channel, response=NS(send_message=send_message))
+        await cog.duel.callback(cog, interaction, NS(value="rps"), None, self.alt)
         self.assertNotIn("XP", shown[0].description)
 
 

@@ -15,6 +15,7 @@ assistant_plan.py Mod assistant: checks the AI's plan (steps, delays, dependenci
 assistant_text.py Mod assistant: everything it says (5 built-in languages, others translated by the AI)
 assistant_memory.py Mod assistant: short per-mod conversation memory (5 messages / 5 minutes)
 tournament_engine.py Tournament & duel rules (no Discord code, fully tested)
+team_engine.py    /duel team mode rules: 2v2, 3v3, 4v4 (no Discord code, fully tested)
 trivia_bank.py    Trivia questions: loads trivia/, makes Fun Maths, optional Open Trivia DB
 check_trivia.py   Checks every trivia file: python check_trivia.py
 cogs/             One file per feature (add a file here to add a feature)
@@ -24,7 +25,8 @@ cogs/             One file per feature (add a file here to add a feature)
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
   games.py        N7X Arcade: /flip, /dice, /rps, /wheel, /trivia, /highlow, /gameprofile, /gamesleaderboard
-  tournament.py   /tournament, /duel, /duelstats
+  tournament.py   /tournament (and the lobby/round buttons duels reuse)
+  duels.py        /duel (1v1, 2v2, 3v3, 4v4, free for all), /duelstats
   welcome.py      Welcome embed for new members, /testwelcome
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
@@ -110,8 +112,8 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/gameprofile [member]` | 🎮 Level, title, game XP, wins and best streaks |
 | `/gamesleaderboard` | 🏆 Top 10 by game wins, with plays and win rate |
 | `/tournament <game> [max_players] [join_seconds] [test_mode] [questions]` | 🏆 **Mods only** (Manage Messages or Timeout Members): host an RPS, dice or trivia tournament (2+ players) |
-| `/duel <member> <game>` | ⚔️ Challenge a member to a 1-vs-1 RPS, dice or trivia duel (no XP, just bragging rights) |
-| `/duelstats [member]` | 📊 Duel wins/losses and tournament 🥇🥈🥉 finishes |
+| `/duel <game> [mode] [opponent] [questions] [max_players] [test_mode]` | ⚔️ RPS, dice or trivia duels: 1v1 (pick an `opponent`), 2v2, 3v3, 4v4 or Free for all. Anyone can host. No XP, just bragging rights |
+| `/duelstats [member]` | 📊 1v1 wins/losses, team wins/losses, free-for-all podiums and tournament podiums (each counted separately) |
 
 **Mod commands** (hidden from regular members; Discord checks the mod's permissions):
 
@@ -226,9 +228,21 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 
 **Test mode:** empty spots up to `max_players` are filled with **🤖 bot players** that pick randomly, so you can demo a whole tournament alone (press Join yourself to play against them, or don't, for a bots-only demo). Bots never get XP and are never saved in stats.
 
-**Duels:** `/duel @member game:<RPS/Dice/Trivia>`. They have 30 seconds to **Accept**. Same round rules as tournaments (ties replay). **Duels give no XP**: just bragging rights. Wins and losses are saved for `/duelstats` (which shows duel wins/losses and tournament 🥇🥈🥉 finishes, never XP).
+**Duels (anyone can host, no XP ever, 5-second cooldown):** `/duel game:<RPS/Dice/Trivia> mode:<1v1/2v2/3v3/4v4/Free for all>`.
+- **1v1** (the default): add `opponent:@member`. They have 30 seconds to **Accept**. Same round rules as tournaments (ties replay). Trivia can use `questions:` (1-10) for a mini quiz with sudden death.
+- **2v2 / 3v3 / 4v4:** a team lobby with **Join Team A**, **Join Team B**, **Leave** and **Start** (host only). Pressing the other team's button switches teams. Team size = the mode (a full team says "Team A is full."). The game starts only when the teams are **even** (at least 1 each); otherwise the host privately sees which team needs players. A lobby that isn't started within **2 minutes** closes. The host only plays if they join a team.
+  - **RPS:** random pairs (one from each team). Each pair plays; draws replay inside the pair. More pair wins wins; a tie → one **⚡ sudden-death pair**.
+  - **Dice:** everyone presses Roll; team totals are shown with a short animation. Higher total wins; equal totals → everyone re-rolls.
+  - **Trivia:** everyone answers the same `questions` (1-10, default 3). Most correct answers in total wins; a tie → **⚡ sudden death**, one question at a time (a fair random pick after 5).
+  - A player who doesn't answer within 30 seconds loses their pair (RPS) or scores 0 (dice/trivia).
+  - The results card shows the winning team 👑 and what each player did (✅ beat @x / 🎲 rolled 5 / 🧠 3 correct).
+- **Free for all (3-10 players):** `max_players:` (default 6). Join / Leave / Start now like a tournament, with a hard cap. Starts after 60 seconds, or when the host presses Start now with at least 3. Played with the tournament rules and podium (🥇🥈🥉), no XP, no mod needed.
+- **One game per player at a time:** joining a second duel lobby (or challenging while in one) is refused privately.
+- **Test mode (mods only):** `test_mode:True` fills empty team spots / free-for-all spots with 🤖 bots so you can try every mode alone. Bots never get stats.
+- If the bot restarts during a duel, the game is cancelled with a message and nothing is saved.
+- `/duelstats` keeps 1v1 duels, team duels, free-for-all podiums and tournament podiums separate.
 
-**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, duels giving no XP, 10-question trivia quizzes, quiz timeouts, categories with fewer questions than asked, trivia sudden death, Open Trivia DB (with a fake local server), broken trivia files, and `check_trivia.py` passing on the real files.
+**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, duels giving no XP, 10-question trivia quizzes, quiz timeouts, categories with fewer questions than asked, trivia sudden death, Open Trivia DB (with a fake local server), broken trivia files, `check_trivia.py` passing on the real files, 2v2 RPS (plus a sudden-death pair), 3v3 dice (plus re-rolls), 2v2 trivia with a tie and sudden death, uneven teams refused, timeouts, free for all with 3, 5 and 10 players, the host not joining, lobby timeouts, one game per player, restarts, and no XP anywhere in duels.
 
 Settings (round time, podium XP, max players) are at the top of `cogs/tournament.py`; the rules are in `tournament_engine.py`.
 

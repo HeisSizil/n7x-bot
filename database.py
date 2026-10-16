@@ -140,6 +140,13 @@ NEW_COLUMNS = [
     ("game_stats", "win_streak", "INTEGER NOT NULL DEFAULT 0"),       # current wins in a row
     ("game_stats", "best_win_streak", "INTEGER NOT NULL DEFAULT 0"),  # best wins in a row
     ("game_stats", "best_highlow", "INTEGER NOT NULL DEFAULT 0"),     # best /highlow streak
+    # Stage 11: /duel team modes and free for all (counted apart from tournaments)
+    ("duel_stats", "team_wins", "INTEGER NOT NULL DEFAULT 0"),
+    ("duel_stats", "team_losses", "INTEGER NOT NULL DEFAULT 0"),
+    ("duel_stats", "ffa_played", "INTEGER NOT NULL DEFAULT 0"),
+    ("duel_stats", "ffa_gold", "INTEGER NOT NULL DEFAULT 0"),
+    ("duel_stats", "ffa_silver", "INTEGER NOT NULL DEFAULT 0"),
+    ("duel_stats", "ffa_bronze", "INTEGER NOT NULL DEFAULT 0"),
 ]
 
 
@@ -549,7 +556,32 @@ def record_tournament(guild_id, player_ids, podium_ids):
                              (guild_id, user_id))
 
 
+def record_team_game(guild_id, winner_ids, loser_ids):
+    """A /duel team game (2v2, 3v3, 4v4). Real members only. No XP."""
+    with connect() as conn:
+        for column, ids in (("team_wins", winner_ids), ("team_losses", loser_ids)):
+            for user_id in ids:
+                _ensure_duel_row(conn, guild_id, user_id)
+                conn.execute(f"UPDATE duel_stats SET {column} = {column} + 1 WHERE guild_id = ? AND user_id = ?",
+                             (guild_id, user_id))
+
+
+def record_free_for_all(guild_id, player_ids, podium_ids):
+    """A /duel free for all. podium_ids: (1st, 2nd, 3rd), None for a test bot. No XP."""
+    with connect() as conn:
+        for user_id in player_ids:
+            _ensure_duel_row(conn, guild_id, user_id)
+            conn.execute("UPDATE duel_stats SET ffa_played = ffa_played + 1 WHERE guild_id = ? AND user_id = ?",
+                         (guild_id, user_id))
+        for column, user_id in zip(("ffa_gold", "ffa_silver", "ffa_bronze"), podium_ids):
+            if user_id is not None:
+                _ensure_duel_row(conn, guild_id, user_id)
+                conn.execute(f"UPDATE duel_stats SET {column} = {column} + 1 WHERE guild_id = ? AND user_id = ?",
+                             (guild_id, user_id))
+
+
 def get_duel_stats(guild_id, user_id):
     row = fetch_one("SELECT * FROM duel_stats WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
-    keys = ("duel_wins", "duel_losses", "tournaments_played", "gold", "silver", "bronze")
+    keys = ("duel_wins", "duel_losses", "tournaments_played", "gold", "silver", "bronze",
+            "team_wins", "team_losses", "ffa_played", "ffa_gold", "ffa_silver", "ffa_bronze")
     return {key: (row[key] if row else 0) for key in keys}

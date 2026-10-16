@@ -7,8 +7,7 @@ The rules live in tournament_engine.py. This file handles the buttons and messag
   presses Start now) with whoever joined. Max players is a hard cap; at least 2 are needed
   (2 players = one final, no 3rd place).
   Then rounds are played in the channel with buttons.
-- /duel @member: a 1-vs-1 challenge using the same match rules. Duels give NO XP.
-- /duelstats [member]: duel wins/losses and tournament podium finishes.
+- /duel and /duelstats live in cogs/duels.py (they reuse the classes here).
 
 Tournament podium bonus XP (50/30/20) uses the shared game XP daily cap (100, resets
 00:00 UTC). Secure randomness (secrets). XP only - no real prizes.
@@ -39,6 +38,7 @@ log = logging.getLogger("n7x.tournament")
 ROUND_SECONDS = 30            # a player who doesn't respond in time loses that round
 PODIUM_XP = (50, 30, 20)      # bonus game XP for 1st, 2nd, 3rd (still limited by the daily cap)
 MAX_PLAYERS_LIMIT = 16
+FREE_FOR_ALL_MIN = 3          # /duel free for all needs at least this many players
 SEND_GAP = 1.0                # pause after each channel message (keeps us inside Discord's rate limits)
 COLOR_GOLD = 0xFACC15
 
@@ -183,11 +183,12 @@ class RoundView(discord.ui.View):
 class Session:
     """One tournament or duel in one channel: gives the engine its collect() and announce()."""
 
-    def __init__(self, channel, kind, header, quiz_questions=1):
+    def __init__(self, channel, kind, header, quiz_questions=1, points_mode=False):
         self.channel = channel
         self.kind = kind
         self.header = header
         self.quiz_questions = quiz_questions   # trivia: questions per round (1 = first right & fastest)
+        self.points_mode = points_mode or quiz_questions > 1   # trivia scored by points (team games too)
         self.question = None
         self.asked = []                        # trivia questions already used in this game
 
@@ -199,7 +200,7 @@ class Session:
         return message
 
     async def collect(self, players, kind, label, attempt):
-        if kind == "trivia" and self.quiz_questions > 1:
+        if kind == "trivia" and self.points_mode:
             return await self.collect_quiz(players, label, attempt)
         return await self.ask(players, kind, label, attempt)
 
@@ -282,7 +283,7 @@ class Session:
             await self.send(t_embed(f"🗂️ Bracket of {details['size']}", "\n".join(lines), header=self.header))
         elif event == "round_result":
             text = self.response_lines(details["responses"])
-            if self.kind == "trivia" and self.question and self.quiz_questions == 1:
+            if self.kind == "trivia" and self.question and not self.points_mode:
                 q = self.question
                 text += f"\n\n✅ Answer: **{LETTERS[q['answer']]}** - {q['choices'][q['answer']]}"
             text += ("\n\n➡️ Through: " + ", ".join(p.mention for p in details["advance"])
@@ -292,10 +293,10 @@ class Session:
             reason = {"rps": "All the same or all different shapes",
                       "dice": "Tied lowest roll",
                       "trivia": "Nobody got it right (or an exact tie)"}[self.kind]
-            if self.kind == "trivia" and self.quiz_questions > 1:
+            if self.kind == "trivia" and self.points_mode:
                 reason = "⚡ Tied on points: sudden death! One question at a time"
             text = self.response_lines(details["responses"])
-            if all(r is None for r in details["responses"].values()) and self.quiz_questions == 1:
+            if all(r is None for r in details["responses"].values()) and not self.points_mode:
                 reason = "Nobody answered"
             await self.send(t_embed(f"🔁 {details['label']}: replay!", f"{text}\n\n{reason}, so we go again.",
                                     COLOR_DRAW, header=self.header))
@@ -313,9 +314,14 @@ class LobbyView(discord.ui.View):
     The host is NOT added automatically: they press Join like everyone else if they want to play.
     """
 
-    def __init__(self, host, kind, max_players, ends_at, test_mode=False, questions=1):
+    def __init__(self, host, kind, max_players, ends_at, test_mode=False, questions=1, free_for_all=False,
+                 on_join=None, on_leave=None):
         super().__init__(timeout=None)
         self.questions = questions   # trivia only: questions per match
+        self.free_for_all = free_for_all   # /duel free for all: no XP, needs 3 players
+        self.min_players = FREE_FOR_ALL_MIN if free_for_all else te.MIN_PLAYERS
+        self.on_join = on_join       # optional check: function(member) -> "why not" text or None
+        self.on_leave = on_leave     # optional: function(member) called after leaving
         self.host = host
         self.kind = kind
         self.max_players = max_players
@@ -332,10 +338,15 @@ class LobbyView(discord.ui.View):
         listing = "\n".join(f"{i}. {p.mention}" for i, p in enumerate(self.players, start=1)) or "_nobody yet - press **Join**!_"
         status = ("🔒 Registration closed." if closed else
                   f"⏱️ Starts <t:{self.ends_at}:R>, or when the host presses **Start now**.")
-        embed = t_embed(f"🏆 {GAMES[self.kind]} Tournament",
-                        f"{status}\n\n"
-                        f"Needs at least {te.MIN_PLAYERS} players. 🥇 {PODIUM_XP[0]} · 🥈 {PODIUM_XP[1]} · "
-                        f"🥉 {PODIUM_XP[2]} bonus game XP (no 🥉 with only 2 players). No real prizes.")
+        if self.free_for_all:
+            embed = t_embed(f"⚔️ {GAMES[self.kind]} Free for all",
+                            f"{status}\n\nNeeds at least {self.min_players} players. 🥇🥈🥉 podium, "
+                            "no XP: just bragging rights. 😎", header="⚔️ N7X Duel")
+        else:
+            embed = t_embed(f"🏆 {GAMES[self.kind]} Tournament",
+                            f"{status}\n\n"
+                            f"Needs at least {te.MIN_PLAYERS} players. 🥇 {PODIUM_XP[0]} · 🥈 {PODIUM_XP[1]} · "
+                            f"🥉 {PODIUM_XP[2]} bonus game XP (no 🥉 with only 2 players). No real prizes.")
         if self.kind == "trivia" and self.questions > 1:
             embed.add_field(name="🧠 Mini quiz", value=f"{self.questions} questions per match. Most points goes "
                                                       "through; a tie = ⚡ sudden death.", inline=False)
@@ -359,6 +370,8 @@ class LobbyView(discord.ui.View):
             await interaction.response.send_message("You're already in! 🎮", ephemeral=True)
         elif self.is_full():
             await interaction.response.send_message("Lobby is full.", ephemeral=True)
+        elif self.on_join and (problem := self.on_join(interaction.user)):
+            await interaction.response.send_message(problem, ephemeral=True)
         else:
             self.players.append(interaction.user)
             await self.refresh(interaction)
@@ -370,16 +383,18 @@ class LobbyView(discord.ui.View):
         if len(self.players) == before:
             await interaction.response.send_message("You haven't joined.", ephemeral=True)
         else:
+            if self.on_leave:
+                self.on_leave(interaction.user)
             await self.refresh(interaction)
 
     @discord.ui.button(label="Start now", emoji="▶️", style=discord.ButtonStyle.primary)
     async def start(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.host.id:
-            await interaction.response.send_message("Only the host can start the tournament early.", ephemeral=True)
+            await interaction.response.send_message("Only the host can start early.", ephemeral=True)
             return
-        if len(self.players) < te.MIN_PLAYERS and not self.test_mode:
+        if len(self.players) < self.min_players and not self.test_mode:
             await interaction.response.send_message(
-                f"Need at least {te.MIN_PLAYERS} players to start ({len(self.players)} joined so far).", ephemeral=True)
+                f"Need at least {self.min_players} players to start ({len(self.players)} joined so far).", ephemeral=True)
             return
         await interaction.response.defer()
         self.start_now.set()
@@ -533,73 +548,6 @@ class Tournament(commands.Cog):
         await channel.send(embed=embed, allowed_mentions=discord.AllowedMentions(
             users=[p for p in podium if p is not None and not is_bot(p)], everyone=False, roles=False))
         log.info("Tournament finished in #%s", channel.name)
-
-    # ------------------------------------------------------------------ /duel
-    @app_commands.command(name="duel", description="⚔️ Challenge a member to a 1-vs-1 duel")
-    @app_commands.describe(opponent="Who you challenge", game="Which game")
-    @app_commands.choices(game=GAME_CHOICES)
-    @app_commands.guild_only()
-    @app_commands.checks.cooldown(1, 5)
-    async def duel(self, interaction: discord.Interaction, opponent: discord.Member, game: app_commands.Choice[str]):
-        challenger = interaction.user
-        if opponent.id == challenger.id:
-            await interaction.response.send_message("You can't duel yourself! 😄", ephemeral=True)
-            return
-        if opponent.bot:
-            await interaction.response.send_message("Bots don't duel. Pick a member!", ephemeral=True)
-            return
-        if game.value == "trivia" and not load_trivia():
-            await interaction.response.send_message("No trivia questions available (run python check_trivia.py).", ephemeral=True)
-            return
-
-        invite = DuelInvite(challenger, opponent)
-        embed = t_embed(f"⚔️ {GAMES[game.value]} duel", f"{challenger.mention} challenges {opponent.mention}!\n"
-                        f"{opponent.mention}, accept within {ROUND_SECONDS} seconds.\n"
-                        f"Just for bragging rights. 😎", header="⚔️ N7X Duel")
-        await interaction.response.send_message(content=opponent.mention, embed=embed, view=invite,
-                                                allowed_mentions=discord.AllowedMentions(users=[opponent]))
-        self.run_in_background(self.run_duel(interaction, invite, game.value))
-
-    async def run_duel(self, interaction, invite, kind):
-        try:
-            try:
-                await asyncio.wait_for(invite.answer.wait(), ROUND_SECONDS)
-            except asyncio.TimeoutError:
-                for item in invite.children:
-                    item.disabled = True
-                await interaction.edit_original_response(content="⌛ The challenge expired.", view=invite)
-                return
-            if not invite.accepted:
-                return
-
-            session = Session(interaction.channel, kind, "⚔️ N7X Duel")
-            engine = te.Engine(kind, session.collect, session.announce)
-            winner, loser = await engine.match(invite.challenger, invite.opponent, "Duel")
-            database.record_duel(interaction.guild.id, winner.id, loser.id)   # wins/losses only - duels give no XP
-            await interaction.channel.send(
-                embed=t_embed("🏅 Duel result", f"🏆 {winner.mention} beats {loser.mention}!",
-                              COLOR_GOLD, header="⚔️ N7X Duel"),
-                allowed_mentions=discord.AllowedMentions(users=[winner, loser]))
-        except Exception:
-            log.exception("Duel crashed")
-
-    # ------------------------------------------------------------- /duelstats
-    @app_commands.command(name="duelstats", description="📊 Duel record and tournament podiums")
-    @app_commands.describe(member="Whose stats (leave empty for yours)")
-    @app_commands.guild_only()
-    async def duelstats(self, interaction: discord.Interaction, member: discord.Member = None):
-        member = member or interaction.user
-        stats = database.get_duel_stats(interaction.guild.id, member.id)
-        played = stats["duel_wins"] + stats["duel_losses"]
-        rate = f"{100 * stats['duel_wins'] / played:.0f}%" if played else "-"
-        embed = t_embed(f"📊 {member.display_name}", header="⚔️ N7X Duels & Tournaments")
-        embed.set_thumbnail(url=member.display_avatar.url)
-        embed.add_field(name="⚔️ Duels", value=f"**{stats['duel_wins']}** W · **{stats['duel_losses']}** L ({rate})")
-        embed.add_field(name="🏆 Tournaments", value=f"**{stats['tournaments_played']}** played")
-        embed.add_field(name="🏅 Podium finishes",
-                        value=f"🥇 **{stats['gold']}**   🥈 **{stats['silver']}**   🥉 **{stats['bronze']}**",
-                        inline=False)
-        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot):
