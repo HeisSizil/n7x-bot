@@ -15,6 +15,8 @@ assistant_plan.py Mod assistant: checks the AI's plan (steps, delays, dependenci
 assistant_text.py Mod assistant: everything it says (5 built-in languages, others translated by the AI)
 assistant_memory.py Mod assistant: short per-mod conversation memory (5 messages / 5 minutes)
 tournament_engine.py Tournament & duel rules (no Discord code, fully tested)
+trivia_bank.py    Trivia questions: loads trivia/, makes Fun Maths, optional Open Trivia DB
+check_trivia.py   Checks every trivia file: python check_trivia.py
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
@@ -30,7 +32,8 @@ cogs/             One file per feature (add a file here to add a feature)
 facts.md          Facts about N7X that /ask is allowed to use
 bad_words.txt     Words the auto-mod deletes (edit freely)
 welcome.md        The welcome message text (edit freely; {member} = the new member)
-trivia.json       /trivia questions about AI and Web3 (edit freely)
+trivia/           Trivia questions, one JSON file per category (edit freely, see trivia/README.md)
+images/           Pictures for trivia questions (see images/README.md)
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
 tests/            Automatic tests: python -m unittest discover tests -v
@@ -102,11 +105,11 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/dice` | 🎲 Roll a die against N7X Bot; higher number wins (animated) |
 | `/rps` | ✂️ Rock, paper, scissors against N7X Bot (buttons) |
 | `/wheel` | 🎡 Spin the lucky wheel for a chance at XP (animated) |
-| `/trivia` | 🧠 AI & Web3 multiple choice with A/B/C/D buttons and a 20-second timer |
+| `/trivia [questions] [category]` | 🧠 A trivia quiz: 1-20 questions (default 5) from 🎲 Mixed, 🎬 Movies, 🍥 Anime, 🐾 Animals, 🌍 Geography, ➗ Fun Maths, 💡 Fun Facts or 🤖 AI & Web3 |
 | `/highlow` | 🃏 Higher or Lower: guess the next number (1-13) and build a streak |
 | `/gameprofile [member]` | 🎮 Level, title, game XP, wins and best streaks |
 | `/gamesleaderboard` | 🏆 Top 10 by game wins, with plays and win rate |
-| `/tournament <game> [max_players] [join_seconds] [test_mode]` | 🏆 **Mods only** (Manage Messages or Timeout Members): host an RPS, dice or trivia tournament (2+ players) |
+| `/tournament <game> [max_players] [join_seconds] [test_mode] [questions]` | 🏆 **Mods only** (Manage Messages or Timeout Members): host an RPS, dice or trivia tournament (2+ players) |
 | `/duel <member> <game>` | ⚔️ Challenge a member to a 1-vs-1 RPS, dice or trivia duel (no XP, just bragging rights) |
 | `/duelstats [member]` | 📊 Duel wins/losses and tournament 🥇🥈🥉 finishes |
 
@@ -165,7 +168,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 **The games**
 - `/flip`, `/dice` and `/wheel` play a short animation (the message updates 3 times, 0.7 seconds apart) before showing the result.
 - `/rps`: press **Rock**, **Paper** or **Scissors**. The bot picks only *after* you press, so it can't cheat. Buttons are disabled after the result, or after 30 seconds.
-- `/trivia`: a random question about AI agents and Web3 with **A/B/C/D** buttons. You have **20 seconds**. The answers are shuffled each time, recently asked questions aren't repeated, and the right answer (plus a short explanation) is shown at the end. Running out of time counts as a loss.
+- `/trivia [questions] [category]`: a quiz of 1-20 questions (default 5, category default 🎲 Mixed) in **one message** that updates as you go: "Question X/Y • Score Z", **A/B/C/D** buttons, **20 seconds** per question. Answers are shuffled, no question repeats in a quiz (and your recent questions are avoided), and the right answer plus a short explanation shows for about 2 seconds before the next one. Only you can press your buttons. **2 unanswered questions in a row end the quiz.** The results card shows your score, a rating (🧠 N7X Genius 90%+ · 🔥 Pro 70%+ · 📈 Getting there 40%+ · 💪 Keep practicing) and your XP: **10 XP per right answer** (daily cap still applies). A quiz counts as one game played, and as a **win at 60% or more**. If a category has fewer questions than you asked for, you get all it has (the card says so).
 - `/highlow`: you see a number from 1 to 13. Tap **Higher** or **Lower** for the next one. Each right guess adds to your streak (+2 XP, up to 20 per game). Same number = free pass. One wrong guess ends the game; a streak of **3 or more counts as a win**. You have 30 seconds per guess (if time runs out, the game ends and your streak still counts).
 - `/gameprofile [member]`: level (the same level as `/rank`), a **title** that grows with your level, lifetime game XP, today's game XP, wins and win rate, best win streak, best Higher/Lower streak and leaderboard position.
   - Titles: 🐣 Rookie (level 0+), 🎮 Player (3+), ⚡ Pro (6+), 👑 Master (10+), 🌌 N7X Legend (15+).
@@ -174,7 +177,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 **Rules**
 - **Fair:** every result uses Python's `secrets` module (secure randomness).
 - **XP:** wins go into the **same XP as chatting**, so games count toward `/rank`:
-  `/flip` 5 · `/dice` 5 · `/rps` 8 · `/trivia` 10 · `/highlow` 2 per right guess (max 20) · `/wheel` 0-20.
+  `/flip` 5 · `/dice` 5 · `/rps` 8 · `/trivia` 10 per right answer · `/highlow` 2 per right guess (max 20) · `/wheel` 0-20.
   Draws and losses give no XP.
 - **Daily cap: 100 game XP per member**, resetting at 00:00 UTC, so nobody can farm it. Games still count for wins and the leaderboard after the cap.
 - **Cooldown:** each game can be started once every **5 seconds** per member.
@@ -183,7 +186,18 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Look: violet while a game is running, **green** for a win, **red** for a loss, amber for a draw, "N7X Bot" in the footer.
 
 **Editing**
-- **Trivia questions** are in `trivia.json`. Each one needs a `question`, exactly 4 `choices` and the `answer` letter (A-D, in the order you wrote the choices), plus an optional `explain`. The bot re-reads the file automatically. Broken questions are skipped (the terminal says which), and if the whole file is broken the bot keeps the last good version. Keep it to general AI and Web3 knowledge: facts about N7X belong in `facts.md`.
+- **Trivia questions** live in the `trivia/` folder, one file per category (about 900 questions, plus endless Fun Maths made in code with believable wrong answers). Full guide: `trivia/README.md`. Each question looks like this:
+  ```json
+  {"question": "Which planet is known as the Red Planet?",
+   "answers": ["Mars", "Venus", "Jupiter", "Mercury"],
+   "correct": 0,
+   "explanation": "Rust-coloured dust makes Mars look red."}
+  ```
+  `correct` is the position of the right answer (0 = first … 3 = fourth); answers are shuffled when shown. `explanation` is optional.
+- **Adding a picture:** put the file (e.g. `okapi.jpg`) in `images/` and add `"image": "okapi.jpg"` to the question, or use a direct link: `"image": "https://..."`. Emoji work right in the question text too, e.g. `"Which animal is this? 🦒"` or `"Which country's flag is this? 🇧🇷"`. See `images/README.md`.
+- **After editing, run `python check_trivia.py`.** It lists every problem by file and question number (missing answers, wrong `correct`, duplicates, missing image files...). The bot re-reads changed files automatically (no restart). A broken question is skipped; a broken file is skipped completely with one line in the Termux log.
+- Easy, checkable facts only. No song lyrics or long quotes. Facts about N7X belong in `facts.md`, not in trivia.
+- **Optional: Open Trivia DB.** Set `OPENTDB_ENABLED=true` in `.env` and `/trivia` also uses free easy questions from [opentdb.com](https://opentdb.com) (Mixed, Movies, Anime, Animals, Geography, Fun Facts). The bot respects its limit of one request per 5 seconds, and if it's slow, down or rate limited, it quietly uses the local files. Off by default.
 - XP amounts, timers, the cap, the cooldown, the titles and the wheel's slots and odds are settings at the top of `cogs/games.py`.
 - Upgrading from Stage 7: your existing game stats are kept. Lifetime game XP and streaks start counting from this version.
 
@@ -201,6 +215,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - **RPS:** if exactly two different shapes are played, the winning shape goes through and the others are out (e.g. 2 scissors + 1 paper → the scissors players go through). All the same, or all three shapes → replay.
 - **Dice:** press Roll. The lowest roll is out; a tied lowest roll → roll again.
 - **Trivia:** the same question for everyone. Wrong answers are out; if everyone is right, the slowest is out; if nobody is right → new question.
+- **Trivia mini quiz:** use `questions:` (1-10, default 1) on `/tournament` to play several questions per match. Most points goes through (lowest score is out in a 3-player group round). A tie = **⚡ sudden death**: one question at a time until it's decided; after 5 sudden-death questions a fair random pick decides. Questions never repeat within a tournament.
 - If a round is still undecided after 5 replays, a fair random draw decides (so a game can't get stuck).
 
 **Brackets and the podium**
@@ -213,7 +228,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 
 **Duels:** `/duel @member game:<RPS/Dice/Trivia>`. They have 30 seconds to **Accept**. Same round rules as tournaments (ties replay). **Duels give no XP**: just bragging rights. Wins and losses are saved for `/duelstats` (which shows duel wins/losses and tournament 🥇🥈🥉 finishes, never XP).
 
-**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, and duels giving no XP.
+**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, duels giving no XP, 10-question trivia quizzes, quiz timeouts, categories with fewer questions than asked, trivia sudden death, Open Trivia DB (with a fake local server), broken trivia files, and `check_trivia.py` passing on the real files.
 
 Settings (round time, podium XP, max players) are at the top of `cogs/tournament.py`; the rules are in `tournament_engine.py`.
 

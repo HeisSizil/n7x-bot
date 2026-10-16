@@ -15,6 +15,8 @@ Rules (same idea for every game):
 - Dice: the lowest roll is out. If the lowest roll is tied, roll again.
 - Trivia: wrong (or no) answers are out. If everyone is right, the slowest is out.
   If nobody is right, ask another question.
+- Trivia mini quiz (more than 1 question per round): the lowest score is out. A tie for
+  everyone = sudden death (one question at a time). After MAX_REPLAYS, a fair random pick.
 - Timeouts: anyone who didn't respond is out. If nobody responded, replay.
 
 Tournaments:
@@ -98,6 +100,16 @@ def resolve_trivia(answers):
     return [player for player in correct if player not in slowest_players], slowest_players
 
 
+def resolve_score(scores):
+    """scores: {player: points | None}. Lowest score is out; everyone tied = sudden death (replay)."""
+    points = {player: score or 0 for player, score in scores.items()}
+    lowest = min(points.values())
+    out = [player for player, score in points.items() if score == lowest]
+    if len(out) == len(points):
+        return None
+    return [player for player in points if player not in out], out
+
+
 RESOLVERS = {"rps": resolve_rps, "dice": resolve_dice, "trivia": resolve_trivia}
 
 
@@ -142,18 +154,20 @@ class Engine:
     announce(event, **details)                                                (async; posts updates)
     """
 
-    def __init__(self, kind, collect, announce):
+    def __init__(self, kind, collect, announce, quiz_questions=1):
         if kind not in RESOLVERS:
             raise ValueError(f"unknown game {kind!r}")
         self.kind = kind
         self.collect = collect
         self.announce = announce
+        # Trivia with several questions per round is scored by points (collect returns {player: points}).
+        self.resolver = resolve_score if kind == "trivia" and quiz_questions > 1 else RESOLVERS[kind]
 
     async def play_round(self, players, label):
         """Play (and replay) a round until somebody is out. Returns (advance, eliminated)."""
         for attempt in range(1, MAX_REPLAYS + 2):
             responses = await self.collect(list(players), self.kind, label, attempt)
-            result = RESOLVERS[self.kind]({player: responses.get(player) for player in players})
+            result = self.resolver({player: responses.get(player) for player in players})
             # A head-to-head round must end with exactly one winner.
             if result and len(players) == 2 and (len(result[0]) != 1 or len(result[1]) != 1):
                 result = None

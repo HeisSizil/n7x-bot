@@ -226,6 +226,32 @@ class TwoPlayers(unittest.TestCase):
         self.assertEqual(len(script.rounds), 2)
 
 
+class TriviaQuiz(unittest.TestCase):
+    """Several questions per round: points decide, a full tie means sudden death, random after 5."""
+
+    def test_score_rules(self):
+        self.assertEqual(te.resolve_score({"A": 3, "B": 1}), (["A"], ["B"]))
+        self.assertEqual(te.resolve_score({"A": 2, "B": None}), (["A"], ["B"]))   # no answers = 0 points
+        self.assertIsNone(te.resolve_score({"A": 2, "B": 2}))
+        self.assertEqual(te.resolve_score({"A": 2, "B": 1, "C": 1}), (["A"], ["B", "C"]))
+
+    def test_tie_goes_to_sudden_death(self):
+        answers = [{"A": 3, "B": 3}, {"A": 0, "B": 0}, {"A": 1, "B": 0}]
+        script = Script(lambda players, label, attempt: answers[attempt - 1])
+        engine = te.Engine("trivia", script.collect, script.announce, quiz_questions=3)
+        self.assertEqual(run(engine.run_tournament(["A", "B"])), ("A", "B", None))
+        self.assertEqual([attempt for _, _, attempt in script.rounds], [1, 2, 3])
+        self.assertEqual([event for event, _ in script.events].count("replay"), 2)
+
+    def test_random_after_five_sudden_deaths(self):
+        script = Script(lambda players, label, attempt: {"A": 1, "B": 1})
+        engine = te.Engine("trivia", script.collect, script.announce, quiz_questions=2)
+        first, second, third = run(engine.run_tournament(["A", "B"]))
+        self.assertEqual({first, second}, {"A", "B"})
+        self.assertEqual(len(script.rounds), te.MAX_REPLAYS + 1)
+        self.assertEqual(script.events[-1][0], "random_result")
+
+
 class Timeouts(unittest.TestCase):
     def test_player_who_times_out_loses_the_match(self):
         script = Script(lambda players, label, attempt: {"A": "rock", "B": None})

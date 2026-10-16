@@ -1,0 +1,1744 @@
+{
+ "_how_to_edit": "One question per {...}. 'question': the text. 'answers': exactly 4. 'correct': the position of the right answer (0 = first, 1 = second, 2 = third, 3 = fourth). Optional 'explanation' (shown after answering) and 'image' (an https:// link, or a file name inside the images/ folder). Answers are shuffled when shown. The bot re-reads this file automatically. After editing, run: python check_trivia.py",
+ "category": "Geography",
+ "questions": [
+  {
+   "question": "Which country's flag is this? 🇧🇷",
+   "answers": [
+    "Brazil",
+    "Portugal",
+    "Argentina",
+    "Colombia"
+   ],
+   "correct": 0,
+   "explanation": "Brazil's flag shows a starry sky and the motto 'Ordem e Progresso' (Order and Progress)."
+  },
+  {
+   "question": "Which country's flag is this? 🇯🇵",
+   "answers": [
+    "China",
+    "South Korea",
+    "Vietnam",
+    "Japan"
+   ],
+   "correct": 3,
+   "explanation": "Japan's flag is a red sun disc on white, often called the Hinomaru."
+  },
+  {
+   "question": "Which country's flag is this? 🇨🇦",
+   "answers": [
+    "United States",
+    "Australia",
+    "Canada",
+    "United Kingdom"
+   ],
+   "correct": 2,
+   "explanation": "Canada's red maple leaf flag was adopted in 1965."
+  },
+  {
+   "question": "Which country's flag is this? 🇮🇳",
+   "answers": [
+    "Pakistan",
+    "India",
+    "Bangladesh",
+    "Sri Lanka"
+   ],
+   "correct": 1,
+   "explanation": "India's flag has saffron, white and green stripes with a blue 24-spoke wheel, the Ashoka Chakra."
+  },
+  {
+   "question": "Which country's flag is this? 🇩🇪",
+   "answers": [
+    "Belgium",
+    "Germany",
+    "Austria",
+    "Netherlands"
+   ],
+   "correct": 1,
+   "explanation": "Germany's flag has horizontal stripes of black, red and gold."
+  },
+  {
+   "question": "Which country's flag is this? 🇫🇷",
+   "answers": [
+    "France",
+    "Italy",
+    "Netherlands",
+    "Russia"
+   ],
+   "correct": 0,
+   "explanation": "France's blue, white and red vertical flag is known as the Tricolore."
+  },
+  {
+   "question": "Which country's flag is this? 🇮🇹",
+   "answers": [
+    "Spain",
+    "Portugal",
+    "Hungary",
+    "Italy"
+   ],
+   "correct": 3,
+   "explanation": "Italy's flag has vertical stripes of green, white and red."
+  },
+  {
+   "question": "Which country's flag is this? 🇪🇸",
+   "answers": [
+    "Portugal",
+    "Mexico",
+    "Spain",
+    "Colombia"
+   ],
+   "correct": 2,
+   "explanation": "Spain's flag is red and yellow, with the coat of arms on the wide yellow stripe."
+  },
+  {
+   "question": "Which country's flag is this? 🇲🇽",
+   "answers": [
+    "Spain",
+    "Peru",
+    "Mexico",
+    "Brazil"
+   ],
+   "correct": 2,
+   "explanation": "Mexico's flag shows an eagle on a cactus eating a snake."
+  },
+  {
+   "question": "Which country's flag is this? 🇦🇷",
+   "answers": [
+    "Chile",
+    "Argentina",
+    "Brazil",
+    "Peru"
+   ],
+   "correct": 1,
+   "explanation": "Argentina's light blue and white flag carries the golden Sun of May."
+  },
+  {
+   "question": "Which country's flag is this? 🇰🇷",
+   "answers": [
+    "South Korea",
+    "Japan",
+    "China",
+    "Thailand"
+   ],
+   "correct": 0,
+   "explanation": "South Korea's flag shows a red and blue taegeuk circle surrounded by four black trigrams."
+  },
+  {
+   "question": "Which country's flag is this? 🇨🇳",
+   "answers": [
+    "Japan",
+    "Russia",
+    "Mongolia",
+    "China"
+   ],
+   "correct": 3,
+   "explanation": "China's flag shows one large and four small yellow stars on red."
+  },
+  {
+   "question": "Which country's flag is this? 🇬🇧",
+   "answers": [
+    "Ireland",
+    "United States",
+    "Canada",
+    "United Kingdom"
+   ],
+   "correct": 3,
+   "explanation": "The Union Jack combines the crosses of St George, St Andrew and St Patrick."
+  },
+  {
+   "question": "Which country's flag is this? 🇺🇸",
+   "answers": [
+    "United Kingdom",
+    "Canada",
+    "United States",
+    "Australia"
+   ],
+   "correct": 2,
+   "explanation": "The US flag has 50 stars for the states and 13 stripes for the original colonies."
+  },
+  {
+   "question": "Which country's flag is this? 🇦🇺",
+   "answers": [
+    "United Kingdom",
+    "Australia",
+    "Canada",
+    "South Africa"
+   ],
+   "correct": 1,
+   "explanation": "Australia's flag shows the Union Jack, the Commonwealth Star and the Southern Cross."
+  },
+  {
+   "question": "Which country's flag is this? 🇳🇿",
+   "answers": [
+    "New Zealand",
+    "Ireland",
+    "Canada",
+    "South Africa"
+   ],
+   "correct": 0,
+   "explanation": "New Zealand's flag shows four red stars of the Southern Cross next to the Union Jack."
+  },
+  {
+   "question": "Which country's flag is this? 🇸🇪",
+   "answers": [
+    "Sweden",
+    "Norway",
+    "Finland",
+    "Denmark"
+   ],
+   "correct": 0,
+   "explanation": "Sweden's flag is a yellow Nordic cross on a blue background."
+  },
+  {
+   "question": "Which country's flag is this? 🇳🇴",
+   "answers": [
+    "Denmark",
+    "Sweden",
+    "Finland",
+    "Norway"
+   ],
+   "correct": 3,
+   "explanation": "Norway's flag is red with a white-edged blue Nordic cross."
+  },
+  {
+   "question": "Which country's flag is this? 🇫🇮",
+   "answers": [
+    "Sweden",
+    "Norway",
+    "Finland",
+    "Iceland"
+   ],
+   "correct": 2,
+   "explanation": "Finland's flag is a blue Nordic cross on white."
+  },
+  {
+   "question": "Which country's flag is this? 🇩🇰",
+   "answers": [
+    "Switzerland",
+    "Denmark",
+    "Norway",
+    "Sweden"
+   ],
+   "correct": 1,
+   "explanation": "Denmark's flag, the Dannebrog, is a white Nordic cross on red."
+  },
+  {
+   "question": "Which country's flag is this? 🇨🇭",
+   "answers": [
+    "Denmark",
+    "Switzerland",
+    "Austria",
+    "Sweden"
+   ],
+   "correct": 1,
+   "explanation": "Switzerland's white cross on red is one of only two square national flags, with Vatican City."
+  },
+  {
+   "question": "Which country's flag is this? 🇵🇹",
+   "answers": [
+    "Portugal",
+    "Spain",
+    "Brazil",
+    "Italy"
+   ],
+   "correct": 0,
+   "explanation": "Portugal's green and red flag features an armillary sphere and a shield."
+  },
+  {
+   "question": "Which country's flag is this? 🇬🇷",
+   "answers": [
+    "Finland",
+    "Israel",
+    "Argentina",
+    "Greece"
+   ],
+   "correct": 3,
+   "explanation": "Greece's flag has nine blue and white stripes and a white cross."
+  },
+  {
+   "question": "Which country's flag is this? 🇮🇪",
+   "answers": [
+    "United Kingdom",
+    "Portugal",
+    "Ireland",
+    "Hungary"
+   ],
+   "correct": 2,
+   "explanation": "Ireland's flag has vertical stripes of green, white and orange."
+  },
+  {
+   "question": "Which country's flag is this? 🇯🇲",
+   "answers": [
+    "South Africa",
+    "Ghana",
+    "Jamaica",
+    "Brazil"
+   ],
+   "correct": 2,
+   "explanation": "Jamaica's flag has a gold diagonal cross with green and black triangles."
+  },
+  {
+   "question": "Which country's flag is this? 🇵🇰",
+   "answers": [
+    "India",
+    "Pakistan",
+    "Bangladesh",
+    "Saudi Arabia"
+   ],
+   "correct": 1,
+   "explanation": "Pakistan's flag shows a white crescent and star on green, with a white stripe at the side."
+  },
+  {
+   "question": "Which country's flag is this? 🇸🇦",
+   "answers": [
+    "Saudi Arabia",
+    "Pakistan",
+    "Egypt",
+    "Morocco"
+   ],
+   "correct": 0,
+   "explanation": "Saudi Arabia's green flag shows the Shahada written above a sword."
+  },
+  {
+   "question": "Which country's flag is this? 🇮🇱",
+   "answers": [
+    "Greece",
+    "Finland",
+    "Argentina",
+    "Israel"
+   ],
+   "correct": 3,
+   "explanation": "Israel's flag shows a blue Star of David between two blue stripes."
+  },
+  {
+   "question": "Which country's flag is this? 🇺🇦",
+   "answers": [
+    "Sweden",
+    "Romania",
+    "Colombia",
+    "Ukraine"
+   ],
+   "correct": 3,
+   "explanation": "Ukraine's blue and yellow flag is often described as a blue sky over golden wheat fields."
+  },
+  {
+   "question": "Which country's flag is this? 🇵🇱",
+   "answers": [
+    "Germany",
+    "Hungary",
+    "Poland",
+    "Ukraine"
+   ],
+   "correct": 2,
+   "explanation": "Poland's flag is simply white over red."
+  },
+  {
+   "question": "Which country's flag is this? 🇳🇱",
+   "answers": [
+    "France",
+    "Netherlands",
+    "Germany",
+    "Belgium"
+   ],
+   "correct": 1,
+   "explanation": "The Dutch flag has horizontal stripes of red, white and blue."
+  },
+  {
+   "question": "Which country's flag is this? 🇧🇪",
+   "answers": [
+    "Belgium",
+    "France",
+    "Netherlands",
+    "Italy"
+   ],
+   "correct": 0,
+   "explanation": "Belgium's flag has vertical stripes of black, yellow and red."
+  },
+  {
+   "question": "Which country's flag is this? 🇨🇱",
+   "answers": [
+    "Chile",
+    "Argentina",
+    "Peru",
+    "Mexico"
+   ],
+   "correct": 0,
+   "explanation": "Chile's flag has a single white star on a blue square, above white and red stripes."
+  },
+  {
+   "question": "Which country's flag is this? 🇨🇴",
+   "answers": [
+    "Brazil",
+    "Peru",
+    "Chile",
+    "Colombia"
+   ],
+   "correct": 3,
+   "explanation": "Colombia's flag is yellow, blue and red, with yellow taking up the top half."
+  },
+  {
+   "question": "Which country's flag is this? 🇵🇪",
+   "answers": [
+    "Chile",
+    "Colombia",
+    "Peru",
+    "Argentina"
+   ],
+   "correct": 2,
+   "explanation": "Peru's flag has vertical stripes of red, white and red."
+  },
+  {
+   "question": "Which country's flag is this? 🇹🇭",
+   "answers": [
+    "Vietnam",
+    "Thailand",
+    "Japan",
+    "Philippines"
+   ],
+   "correct": 1,
+   "explanation": "Thailand's flag has red, white and blue horizontal stripes, with a wide blue band in the middle."
+  },
+  {
+   "question": "Which country's flag is this? 🇻🇳",
+   "answers": [
+    "Thailand",
+    "Vietnam",
+    "South Korea",
+    "Japan"
+   ],
+   "correct": 1,
+   "explanation": "Vietnam's flag is a yellow star on a red background."
+  },
+  {
+   "question": "Which country's flag is this? 🇮🇩",
+   "answers": [
+    "Indonesia",
+    "Japan",
+    "Philippines",
+    "Malaysia"
+   ],
+   "correct": 0,
+   "explanation": "Indonesia's flag is red over white."
+  },
+  {
+   "question": "Which country's flag is this? 🇵🇭",
+   "answers": [
+    "Thailand",
+    "Cuba",
+    "Indonesia",
+    "Philippines"
+   ],
+   "correct": 3,
+   "explanation": "The Philippine flag has a golden sun with eight rays and three stars."
+  },
+  {
+   "question": "Which country's flag is this? 🇨🇺",
+   "answers": [
+    "Chile",
+    "Mexico",
+    "Cuba",
+    "Jamaica"
+   ],
+   "correct": 2,
+   "explanation": "Cuba's flag has blue and white stripes and a red triangle with a white star."
+  },
+  {
+   "question": "Which country's flag is this? 🇳🇬",
+   "answers": [
+    "Ghana",
+    "Kenya",
+    "Nigeria",
+    "Ethiopia"
+   ],
+   "correct": 2,
+   "explanation": "Nigeria's flag has green, white and green vertical stripes."
+  },
+  {
+   "question": "Which country's flag is this? 🇬🇭",
+   "answers": [
+    "Nigeria",
+    "Ghana",
+    "Kenya",
+    "Jamaica"
+   ],
+   "correct": 1,
+   "explanation": "Ghana's flag has red, gold and green stripes with a black star in the middle."
+  },
+  {
+   "question": "Which country's flag is this? 🇰🇪",
+   "answers": [
+    "Kenya",
+    "Nigeria",
+    "Ghana",
+    "Ethiopia"
+   ],
+   "correct": 0,
+   "explanation": "Kenya's flag shows a Maasai shield and two spears on black, red and green stripes."
+  },
+  {
+   "question": "Which country's flag is this? 🇿🇦",
+   "answers": [
+    "Jamaica",
+    "Kenya",
+    "Nigeria",
+    "South Africa"
+   ],
+   "correct": 3,
+   "explanation": "South Africa's six-colour flag has a sideways Y shape and was adopted in 1994."
+  },
+  {
+   "question": "Which country's flag is this? 🇪🇬",
+   "answers": [
+    "Morocco",
+    "Kenya",
+    "Nigeria",
+    "Egypt"
+   ],
+   "correct": 3,
+   "explanation": "Egypt's red, white and black flag shows the golden Eagle of Saladin."
+  },
+  {
+   "question": "Which country's flag is this? 🇲🇦",
+   "answers": [
+    "Egypt",
+    "Algeria",
+    "Morocco",
+    "Kenya"
+   ],
+   "correct": 2,
+   "explanation": "Morocco's flag is red with a green five-pointed star."
+  },
+  {
+   "question": "Which country's flag is this? 🇪🇹",
+   "answers": [
+    "Ghana",
+    "Ethiopia",
+    "Kenya",
+    "Nigeria"
+   ],
+   "correct": 1,
+   "explanation": "Ethiopia's green, yellow and red flag has a blue disc with a yellow star."
+  },
+  {
+   "question": "Which country's flag is this? 🇹🇿",
+   "answers": [
+    "Tanzania",
+    "Kenya",
+    "Nigeria",
+    "South Africa"
+   ],
+   "correct": 0,
+   "explanation": "Tanzania's flag has a black diagonal band edged in yellow between green and blue."
+  },
+  {
+   "question": "Which country's flag is this? 🇷🇺",
+   "answers": [
+    "Russia",
+    "France",
+    "Ukraine",
+    "Poland"
+   ],
+   "correct": 0,
+   "explanation": "Russia's flag has horizontal stripes of white, blue and red."
+  },
+  {
+   "question": "Which country's flag is this? 🇦🇹",
+   "answers": [
+    "Switzerland",
+    "Denmark",
+    "Germany",
+    "Austria"
+   ],
+   "correct": 3,
+   "explanation": "Austria's flag has red, white and red horizontal stripes."
+  },
+  {
+   "question": "Which country's flag is this? 🇧🇩",
+   "answers": [
+    "Japan",
+    "Pakistan",
+    "Bangladesh",
+    "India"
+   ],
+   "correct": 2,
+   "explanation": "Bangladesh's flag is a red disc on a green background."
+  },
+  {
+   "question": "Which country's flag is this? 🇱🇧",
+   "answers": [
+    "Cyprus",
+    "Lebanon",
+    "Canada",
+    "Israel"
+   ],
+   "correct": 1,
+   "explanation": "Lebanon's flag shows a green cedar tree between two red stripes."
+  },
+  {
+   "question": "Which country's flag is this? 🇮🇸",
+   "answers": [
+    "Sweden",
+    "Iceland",
+    "Finland",
+    "Ireland"
+   ],
+   "correct": 1,
+   "explanation": "Iceland's flag is blue with a white-edged red Nordic cross."
+  },
+  {
+   "question": "Which country's flag is this? 🇳🇵",
+   "answers": [
+    "Nepal",
+    "India",
+    "Bhutan",
+    "Sri Lanka"
+   ],
+   "correct": 0,
+   "explanation": "Nepal has the only national flag that is not a rectangle: two stacked pennants."
+  },
+  {
+   "question": "What is the capital of France?",
+   "answers": [
+    "Lyon",
+    "Marseille",
+    "Nice",
+    "Paris"
+   ],
+   "correct": 3,
+   "explanation": "Paris is France's capital and largest city."
+  },
+  {
+   "question": "What is the capital of Japan?",
+   "answers": [
+    "Osaka",
+    "Kyoto",
+    "Tokyo",
+    "Hiroshima"
+   ],
+   "correct": 2,
+   "explanation": "Tokyo has been Japan's capital since 1868."
+  },
+  {
+   "question": "What is the capital of Australia?",
+   "answers": [
+    "Sydney",
+    "Melbourne",
+    "Canberra",
+    "Perth"
+   ],
+   "correct": 2,
+   "explanation": "Canberra was purpose-built as a compromise between Sydney and Melbourne."
+  },
+  {
+   "question": "What is the capital of Canada?",
+   "answers": [
+    "Toronto",
+    "Ottawa",
+    "Vancouver",
+    "Montreal"
+   ],
+   "correct": 1,
+   "explanation": "Ottawa is in the province of Ontario."
+  },
+  {
+   "question": "What is the capital of Brazil?",
+   "answers": [
+    "Brasília",
+    "Rio de Janeiro",
+    "São Paulo",
+    "Salvador"
+   ],
+   "correct": 0,
+   "explanation": "Brasília was built as the new capital and opened in 1960."
+  },
+  {
+   "question": "What is the capital of the United States?",
+   "answers": [
+    "New York City",
+    "Los Angeles",
+    "Chicago",
+    "Washington, D.C."
+   ],
+   "correct": 3,
+   "explanation": "Washington, D.C. is home to the White House and the Capitol."
+  },
+  {
+   "question": "What is the capital of Kenya?",
+   "answers": [
+    "Mombasa",
+    "Kisumu",
+    "Nakuru",
+    "Nairobi"
+   ],
+   "correct": 3,
+   "explanation": "Nairobi is Kenya's capital and largest city."
+  },
+  {
+   "question": "What is the capital of Nigeria?",
+   "answers": [
+    "Lagos",
+    "Kano",
+    "Abuja",
+    "Ibadan"
+   ],
+   "correct": 2,
+   "explanation": "Abuja replaced Lagos as Nigeria's capital in 1991."
+  },
+  {
+   "question": "What is the capital of India?",
+   "answers": [
+    "Mumbai",
+    "New Delhi",
+    "Kolkata",
+    "Bangalore"
+   ],
+   "correct": 1,
+   "explanation": "New Delhi is the seat of India's government."
+  },
+  {
+   "question": "What is the capital of South Korea?",
+   "answers": [
+    "Seoul",
+    "Busan",
+    "Incheon",
+    "Daegu"
+   ],
+   "correct": 0,
+   "explanation": "Seoul is South Korea's capital and largest city."
+  },
+  {
+   "question": "What is the capital of New Zealand?",
+   "answers": [
+    "Wellington",
+    "Auckland",
+    "Christchurch",
+    "Queenstown"
+   ],
+   "correct": 0,
+   "explanation": "Wellington is at the southern tip of New Zealand's North Island."
+  },
+  {
+   "question": "What is the capital of Ghana?",
+   "answers": [
+    "Kumasi",
+    "Tamale",
+    "Cape Coast",
+    "Accra"
+   ],
+   "correct": 3,
+   "explanation": "Accra lies on Ghana's Atlantic coast."
+  },
+  {
+   "question": "What is the capital of Morocco?",
+   "answers": [
+    "Casablanca",
+    "Marrakesh",
+    "Rabat",
+    "Fez"
+   ],
+   "correct": 2,
+   "explanation": "Rabat is the capital, while Casablanca is Morocco's largest city."
+  },
+  {
+   "question": "What is the capital of Ethiopia?",
+   "answers": [
+    "Dire Dawa",
+    "Addis Ababa",
+    "Gondar",
+    "Mekelle"
+   ],
+   "correct": 1,
+   "explanation": "Addis Ababa hosts the headquarters of the African Union."
+  },
+  {
+   "question": "What is the capital of Pakistan?",
+   "answers": [
+    "Karachi",
+    "Islamabad",
+    "Lahore",
+    "Peshawar"
+   ],
+   "correct": 1,
+   "explanation": "Islamabad was purpose-built as Pakistan's capital in the 1960s."
+  },
+  {
+   "question": "What is the capital of Colombia?",
+   "answers": [
+    "Bogotá",
+    "Medellín",
+    "Cartagena",
+    "Cali"
+   ],
+   "correct": 0,
+   "explanation": "Bogotá sits high in the Andes at about 2,600 metres."
+  },
+  {
+   "question": "What is the capital of Saudi Arabia?",
+   "answers": [
+    "Jeddah",
+    "Mecca",
+    "Medina",
+    "Riyadh"
+   ],
+   "correct": 3,
+   "explanation": "Riyadh is Saudi Arabia's capital and largest city."
+  },
+  {
+   "question": "What is the capital of Switzerland?",
+   "answers": [
+    "Zurich",
+    "Geneva",
+    "Bern",
+    "Basel"
+   ],
+   "correct": 2,
+   "explanation": "Bern is Switzerland's federal city, even though Zurich is larger."
+  },
+  {
+   "question": "Reykjavík is the capital of which country?",
+   "answers": [
+    "Norway",
+    "Finland",
+    "Iceland",
+    "Greenland"
+   ],
+   "correct": 2,
+   "explanation": "Reykjavík is the world's most northerly capital of a sovereign state."
+  },
+  {
+   "question": "Which is the largest ocean on Earth?",
+   "answers": [
+    "Atlantic Ocean",
+    "Pacific Ocean",
+    "Indian Ocean",
+    "Arctic Ocean"
+   ],
+   "correct": 1,
+   "explanation": "The Pacific is bigger than all of Earth's land put together."
+  },
+  {
+   "question": "Which is the smallest of the world's oceans?",
+   "answers": [
+    "Arctic Ocean",
+    "Indian Ocean",
+    "Southern Ocean",
+    "Atlantic Ocean"
+   ],
+   "correct": 0,
+   "explanation": "The Arctic Ocean surrounds the North Pole."
+  },
+  {
+   "question": "Which ocean lies between Europe and North America?",
+   "answers": [
+    "Pacific Ocean",
+    "Indian Ocean",
+    "Arctic Ocean",
+    "Atlantic Ocean"
+   ],
+   "correct": 3,
+   "explanation": "The Atlantic separates the Americas from Europe and Africa."
+  },
+  {
+   "question": "Which ocean lies between Africa and Australia?",
+   "answers": [
+    "Pacific Ocean",
+    "Atlantic Ocean",
+    "Southern Ocean",
+    "Indian Ocean"
+   ],
+   "correct": 3,
+   "explanation": "The Indian Ocean is the third largest ocean."
+  },
+  {
+   "question": "Which is the largest continent by area?",
+   "answers": [
+    "Africa",
+    "North America",
+    "Asia",
+    "Europe"
+   ],
+   "correct": 2,
+   "explanation": "Asia covers about 30% of Earth's land area."
+  },
+  {
+   "question": "Which is the smallest continent by area?",
+   "answers": [
+    "Europe",
+    "Australia",
+    "Antarctica",
+    "South America"
+   ],
+   "correct": 1,
+   "explanation": "Australia is both a country and the smallest continent."
+  },
+  {
+   "question": "Which continent is the coldest?",
+   "answers": [
+    "Antarctica",
+    "Europe",
+    "Asia",
+    "North America"
+   ],
+   "correct": 0,
+   "explanation": "Antarctica holds the record for the lowest temperatures ever measured."
+  },
+  {
+   "question": "How many continents are there in the commonly taught seven-continent model?",
+   "answers": [
+    "7",
+    "5",
+    "6",
+    "8"
+   ],
+   "correct": 0,
+   "explanation": "Africa, Antarctica, Asia, Australia, Europe, North America and South America."
+  },
+  {
+   "question": "On which continent is Kenya?",
+   "answers": [
+    "Asia",
+    "South America",
+    "Oceania",
+    "Africa"
+   ],
+   "correct": 3,
+   "explanation": "Kenya is in East Africa."
+  },
+  {
+   "question": "On which continent is Argentina?",
+   "answers": [
+    "Africa",
+    "Europe",
+    "South America",
+    "North America"
+   ],
+   "correct": 2,
+   "explanation": "Argentina is in the south of South America."
+  },
+  {
+   "question": "The city of Istanbul spans two continents. Which ones?",
+   "answers": [
+    "Europe and Africa",
+    "Europe and Asia",
+    "Asia and Africa",
+    "Asia and Oceania"
+   ],
+   "correct": 1,
+   "explanation": "Istanbul is split by the Bosphorus strait between Europe and Asia."
+  },
+  {
+   "question": "Which imaginary line divides Earth into the Northern and Southern Hemispheres?",
+   "answers": [
+    "The Prime Meridian",
+    "The Equator",
+    "The Tropic of Cancer",
+    "The Arctic Circle"
+   ],
+   "correct": 1,
+   "explanation": "The Equator is at 0 degrees latitude."
+  },
+  {
+   "question": "The Prime Meridian (0° longitude) passes through which London district?",
+   "answers": [
+    "Greenwich",
+    "Westminster",
+    "Camden",
+    "Soho"
+   ],
+   "correct": 0,
+   "explanation": "The Royal Observatory in Greenwich marks the Prime Meridian."
+  },
+  {
+   "question": "Which country is named after the Equator?",
+   "answers": [
+    "Colombia",
+    "Kenya",
+    "Indonesia",
+    "Ecuador"
+   ],
+   "correct": 3,
+   "explanation": "Ecuador is Spanish for 'equator', which crosses the country."
+  },
+  {
+   "question": "Which is the largest country in the world by area?",
+   "answers": [
+    "Canada",
+    "China",
+    "Russia",
+    "United States"
+   ],
+   "correct": 2,
+   "explanation": "Russia spans 11 time zones across Europe and Asia."
+  },
+  {
+   "question": "Which is the second-largest country in the world by area?",
+   "answers": [
+    "China",
+    "United States",
+    "Canada",
+    "Brazil"
+   ],
+   "correct": 2,
+   "explanation": "Canada is the largest country in the Americas."
+  },
+  {
+   "question": "Which is the smallest country in the world?",
+   "answers": [
+    "Monaco",
+    "Vatican City",
+    "San Marino",
+    "Liechtenstein"
+   ],
+   "correct": 1,
+   "explanation": "Vatican City is less than half a square kilometre, surrounded by Rome."
+  },
+  {
+   "question": "Which is the largest country in South America by area?",
+   "answers": [
+    "Brazil",
+    "Argentina",
+    "Peru",
+    "Colombia"
+   ],
+   "correct": 0,
+   "explanation": "Brazil covers almost half of South America."
+  },
+  {
+   "question": "Which is the largest country in Africa by area?",
+   "answers": [
+    "Nigeria",
+    "Egypt",
+    "Kenya",
+    "Algeria"
+   ],
+   "correct": 3,
+   "explanation": "Algeria became Africa's largest country when South Sudan split from Sudan in 2011."
+  },
+  {
+   "question": "Which is the largest island in the world (not counting continents)?",
+   "answers": [
+    "Madagascar",
+    "Borneo",
+    "Iceland",
+    "Greenland"
+   ],
+   "correct": 3,
+   "explanation": "Greenland is mostly covered by a huge ice sheet."
+  },
+  {
+   "question": "What is the highest mountain on Earth above sea level?",
+   "answers": [
+    "K2",
+    "Kilimanjaro",
+    "Mount Everest",
+    "Mont Blanc"
+   ],
+   "correct": 2,
+   "explanation": "Everest stands about 8,849 metres above sea level."
+  },
+  {
+   "question": "Mount Everest is part of which mountain range?",
+   "answers": [
+    "The Alps",
+    "The Himalayas",
+    "The Andes",
+    "The Rockies"
+   ],
+   "correct": 1,
+   "explanation": "The Himalayas contain all of the world's highest peaks."
+  },
+  {
+   "question": "Mount Everest lies on the border between Nepal and which other country?",
+   "answers": [
+    "China",
+    "India",
+    "Bhutan",
+    "Pakistan"
+   ],
+   "correct": 0,
+   "explanation": "Everest sits on the Nepal–China (Tibet) border."
+  },
+  {
+   "question": "What is the highest mountain in Africa?",
+   "answers": [
+    "Mount Kilimanjaro",
+    "Mount Kenya",
+    "Table Mountain",
+    "Mount Elgon"
+   ],
+   "correct": 0,
+   "explanation": "Kilimanjaro in Tanzania rises to about 5,895 metres."
+  },
+  {
+   "question": "What is the highest mountain in South America?",
+   "answers": [
+    "Chimborazo",
+    "Huascarán",
+    "Cotopaxi",
+    "Aconcagua"
+   ],
+   "correct": 3,
+   "explanation": "Aconcagua in Argentina is the highest peak outside Asia."
+  },
+  {
+   "question": "Which mountain range runs down the western side of South America?",
+   "answers": [
+    "The Alps",
+    "The Himalayas",
+    "The Andes",
+    "The Urals"
+   ],
+   "correct": 2,
+   "explanation": "The Andes are the longest continental mountain range in the world."
+  },
+  {
+   "question": "The Alps are a mountain range on which continent?",
+   "answers": [
+    "Asia",
+    "Europe",
+    "South America",
+    "Africa"
+   ],
+   "correct": 1,
+   "explanation": "The Alps stretch across countries like France, Switzerland, Italy and Austria."
+  },
+  {
+   "question": "What is the largest hot desert in the world?",
+   "answers": [
+    "Gobi",
+    "Sahara",
+    "Kalahari",
+    "Arabian Desert"
+   ],
+   "correct": 1,
+   "explanation": "The Sahara covers much of North Africa."
+  },
+  {
+   "question": "The Atacama Desert, one of the driest places on Earth, is mostly in which country?",
+   "answers": [
+    "Chile",
+    "Mexico",
+    "Egypt",
+    "Australia"
+   ],
+   "correct": 0,
+   "explanation": "Some weather stations in the Atacama have almost never recorded rain."
+  },
+  {
+   "question": "What is the tallest uninterrupted waterfall in the world?",
+   "answers": [
+    "Niagara Falls",
+    "Victoria Falls",
+    "Iguazu Falls",
+    "Angel Falls"
+   ],
+   "correct": 3,
+   "explanation": "Angel Falls in Venezuela drops about 979 metres."
+  },
+  {
+   "question": "Which is the deepest lake in the world?",
+   "answers": [
+    "Lake Superior",
+    "Lake Victoria",
+    "Lake Baikal",
+    "Lake Titicaca"
+   ],
+   "correct": 2,
+   "explanation": "Lake Baikal in Siberia, Russia, is over 1,600 metres deep."
+  },
+  {
+   "question": "Lake Titicaca lies on the border between Peru and which country?",
+   "answers": [
+    "Chile",
+    "Ecuador",
+    "Bolivia",
+    "Colombia"
+   ],
+   "correct": 2,
+   "explanation": "Lake Titicaca is high in the Andes, at about 3,800 metres."
+  },
+  {
+   "question": "What is the Dead Sea famous for?",
+   "answers": [
+    "Being the deepest sea",
+    "Water so salty you float easily",
+    "Having no salt at all",
+    "Being frozen all year"
+   ],
+   "correct": 1,
+   "explanation": "The Dead Sea is several times saltier than the ocean."
+  },
+  {
+   "question": "Which river flows through London?",
+   "answers": [
+    "Thames",
+    "Seine",
+    "Danube",
+    "Rhine"
+   ],
+   "correct": 0,
+   "explanation": "The Thames flows past the Houses of Parliament and Tower Bridge."
+  },
+  {
+   "question": "Which river flows through Paris?",
+   "answers": [
+    "Thames",
+    "Loire",
+    "Rhône",
+    "Seine"
+   ],
+   "correct": 3,
+   "explanation": "Many of Paris's famous sights sit along the banks of the Seine."
+  },
+  {
+   "question": "Which river flows through Cairo?",
+   "answers": [
+    "Congo",
+    "Niger",
+    "Euphrates",
+    "Nile"
+   ],
+   "correct": 3,
+   "explanation": "The Nile has supported life in Egypt for thousands of years."
+  },
+  {
+   "question": "Which is the longest river in Europe?",
+   "answers": [
+    "Danube",
+    "Rhine",
+    "Volga",
+    "Thames"
+   ],
+   "correct": 2,
+   "explanation": "The Volga flows through Russia into the Caspian Sea."
+  },
+  {
+   "question": "Which is the longest river in Asia?",
+   "answers": [
+    "Ganges",
+    "Yangtze",
+    "Mekong",
+    "Indus"
+   ],
+   "correct": 1,
+   "explanation": "The Yangtze flows across China into the East China Sea."
+  },
+  {
+   "question": "Into which sea does the Danube flow?",
+   "answers": [
+    "Black Sea",
+    "Mediterranean Sea",
+    "North Sea",
+    "Baltic Sea"
+   ],
+   "correct": 0,
+   "explanation": "The Danube flows through ten countries before reaching the Black Sea."
+  },
+  {
+   "question": "Into which ocean does the Amazon River flow?",
+   "answers": [
+    "Atlantic Ocean",
+    "Pacific Ocean",
+    "Indian Ocean",
+    "Arctic Ocean"
+   ],
+   "correct": 0,
+   "explanation": "The Amazon carries more water than any other river on Earth."
+  },
+  {
+   "question": "Which river carved the Grand Canyon?",
+   "answers": [
+    "Mississippi River",
+    "Missouri River",
+    "Rio Grande",
+    "Colorado River"
+   ],
+   "correct": 3,
+   "explanation": "The Colorado River cut the canyon over millions of years."
+  },
+  {
+   "question": "Niagara Falls lies on the border between the United States and which country?",
+   "answers": [
+    "Mexico",
+    "Cuba",
+    "Canada",
+    "Greenland"
+   ],
+   "correct": 2,
+   "explanation": "Niagara Falls is shared by New York State and Ontario."
+  },
+  {
+   "question": "Victoria Falls lies on the border of Zambia and which country?",
+   "answers": [
+    "Kenya",
+    "Zimbabwe",
+    "Nigeria",
+    "Egypt"
+   ],
+   "correct": 1,
+   "explanation": "Locally it is called Mosi-oa-Tunya, 'the smoke that thunders'."
+  },
+  {
+   "question": "Iguazu Falls lies on the border of Brazil and which country?",
+   "answers": [
+    "Chile",
+    "Argentina",
+    "Peru",
+    "Colombia"
+   ],
+   "correct": 1,
+   "explanation": "Iguazu is made up of hundreds of separate waterfalls."
+  },
+  {
+   "question": "The Amazon rainforest is mostly in which country?",
+   "answers": [
+    "Brazil",
+    "Peru",
+    "Colombia",
+    "Venezuela"
+   ],
+   "correct": 0,
+   "explanation": "About 60% of the Amazon rainforest is in Brazil."
+  },
+  {
+   "question": "Which canal connects the Atlantic and Pacific Oceans?",
+   "answers": [
+    "Suez Canal",
+    "Kiel Canal",
+    "Corinth Canal",
+    "Panama Canal"
+   ],
+   "correct": 3,
+   "explanation": "The Panama Canal opened in 1914."
+  },
+  {
+   "question": "In which country is the Suez Canal?",
+   "answers": [
+    "Panama",
+    "Saudi Arabia",
+    "Egypt",
+    "Turkey"
+   ],
+   "correct": 2,
+   "explanation": "The Suez Canal links the Mediterranean Sea and the Red Sea."
+  },
+  {
+   "question": "The Strait of Gibraltar separates Spain from which country?",
+   "answers": [
+    "Algeria",
+    "Portugal",
+    "Morocco",
+    "Italy"
+   ],
+   "correct": 2,
+   "explanation": "At its narrowest the strait is only about 14 km wide."
+  },
+  {
+   "question": "In which country is the Eiffel Tower?",
+   "answers": [
+    "Italy",
+    "France",
+    "Belgium",
+    "Spain"
+   ],
+   "correct": 1,
+   "explanation": "The Eiffel Tower in Paris was completed in 1889."
+  },
+  {
+   "question": "In which country is the Colosseum?",
+   "answers": [
+    "Italy",
+    "Greece",
+    "Spain",
+    "France"
+   ],
+   "correct": 0,
+   "explanation": "The Colosseum in Rome is an ancient Roman amphitheatre."
+  },
+  {
+   "question": "In which country is the Taj Mahal?",
+   "answers": [
+    "Pakistan",
+    "Iran",
+    "Bangladesh",
+    "India"
+   ],
+   "correct": 3,
+   "explanation": "The Taj Mahal is a white marble mausoleum in Agra."
+  },
+  {
+   "question": "In which country is the Great Wall?",
+   "answers": [
+    "Japan",
+    "Mongolia",
+    "South Korea",
+    "China"
+   ],
+   "correct": 3,
+   "explanation": "The Great Wall stretches thousands of kilometres across northern China."
+  },
+  {
+   "question": "In which country is Machu Picchu?",
+   "answers": [
+    "Mexico",
+    "Bolivia",
+    "Peru",
+    "Chile"
+   ],
+   "correct": 2,
+   "explanation": "Machu Picchu is a 15th-century Inca citadel high in the Andes."
+  },
+  {
+   "question": "In which city is the Statue of Liberty?",
+   "answers": [
+    "Washington, D.C.",
+    "New York City",
+    "Boston",
+    "Philadelphia"
+   ],
+   "correct": 1,
+   "explanation": "The statue was a gift from France and was dedicated in 1886."
+  },
+  {
+   "question": "The Christ the Redeemer statue overlooks which city?",
+   "answers": [
+    "Rio de Janeiro",
+    "São Paulo",
+    "Lisbon",
+    "Buenos Aires"
+   ],
+   "correct": 0,
+   "explanation": "Christ the Redeemer stands on Corcovado mountain."
+  },
+  {
+   "question": "In which country is the Sydney Opera House?",
+   "answers": [
+    "Australia",
+    "New Zealand",
+    "United Kingdom",
+    "South Africa"
+   ],
+   "correct": 0,
+   "explanation": "The Sydney Opera House, with its sail-like roof, opened in 1973."
+  },
+  {
+   "question": "In which country are the Pyramids of Giza?",
+   "answers": [
+    "Mexico",
+    "Sudan",
+    "Morocco",
+    "Egypt"
+   ],
+   "correct": 3,
+   "explanation": "The Great Pyramid of Giza is the oldest of the Seven Wonders of the Ancient World."
+  },
+  {
+   "question": "In which country is the ancient city of Petra?",
+   "answers": [
+    "Egypt",
+    "Greece",
+    "Jordan",
+    "Morocco"
+   ],
+   "correct": 2,
+   "explanation": "Petra's buildings are carved straight into pink sandstone cliffs."
+  },
+  {
+   "question": "In which country is Chichén Itzá?",
+   "answers": [
+    "Peru",
+    "Mexico",
+    "Guatemala",
+    "Spain"
+   ],
+   "correct": 1,
+   "explanation": "Chichén Itzá is a famous Maya city on the Yucatán Peninsula."
+  },
+  {
+   "question": "In which country is Angkor Wat?",
+   "answers": [
+    "Thailand",
+    "Cambodia",
+    "Vietnam",
+    "Laos"
+   ],
+   "correct": 1,
+   "explanation": "Angkor Wat is so important to Cambodia that it appears on the national flag."
+  },
+  {
+   "question": "In which city is the Sagrada Família basilica?",
+   "answers": [
+    "Barcelona",
+    "Madrid",
+    "Lisbon",
+    "Rome"
+   ],
+   "correct": 0,
+   "explanation": "The Sagrada Família was designed by architect Antoni Gaudí."
+  },
+  {
+   "question": "In which country is Stonehenge?",
+   "answers": [
+    "Ireland",
+    "France",
+    "Norway",
+    "United Kingdom"
+   ],
+   "correct": 3,
+   "explanation": "Stonehenge is a prehistoric stone circle in England."
+  },
+  {
+   "question": "Mount Fuji is the highest mountain in which country?",
+   "answers": [
+    "China",
+    "South Korea",
+    "Japan",
+    "Indonesia"
+   ],
+   "correct": 2,
+   "explanation": "Mount Fuji is a volcano about 3,776 metres high."
+  },
+  {
+   "question": "In which country is Neuschwanstein Castle?",
+   "answers": [
+    "Austria",
+    "Switzerland",
+    "Germany",
+    "France"
+   ],
+   "correct": 2,
+   "explanation": "This fairytale castle in Bavaria was built for King Ludwig II."
+  },
+  {
+   "question": "In which country is Uluru (Ayers Rock)?",
+   "answers": [
+    "New Zealand",
+    "Australia",
+    "South Africa",
+    "Chile"
+   ],
+   "correct": 1,
+   "explanation": "Uluru is a giant sandstone rock sacred to Aboriginal people."
+  },
+  {
+   "question": "The giant moai stone statues of Easter Island belong to which country?",
+   "answers": [
+    "Chile",
+    "Peru",
+    "New Zealand",
+    "Mexico"
+   ],
+   "correct": 0,
+   "explanation": "Easter Island (Rapa Nui) is in the Pacific Ocean, far off Chile's coast."
+  },
+  {
+   "question": "The Galápagos Islands belong to which country?",
+   "answers": [
+    "Peru",
+    "Chile",
+    "Colombia",
+    "Ecuador"
+   ],
+   "correct": 3,
+   "explanation": "The Galápagos inspired Charles Darwin's ideas on evolution."
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "answers": [
+    "Won",
+    "Yuan",
+    "Ringgit",
+    "Yen"
+   ],
+   "correct": 3,
+   "explanation": "The yen's symbol is ¥."
+  },
+  {
+   "question": "What is the currency of the United Kingdom?",
+   "answers": [
+    "Euro",
+    "Dollar",
+    "Pound sterling",
+    "Franc"
+   ],
+   "correct": 2,
+   "explanation": "The pound is one of the oldest currencies still in use."
+  },
+  {
+   "question": "What is the currency of India?",
+   "answers": [
+    "Rupiah",
+    "Rupee",
+    "Taka",
+    "Dinar"
+   ],
+   "correct": 1,
+   "explanation": "The Indian rupee's symbol is ₹."
+  },
+  {
+   "question": "What is the currency of Brazil?",
+   "answers": [
+    "Real",
+    "Peso",
+    "Escudo",
+    "Euro"
+   ],
+   "correct": 0,
+   "explanation": "The Brazilian real was introduced in 1994."
+  },
+  {
+   "question": "What is the currency of South Africa?",
+   "answers": [
+    "Rand",
+    "Shilling",
+    "Naira",
+    "Dollar"
+   ],
+   "correct": 0,
+   "explanation": "The rand is named after the Witwatersrand, a gold-rich ridge."
+  },
+  {
+   "question": "What is the currency of Nigeria?",
+   "answers": [
+    "Cedi",
+    "Rand",
+    "Shilling",
+    "Naira"
+   ],
+   "correct": 3,
+   "explanation": "The naira replaced the Nigerian pound in 1973."
+  },
+  {
+   "question": "Which currency is used in France, Germany, Italy and Spain?",
+   "answers": [
+    "Franc",
+    "Pound",
+    "Euro",
+    "Mark"
+   ],
+   "correct": 2,
+   "explanation": "Euro banknotes and coins came into use in 2002."
+  },
+  {
+   "question": "What is the official language of Brazil?",
+   "answers": [
+    "Spanish",
+    "Portuguese",
+    "French",
+    "Italian"
+   ],
+   "correct": 1,
+   "explanation": "Brazil is the largest Portuguese-speaking country in the world."
+  },
+  {
+   "question": "What is the main language spoken in Mexico?",
+   "answers": [
+    "Portuguese",
+    "Spanish",
+    "English",
+    "French"
+   ],
+   "correct": 1,
+   "explanation": "Mexico has more Spanish speakers than any other country."
+  },
+  {
+   "question": "What is the official language of Egypt?",
+   "answers": [
+    "Arabic",
+    "Turkish",
+    "French",
+    "Persian"
+   ],
+   "correct": 0,
+   "explanation": "Egypt is the most populous Arabic-speaking country."
+  },
+  {
+   "question": "Which language is mainly spoken in the Canadian province of Quebec?",
+   "answers": [
+    "English",
+    "Spanish",
+    "Italian",
+    "French"
+   ],
+   "correct": 3,
+   "explanation": "French is the only official language of Quebec."
+  },
+  {
+   "question": "Which of these is NOT a national language of Switzerland?",
+   "answers": [
+    "German",
+    "French",
+    "Spanish",
+    "Italian"
+   ],
+   "correct": 2,
+   "explanation": "Switzerland's four national languages are German, French, Italian and Romansh."
+  },
+  {
+   "question": "Which country is shaped like a boot?",
+   "answers": [
+    "Greece",
+    "Chile",
+    "Italy",
+    "Portugal"
+   ],
+   "correct": 2,
+   "explanation": "Italy's boot appears to be kicking the island of Sicily."
+  },
+  {
+   "question": "Which country is known as the 'Land of the Rising Sun'?",
+   "answers": [
+    "China",
+    "Japan",
+    "Thailand",
+    "South Korea"
+   ],
+   "correct": 1,
+   "explanation": "Japan's name in Japanese, Nihon, means 'origin of the sun'."
+  },
+  {
+   "question": "Which country is the only one that shares a land border with Portugal?",
+   "answers": [
+    "Spain",
+    "France",
+    "Morocco",
+    "Italy"
+   ],
+   "correct": 0,
+   "explanation": "Portugal's only land neighbour is Spain."
+  },
+  {
+   "question": "Which country completely surrounds Lesotho?",
+   "answers": [
+    "Botswana",
+    "Namibia",
+    "Zimbabwe",
+    "South Africa"
+   ],
+   "correct": 3,
+   "explanation": "Lesotho is a mountain kingdom entirely inside South Africa."
+  },
+  {
+   "question": "Which of these countries is landlocked (has no coastline)?",
+   "answers": [
+    "Italy",
+    "Portugal",
+    "Norway",
+    "Switzerland"
+   ],
+   "correct": 3,
+   "explanation": "Switzerland is surrounded by France, Germany, Austria, Liechtenstein and Italy."
+  },
+  {
+   "question": "Which large island country lies off the southeast coast of Africa?",
+   "answers": [
+    "Sri Lanka",
+    "Iceland",
+    "Madagascar",
+    "Cuba"
+   ],
+   "correct": 2,
+   "explanation": "Madagascar is famous for lemurs, found nowhere else in the wild."
+  }
+ ]
+}

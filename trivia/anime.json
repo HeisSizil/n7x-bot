@@ -1,0 +1,1755 @@
+{
+ "_how_to_edit": "One question per {...}. 'question': the text. 'answers': exactly 4. 'correct': the position of the right answer (0 = first, 1 = second, 2 = third, 3 = fourth). Optional 'explanation' (shown after answering) and 'image' (an https:// link, or a file name inside the images/ folder). Answers are shuffled when shown. The bot re-reads this file automatically. After editing, run: python check_trivia.py",
+ "category": "Anime",
+ "questions": [
+  {
+   "question": "Who created the manga Naruto?",
+   "answers": [
+    "Eiichiro Oda",
+    "Akira Toriyama",
+    "Masashi Kishimoto",
+    "Tite Kubo"
+   ],
+   "correct": 2,
+   "explanation": "Masashi Kishimoto wrote and drew Naruto for Weekly Shonen Jump."
+  },
+  {
+   "question": "Which village is Naruto Uzumaki from?",
+   "answers": [
+    "The Hidden Sand Village",
+    "The Hidden Leaf Village",
+    "The Hidden Mist Village",
+    "The Hidden Cloud Village"
+   ],
+   "correct": 1,
+   "explanation": "Naruto grew up in Konoha, the Village Hidden in the Leaves."
+  },
+  {
+   "question": "What powerful creature is sealed inside Naruto?",
+   "answers": [
+    "A giant dragon",
+    "The Eight-Headed Snake",
+    "A white tiger",
+    "The Nine-Tailed Fox"
+   ],
+   "correct": 3,
+   "explanation": "The Nine-Tailed Fox, Kurama, was sealed inside Naruto as a baby."
+  },
+  {
+   "question": "Which spinning ball of chakra is one of Naruto's signature moves?",
+   "answers": [
+    "Rasengan",
+    "Chidori",
+    "Kamehameha",
+    "Getsuga Tensho"
+   ],
+   "correct": 0,
+   "explanation": "Naruto learned the Rasengan from Jiraiya; it was created by his father, the Fourth Hokage."
+  },
+  {
+   "question": "What is Naruto's favorite food?",
+   "answers": [
+    "Sushi",
+    "Curry",
+    "Onigiri",
+    "Ramen"
+   ],
+   "correct": 3,
+   "explanation": "Naruto loves eating ramen at Ichiraku Ramen."
+  },
+  {
+   "question": "What is Naruto's big dream for most of the series?",
+   "answers": [
+    "To become Hokage",
+    "To become a pirate king",
+    "To become a Pokémon Master",
+    "To become the strongest chef"
+   ],
+   "correct": 0,
+   "explanation": "Naruto wants to become Hokage, the leader of his village."
+  },
+  {
+   "question": "Sasuke belongs to which famous ninja clan?",
+   "answers": [
+    "Hyuga",
+    "Nara",
+    "Uchiha",
+    "Senju"
+   ],
+   "correct": 2,
+   "explanation": "Sasuke Uchiha is one of the last members of the Uchiha clan."
+  },
+  {
+   "question": "Who is the masked, silver-haired leader of Team 7 in Naruto?",
+   "answers": [
+    "Kakashi Hatake",
+    "Jiraiya",
+    "Might Guy",
+    "Iruka Umino"
+   ],
+   "correct": 0,
+   "explanation": "Kakashi Hatake is Team 7's teacher and loves reading his favorite books."
+  },
+  {
+   "question": "What is the name of the special red eye ability of the Uchiha clan?",
+   "answers": [
+    "Byakugan",
+    "Sharingan",
+    "Rinnegan",
+    "Mangekyo Rasengan"
+   ],
+   "correct": 1,
+   "explanation": "The Sharingan lets Uchiha users copy techniques and see through movements."
+  },
+  {
+   "question": "What word does Naruto often add to his sentences in the original Japanese version?",
+   "answers": [
+    "Dattebayo",
+    "Kawaii",
+    "Nani",
+    "Sugoi"
+   ],
+   "correct": 0,
+   "explanation": "Naruto's verbal tic \"dattebayo\" became \"Believe it!\" in the English dub."
+  },
+  {
+   "question": "Which member of Team 7 has pink hair?",
+   "answers": [
+    "Hinata Hyuga",
+    "Ino Yamanaka",
+    "Sakura Haruno",
+    "Tenten"
+   ],
+   "correct": 2,
+   "explanation": "Sakura Haruno is the third member of Team 7 alongside Naruto and Sasuke."
+  },
+  {
+   "question": "Which technique does Naruto use to create many copies of himself?",
+   "answers": [
+    "Sexy Jutsu",
+    "Fireball Jutsu",
+    "Body Swap Jutsu",
+    "Shadow Clone Jutsu"
+   ],
+   "correct": 3,
+   "explanation": "Naruto's Shadow Clone Jutsu lets him make dozens of solid copies."
+  },
+  {
+   "question": "Who created One Piece?",
+   "answers": [
+    "Eiichiro Oda",
+    "Masashi Kishimoto",
+    "Hajime Isayama",
+    "Yoshihiro Togashi"
+   ],
+   "correct": 0,
+   "explanation": "Eiichiro Oda has been drawing One Piece since 1997."
+  },
+  {
+   "question": "What is Monkey D. Luffy's famous nickname?",
+   "answers": [
+    "Red Hair",
+    "Straw Hat",
+    "Fire Fist",
+    "Pirate Hunter"
+   ],
+   "correct": 1,
+   "explanation": "Luffy always wears the straw hat given to him by Shanks."
+  },
+  {
+   "question": "After eating which Devil Fruit did Luffy's body become like rubber?",
+   "answers": [
+    "Gum-Gum Fruit",
+    "Flame-Flame Fruit",
+    "Chop-Chop Fruit",
+    "Smoke-Smoke Fruit"
+   ],
+   "correct": 0,
+   "explanation": "The Gum-Gum Fruit (Gomu Gomu no Mi) gave Luffy his stretchy body."
+  },
+  {
+   "question": "What is Luffy's dream in One Piece?",
+   "answers": [
+    "To become Hokage",
+    "To become a Marine admiral",
+    "To find his lost sister",
+    "To become King of the Pirates"
+   ],
+   "correct": 3,
+   "explanation": "Luffy sets out to find the One Piece and become King of the Pirates."
+  },
+  {
+   "question": "How many swords does Roronoa Zoro famously fight with?",
+   "answers": [
+    "Three",
+    "One",
+    "Two",
+    "Five"
+   ],
+   "correct": 0,
+   "explanation": "Zoro uses Three-Sword Style, holding one sword in his mouth."
+  },
+  {
+   "question": "What is Sanji's job on the Straw Hat crew?",
+   "answers": [
+    "Navigator",
+    "Cook",
+    "Doctor",
+    "Shipwright"
+   ],
+   "correct": 1,
+   "explanation": "Sanji is the crew's cook and fights using only his legs."
+  },
+  {
+   "question": "What is Nami's role on the Straw Hat crew?",
+   "answers": [
+    "Navigator",
+    "Cook",
+    "Sniper",
+    "Musician"
+   ],
+   "correct": 0,
+   "explanation": "Nami is a skilled navigator who loves maps and money."
+  },
+  {
+   "question": "What kind of animal is Tony Tony Chopper?",
+   "answers": [
+    "A raccoon",
+    "A dog",
+    "A bear",
+    "A reindeer"
+   ],
+   "correct": 3,
+   "explanation": "Chopper is a reindeer who ate a Devil Fruit and became the crew's doctor."
+  },
+  {
+   "question": "What is a major weakness of all Devil Fruit users in One Piece?",
+   "answers": [
+    "They cannot swim",
+    "They cannot sleep",
+    "They are allergic to meat",
+    "They cannot see at night"
+   ],
+   "correct": 0,
+   "explanation": "Devil Fruit users sink like a hammer in the sea."
+  },
+  {
+   "question": "What was the Straw Hat Pirates' first proper ship called?",
+   "answers": [
+    "Thousand Sunny",
+    "Going Merry",
+    "Black Pearl",
+    "Red Force"
+   ],
+   "correct": 1,
+   "explanation": "The Going Merry carried the crew before the Thousand Sunny."
+  },
+  {
+   "question": "Which Straw Hat crew member is a sniper with a long nose?",
+   "answers": [
+    "Usopp",
+    "Franky",
+    "Brook",
+    "Zoro"
+   ],
+   "correct": 0,
+   "explanation": "Usopp is the crew's sniper and a famous teller of tall tales."
+  },
+  {
+   "question": "In One Piece, what is the legendary treasure that pirates are searching for called?",
+   "answers": [
+    "The Golden Apple",
+    "The One Piece",
+    "The Dragon Balls",
+    "The Infinity Gem"
+   ],
+   "correct": 1,
+   "explanation": "Gol D. Roger's legendary treasure is known as the One Piece."
+  },
+  {
+   "question": "Who created Dragon Ball?",
+   "answers": [
+    "Osamu Tezuka",
+    "Eiichiro Oda",
+    "Akira Toriyama",
+    "Rumiko Takahashi"
+   ],
+   "correct": 2,
+   "explanation": "Akira Toriyama created Dragon Ball, first published in 1984."
+  },
+  {
+   "question": "What is Goku's most famous energy blast attack?",
+   "answers": [
+    "Rasengan",
+    "Galick Gun",
+    "Spirit Gun",
+    "Kamehameha"
+   ],
+   "correct": 3,
+   "explanation": "Goku learned the Kamehameha from Master Roshi."
+  },
+  {
+   "question": "What is Goku's Saiyan birth name?",
+   "answers": [
+    "Raditz",
+    "Kakarot",
+    "Bardock",
+    "Nappa"
+   ],
+   "correct": 1,
+   "explanation": "Goku was born on Planet Vegeta as Kakarot."
+  },
+  {
+   "question": "What alien race does Goku belong to?",
+   "answers": [
+    "Saiyan",
+    "Namekian",
+    "Kryptonian",
+    "Majin"
+   ],
+   "correct": 0,
+   "explanation": "Goku is a Saiyan, a warrior race that loves to fight."
+  },
+  {
+   "question": "How many Dragon Balls must be gathered to summon the dragon?",
+   "answers": [
+    "Five",
+    "Nine",
+    "Seven",
+    "Twelve"
+   ],
+   "correct": 2,
+   "explanation": "Gathering all seven Dragon Balls summons a wish-granting dragon."
+  },
+  {
+   "question": "What is the name of the dragon summoned by Earth's Dragon Balls?",
+   "answers": [
+    "Porunga",
+    "Shenron",
+    "Smaug",
+    "Haku"
+   ],
+   "correct": 1,
+   "explanation": "Shenron grants a wish when all seven Dragon Balls are gathered."
+  },
+  {
+   "question": "Which proud character calls himself the Prince of all Saiyans?",
+   "answers": [
+    "Vegeta",
+    "Gohan",
+    "Broly",
+    "Trunks"
+   ],
+   "correct": 0,
+   "explanation": "Vegeta is the proud Saiyan prince and Goku's great rival."
+  },
+  {
+   "question": "What is the famous transformation where Saiyans get golden, spiky hair?",
+   "answers": [
+    "Bankai",
+    "Super Saiyan",
+    "Gear Second",
+    "Kaio-ken"
+   ],
+   "correct": 1,
+   "explanation": "Goku first became a Super Saiyan while fighting Frieza."
+  },
+  {
+   "question": "What does young Goku ride across the sky in Dragon Ball?",
+   "answers": [
+    "A flying carpet",
+    "A giant eagle",
+    "The Flying Nimbus cloud",
+    "A rocket board"
+   ],
+   "correct": 2,
+   "explanation": "The Flying Nimbus can only be ridden by someone with a pure heart."
+  },
+  {
+   "question": "What is the name of Goku's eldest son?",
+   "answers": [
+    "Gohan",
+    "Goten",
+    "Trunks",
+    "Krillin"
+   ],
+   "correct": 0,
+   "explanation": "Gohan is Goku's first son, named after Goku's adoptive grandfather."
+  },
+  {
+   "question": "Which villain destroyed the Saiyans' home planet in Dragon Ball Z?",
+   "answers": [
+    "Cell",
+    "Majin Buu",
+    "Beerus",
+    "Frieza"
+   ],
+   "correct": 3,
+   "explanation": "Frieza destroyed Planet Vegeta because he feared the Saiyans."
+  },
+  {
+   "question": "Which Pokémon is Ash Ketchum's first partner in the anime?",
+   "answers": [
+    "Pikachu",
+    "Charmander",
+    "Squirtle",
+    "Bulbasaur"
+   ],
+   "correct": 0,
+   "explanation": "Ash received Pikachu from Professor Oak on his first day as a trainer."
+  },
+  {
+   "question": "What type of Pokémon is Pikachu?",
+   "answers": [
+    "Fire",
+    "Electric",
+    "Normal",
+    "Psychic"
+   ],
+   "correct": 1,
+   "explanation": "Pikachu stores electricity in the red pouches on its cheeks."
+  },
+  {
+   "question": "What is the famous English slogan of Pokémon?",
+   "answers": [
+    "Believe it!",
+    "Plus Ultra!",
+    "Go beyond!",
+    "Gotta catch 'em all!"
+   ],
+   "correct": 3,
+   "explanation": "\"Gotta catch 'em all!\" has been the Pokémon motto since the 1990s."
+  },
+  {
+   "question": "Which talking Pokémon is a member of Team Rocket with Jessie and James?",
+   "answers": [
+    "Psyduck",
+    "Meowth",
+    "Wobbuffet",
+    "Ekans"
+   ],
+   "correct": 1,
+   "explanation": "Meowth taught himself to walk and talk like a human."
+  },
+  {
+   "question": "What is Ash Ketchum's hometown?",
+   "answers": [
+    "Viridian City",
+    "Pewter City",
+    "Cerulean City",
+    "Pallet Town"
+   ],
+   "correct": 3,
+   "explanation": "Ash and his rival Gary both come from Pallet Town."
+  },
+  {
+   "question": "Which professor gives new trainers their first Pokémon in Pallet Town?",
+   "answers": [
+    "Professor Elm",
+    "Professor Oak",
+    "Professor Birch",
+    "Professor Willow"
+   ],
+   "correct": 1,
+   "explanation": "Professor Oak is a Pokémon researcher in Pallet Town."
+  },
+  {
+   "question": "Which Pokémon is number 1 in the National Pokédex?",
+   "answers": [
+    "Pikachu",
+    "Mew",
+    "Bulbasaur",
+    "Charmander"
+   ],
+   "correct": 2,
+   "explanation": "Bulbasaur is the very first entry in the Pokédex."
+  },
+  {
+   "question": "What is the electronic encyclopedia that records information about Pokémon called?",
+   "answers": [
+    "PokéNav",
+    "Pokédex",
+    "PokéGear",
+    "PokéCenter"
+   ],
+   "correct": 1,
+   "explanation": "Trainers use the Pokédex to learn about the Pokémon they meet."
+  },
+  {
+   "question": "What item do trainers throw to catch wild Pokémon?",
+   "answers": [
+    "A Poké Ball",
+    "A Dragon Ball",
+    "A Pokéflute",
+    "A Poké Puff"
+   ],
+   "correct": 0,
+   "explanation": "Poké Balls shrink to pocket size and hold Pokémon inside."
+  },
+  {
+   "question": "Which pink Pokémon sings a song that makes everyone fall asleep?",
+   "answers": [
+    "Clefairy",
+    "Jigglypuff",
+    "Chansey",
+    "Snorlax"
+   ],
+   "correct": 1,
+   "explanation": "Jigglypuff gets angry and draws on faces when its audience falls asleep."
+  },
+  {
+   "question": "Who is Ash's rival from Pallet Town and Professor Oak's grandson?",
+   "answers": [
+    "Gary Oak",
+    "Brock",
+    "Misty",
+    "Tracey"
+   ],
+   "correct": 0,
+   "explanation": "Gary Oak is Ash's first rival in the anime."
+  },
+  {
+   "question": "Who created Attack on Titan?",
+   "answers": [
+    "Gege Akutami",
+    "Koyoharu Gotouge",
+    "Hajime Isayama",
+    "Kohei Horikoshi"
+   ],
+   "correct": 2,
+   "explanation": "Hajime Isayama created Attack on Titan, which began in 2009."
+  },
+  {
+   "question": "Who is the main character of Attack on Titan?",
+   "answers": [
+    "Levi Ackerman",
+    "Armin Arlert",
+    "Reiner Braun",
+    "Eren Yeager"
+   ],
+   "correct": 3,
+   "explanation": "Eren Yeager vows to fight the Titans after they attack his hometown."
+  },
+  {
+   "question": "At the start of Attack on Titan, what protects humanity from the Titans?",
+   "answers": [
+    "A magic barrier",
+    "An underground city",
+    "Three giant walls",
+    "A huge ocean"
+   ],
+   "correct": 2,
+   "explanation": "Humanity lives inside three huge walls: Maria, Rose and Sina."
+  },
+  {
+   "question": "Which military branch in Attack on Titan explores outside the walls?",
+   "answers": [
+    "The Military Police",
+    "The Garrison",
+    "The Royal Guard",
+    "The Survey Corps"
+   ],
+   "correct": 3,
+   "explanation": "The Survey Corps, also called the Scout Regiment, ventures beyond the walls."
+  },
+  {
+   "question": "What equipment lets soldiers in Attack on Titan swing through the air with cables?",
+   "answers": [
+    "Jet packs",
+    "Grappling horses",
+    "Omni-directional mobile gear",
+    "Rocket boots"
+   ],
+   "correct": 2,
+   "explanation": "This gear, also called 3D Maneuver Gear, uses gas and hooks to fly around."
+  },
+  {
+   "question": "Which short captain is called humanity's strongest soldier in Attack on Titan?",
+   "answers": [
+    "Levi",
+    "Erwin",
+    "Hange",
+    "Jean"
+   ],
+   "correct": 0,
+   "explanation": "Captain Levi is famous for his amazing fighting skill and love of cleanliness."
+  },
+  {
+   "question": "Where must you strike a Titan to defeat it?",
+   "answers": [
+    "The heart",
+    "The left foot",
+    "The eyes",
+    "The nape of the neck"
+   ],
+   "correct": 3,
+   "explanation": "A deep cut to the nape of the neck takes a Titan down."
+  },
+  {
+   "question": "Which Attack on Titan character always wears a red scarf given to her by Eren?",
+   "answers": [
+    "Mikasa Ackerman",
+    "Annie Leonhart",
+    "Sasha Blouse",
+    "Historia Reiss"
+   ],
+   "correct": 0,
+   "explanation": "Eren wrapped his scarf around Mikasa when they were children."
+  },
+  {
+   "question": "Who is Eren's clever, blond childhood best friend in Attack on Titan?",
+   "answers": [
+    "Connie Springer",
+    "Jean Kirstein",
+    "Armin Arlert",
+    "Marco Bott"
+   ],
+   "correct": 2,
+   "explanation": "Armin dreams of seeing the ocean beyond the walls."
+  },
+  {
+   "question": "What is the Japanese title of Attack on Titan?",
+   "answers": [
+    "Kimetsu no Yaiba",
+    "Shingeki no Kyojin",
+    "Jujutsu Kaisen",
+    "Boku no Hero Academia"
+   ],
+   "correct": 1,
+   "explanation": "It is the original Japanese name of the series."
+  },
+  {
+   "question": "Who is the main character of Demon Slayer?",
+   "answers": [
+    "Zenitsu Agatsuma",
+    "Inosuke Hashibira",
+    "Giyu Tomioka",
+    "Tanjiro Kamado"
+   ],
+   "correct": 3,
+   "explanation": "Tanjiro becomes a demon slayer to save his sister."
+  },
+  {
+   "question": "Which family member of Tanjiro is turned into a demon?",
+   "answers": [
+    "His sister Nezuko",
+    "His mother",
+    "His brother Takeo",
+    "His grandfather"
+   ],
+   "correct": 0,
+   "explanation": "Nezuko is the only survivor of the attack, but she becomes a demon."
+  },
+  {
+   "question": "What does Nezuko wear over her mouth?",
+   "answers": [
+    "A paper mask",
+    "A metal gag",
+    "A red scarf",
+    "A bamboo muzzle"
+   ],
+   "correct": 3,
+   "explanation": "The bamboo piece stops Nezuko from biting anyone."
+  },
+  {
+   "question": "Which Breathing style does Tanjiro learn first?",
+   "answers": [
+    "Flame Breathing",
+    "Thunder Breathing",
+    "Water Breathing",
+    "Beast Breathing"
+   ],
+   "correct": 2,
+   "explanation": "Tanjiro is trained in Water Breathing by Sakonji Urokodaki."
+  },
+  {
+   "question": "What does Inosuke wear on his head in Demon Slayer?",
+   "answers": [
+    "A fox mask",
+    "A boar's head mask",
+    "A tiger hood",
+    "A samurai helmet"
+   ],
+   "correct": 1,
+   "explanation": "Inosuke was raised by boars and wears a boar's head."
+  },
+  {
+   "question": "What is the main weakness of demons in Demon Slayer?",
+   "answers": [
+    "Garlic",
+    "Silver bullets",
+    "Sunlight",
+    "Running water"
+   ],
+   "correct": 2,
+   "explanation": "Demons are destroyed by sunlight, so they only roam at night."
+  },
+  {
+   "question": "What is the Japanese title of Demon Slayer?",
+   "answers": [
+    "Shingeki no Kyojin",
+    "Chainsaw Man",
+    "Tokyo Ghoul",
+    "Kimetsu no Yaiba"
+   ],
+   "correct": 3,
+   "explanation": "Kimetsu no Yaiba is the original Japanese name of the series."
+  },
+  {
+   "question": "Who is the very first demon and main villain of Demon Slayer?",
+   "answers": [
+    "Muzan Kibutsuji",
+    "Akaza",
+    "Rui",
+    "Douma"
+   ],
+   "correct": 0,
+   "explanation": "Muzan Kibutsuji is the demon who can turn humans into demons."
+  },
+  {
+   "question": "What are the most powerful swordsmen of the Demon Slayer Corps called?",
+   "answers": [
+    "The Upper Moons",
+    "The Espada",
+    "The Hashira",
+    "The Akatsuki"
+   ],
+   "correct": 2,
+   "explanation": "Each Hashira is a top-ranked master of a Breathing style."
+  },
+  {
+   "question": "Which Demon Slayer movie takes place on a train?",
+   "answers": [
+    "Entertainment District",
+    "Swordsmith Village",
+    "Infinity Castle",
+    "Mugen Train"
+   ],
+   "correct": 3,
+   "explanation": "In Mugen Train, Tanjiro and friends fight a demon aboard a train."
+  },
+  {
+   "question": "Who is the cheerful Flame Hashira who joins Tanjiro on the Mugen Train?",
+   "answers": [
+    "Kyojuro Rengoku",
+    "Tengen Uzui",
+    "Giyu Tomioka",
+    "Gyomei Himejima"
+   ],
+   "correct": 0,
+   "explanation": "Rengoku uses Flame Breathing and has a big, warm personality."
+  },
+  {
+   "question": "Who created My Hero Academia?",
+   "answers": [
+    "Hajime Isayama",
+    "Tatsuki Fujimoto",
+    "Masashi Kishimoto",
+    "Kohei Horikoshi"
+   ],
+   "correct": 3,
+   "explanation": "Kohei Horikoshi began My Hero Academia in 2014."
+  },
+  {
+   "question": "What is the hero name of Izuku Midoriya in My Hero Academia?",
+   "answers": [
+    "Ground Zero",
+    "Shoto",
+    "Deku",
+    "Lemillion"
+   ],
+   "correct": 2,
+   "explanation": "Izuku turned the insult \"Deku\" into his proud hero name."
+  },
+  {
+   "question": "In My Hero Academia, what are people's superpowers called?",
+   "answers": [
+    "Nen",
+    "Jutsu",
+    "Stands",
+    "Quirks"
+   ],
+   "correct": 3,
+   "explanation": "Most people in My Hero Academia are born with a Quirk."
+  },
+  {
+   "question": "Which number-one hero passes his power to Izuku Midoriya?",
+   "answers": [
+    "Endeavor",
+    "Hawks",
+    "All Might",
+    "Aizawa"
+   ],
+   "correct": 2,
+   "explanation": "All Might chooses Izuku as his successor."
+  },
+  {
+   "question": "What is the name of the power that All Might passes to Izuku?",
+   "answers": [
+    "All For One",
+    "Full Cowl",
+    "Plus Ultra",
+    "One For All"
+   ],
+   "correct": 3,
+   "explanation": "One For All is a Quirk that can be passed from person to person."
+  },
+  {
+   "question": "Which hero school does Izuku attend in My Hero Academia?",
+   "answers": [
+    "Hogwarts",
+    "Shiketsu High",
+    "U.A. High School",
+    "Ouran Academy"
+   ],
+   "correct": 2,
+   "explanation": "U.A. High is Japan's top school for training heroes."
+  },
+  {
+   "question": "What is Katsuki Bakugo's Quirk?",
+   "answers": [
+    "Explosion",
+    "Hardening",
+    "Zero Gravity",
+    "Engine"
+   ],
+   "correct": 0,
+   "explanation": "Bakugo's sweat is like nitroglycerin, so he can make explosions."
+  },
+  {
+   "question": "Which student can make ice with one side of his body and fire with the other?",
+   "answers": [
+    "Tenya Iida",
+    "Eijiro Kirishima",
+    "Fumikage Tokoyami",
+    "Shoto Todoroki"
+   ],
+   "correct": 3,
+   "explanation": "Todoroki's Quirk is called Half-Cold Half-Hot."
+  },
+  {
+   "question": "Which My Hero Academia character makes things float by touching them with her fingertips?",
+   "answers": [
+    "Momo Yaoyorozu",
+    "Tsuyu Asui",
+    "Ochaco Uraraka",
+    "Kyoka Jiro"
+   ],
+   "correct": 2,
+   "explanation": "Uraraka's Quirk is called Zero Gravity."
+  },
+  {
+   "question": "What is U.A. High School's famous motto?",
+   "answers": [
+    "Believe it",
+    "Plus Ultra",
+    "Go Fight Win",
+    "Never Give Up"
+   ],
+   "correct": 1,
+   "explanation": "\"Plus Ultra\" is Latin for \"further beyond\"."
+  },
+  {
+   "question": "In Death Note, what happens to a person whose name is written in the notebook?",
+   "answers": [
+    "They die",
+    "They fall in love",
+    "They lose their memory",
+    "They become rich"
+   ],
+   "correct": 0,
+   "explanation": "The Death Note kills anyone whose name is written in it."
+  },
+  {
+   "question": "Who finds the Death Note and becomes the main character?",
+   "answers": [
+    "L Lawliet",
+    "Near",
+    "Misa Amane",
+    "Light Yagami"
+   ],
+   "correct": 3,
+   "explanation": "High school student Light Yagami picks up the notebook."
+  },
+  {
+   "question": "What is the name of the genius detective who hunts Kira in Death Note?",
+   "answers": [
+    "L",
+    "Near",
+    "Mello",
+    "Ryuk"
+   ],
+   "correct": 0,
+   "explanation": "The mysterious detective L is known by a single letter."
+  },
+  {
+   "question": "Which Shinigami drops the Death Note into the human world?",
+   "answers": [
+    "Rem",
+    "Ryuk",
+    "Sidoh",
+    "Kurama"
+   ],
+   "correct": 1,
+   "explanation": "Ryuk drops the notebook because he is bored."
+  },
+  {
+   "question": "What is Ryuk's favorite food in Death Note?",
+   "answers": [
+    "Ramen",
+    "Cake",
+    "Apples",
+    "Dumplings"
+   ],
+   "correct": 2,
+   "explanation": "Ryuk loves apples from the human world."
+  },
+  {
+   "question": "What name does the public give to Light Yagami's mysterious killer identity?",
+   "answers": [
+    "Zero",
+    "Kira",
+    "Joker",
+    "Phantom"
+   ],
+   "correct": 1,
+   "explanation": "\"Kira\" comes from the Japanese pronunciation of \"killer\"."
+  },
+  {
+   "question": "What does the Japanese word \"Shinigami\" mean?",
+   "answers": [
+    "Ninja",
+    "Ghost cat",
+    "Samurai",
+    "Death god"
+   ],
+   "correct": 3,
+   "explanation": "Shinigami are death gods in Japanese stories."
+  },
+  {
+   "question": "Who created Sailor Moon?",
+   "answers": [
+    "Rumiko Takahashi",
+    "Naoko Takeuchi",
+    "CLAMP",
+    "Hiromu Arakawa"
+   ],
+   "correct": 1,
+   "explanation": "Naoko Takeuchi created Sailor Moon in the early 1990s."
+  },
+  {
+   "question": "What is Sailor Moon's everyday name?",
+   "answers": [
+    "Usagi Tsukino",
+    "Rei Hino",
+    "Ami Mizuno",
+    "Makoto Kino"
+   ],
+   "correct": 0,
+   "explanation": "Usagi Tsukino is a clumsy schoolgirl who becomes Sailor Moon."
+  },
+  {
+   "question": "What is the name of Sailor Moon's talking black cat?",
+   "answers": [
+    "Artemis",
+    "Luna",
+    "Jiji",
+    "Meowth"
+   ],
+   "correct": 1,
+   "explanation": "Luna has a crescent moon on her forehead."
+  },
+  {
+   "question": "Which mysterious hero in a top hat and cape helps Sailor Moon?",
+   "answers": [
+    "Zorro",
+    "Kaitou Kid",
+    "Phantom Thief",
+    "Tuxedo Mask"
+   ],
+   "correct": 3,
+   "explanation": "Tuxedo Mask often throws a rose to help Sailor Moon."
+  },
+  {
+   "question": "Which Sailor Guardian has fire powers?",
+   "answers": [
+    "Sailor Mercury",
+    "Sailor Jupiter",
+    "Sailor Mars",
+    "Sailor Venus"
+   ],
+   "correct": 2,
+   "explanation": "Sailor Mars, Rei Hino, uses fire-based attacks."
+  },
+  {
+   "question": "Which famous director co-founded Studio Ghibli?",
+   "answers": [
+    "Makoto Shinkai",
+    "Mamoru Hosoda",
+    "Satoshi Kon",
+    "Hayao Miyazaki"
+   ],
+   "correct": 3,
+   "explanation": "Hayao Miyazaki co-founded Studio Ghibli in 1985."
+  },
+  {
+   "question": "In which Ghibli film do two sisters meet a big, furry forest spirit?",
+   "answers": [
+    "Ponyo",
+    "Princess Mononoke",
+    "My Neighbor Totoro",
+    "Whisper of the Heart"
+   ],
+   "correct": 2,
+   "explanation": "Satsuki and Mei meet Totoro in the countryside."
+  },
+  {
+   "question": "In which Ghibli film does a girl named Chihiro work in a bathhouse for spirits?",
+   "answers": [
+    "Howl's Moving Castle",
+    "Spirited Away",
+    "Kiki's Delivery Service",
+    "The Cat Returns"
+   ],
+   "correct": 1,
+   "explanation": "Chihiro must work in the bathhouse to save her parents."
+  },
+  {
+   "question": "What is the name of Kiki's black cat in Kiki's Delivery Service?",
+   "answers": [
+    "Luna",
+    "Totoro",
+    "Calcifer",
+    "Jiji"
+   ],
+   "correct": 3,
+   "explanation": "Jiji is Kiki's sarcastic talking cat."
+  },
+  {
+   "question": "What strange vehicle appears in My Neighbor Totoro?",
+   "answers": [
+    "A flying train",
+    "A dragon ship",
+    "A Catbus",
+    "A robot car"
+   ],
+   "correct": 2,
+   "explanation": "The Catbus is a giant cat-shaped bus with many legs."
+  },
+  {
+   "question": "In Howl's Moving Castle, what curse is placed on Sophie?",
+   "answers": [
+    "She is turned into a cat",
+    "She loses her voice",
+    "She becomes invisible",
+    "She is turned into an old woman"
+   ],
+   "correct": 3,
+   "explanation": "The Witch of the Waste turns young Sophie into an old woman."
+  },
+  {
+   "question": "What is the name of the fire demon who powers Howl's moving castle?",
+   "answers": [
+    "No-Face",
+    "Calcifer",
+    "Haku",
+    "Kodama"
+   ],
+   "correct": 1,
+   "explanation": "Calcifer is a fire demon bound to the castle's hearth."
+  },
+  {
+   "question": "In which Ghibli film does a goldfish girl want to become human?",
+   "answers": [
+    "Arrietty",
+    "The Wind Rises",
+    "Ponyo",
+    "Porco Rosso"
+   ],
+   "correct": 2,
+   "explanation": "Ponyo is a little fish who falls in love with a boy named Sosuke."
+  },
+  {
+   "question": "In Princess Mononoke, which animals raised the girl named San?",
+   "answers": [
+    "Bears",
+    "Wolves",
+    "Deer",
+    "Monkeys"
+   ],
+   "correct": 1,
+   "explanation": "San was raised by the wolf god Moro."
+  },
+  {
+   "question": "Which silent, masked spirit follows Chihiro in Spirited Away?",
+   "answers": [
+    "Totoro",
+    "Calcifer",
+    "No-Face",
+    "Kodama"
+   ],
+   "correct": 2,
+   "explanation": "No-Face is a lonely spirit who offers gold in the bathhouse."
+  },
+  {
+   "question": "Which Ghibli character appears in the studio's logo?",
+   "answers": [
+    "Ponyo",
+    "Totoro",
+    "Kiki",
+    "Jiji"
+   ],
+   "correct": 1,
+   "explanation": "Totoro became the face of Studio Ghibli."
+  },
+  {
+   "question": "Who is the main character of Jujutsu Kaisen?",
+   "answers": [
+    "Yuji Itadori",
+    "Megumi Fushiguro",
+    "Satoru Gojo",
+    "Yuta Okkotsu"
+   ],
+   "correct": 0,
+   "explanation": "Yuji Itadori is a high schooler with super strength."
+  },
+  {
+   "question": "Whose finger does Yuji Itadori swallow at the start of Jujutsu Kaisen?",
+   "answers": [
+    "Mahito",
+    "Jogo",
+    "Kenjaku",
+    "Ryomen Sukuna"
+   ],
+   "correct": 3,
+   "explanation": "Swallowing Sukuna's finger makes Yuji his vessel."
+  },
+  {
+   "question": "Which Jujutsu Kaisen teacher wears a blindfold and is known as the strongest sorcerer?",
+   "answers": [
+    "Kento Nanami",
+    "Satoru Gojo",
+    "Masamichi Yaga",
+    "Suguru Geto"
+   ],
+   "correct": 1,
+   "explanation": "Gojo covers his powerful Six Eyes with a blindfold."
+  },
+  {
+   "question": "Who created Jujutsu Kaisen?",
+   "answers": [
+    "Koyoharu Gotouge",
+    "Tatsuki Fujimoto",
+    "Gege Akutami",
+    "Yuki Tabata"
+   ],
+   "correct": 2,
+   "explanation": "Gege Akutami's Jujutsu Kaisen began in Weekly Shonen Jump in 2018."
+  },
+  {
+   "question": "Which Jujutsu Kaisen student summons shadow creatures like divine dogs?",
+   "answers": [
+    "Nobara Kugisaki",
+    "Maki Zenin",
+    "Panda",
+    "Megumi Fushiguro"
+   ],
+   "correct": 3,
+   "explanation": "Megumi uses the Ten Shadows technique to summon shikigami."
+  },
+  {
+   "question": "In Jujutsu Kaisen, what are the monsters born from negative human emotions called?",
+   "answers": [
+    "Hollows",
+    "Curses",
+    "Titans",
+    "Ghouls"
+   ],
+   "correct": 1,
+   "explanation": "Curses form from fear, hate and other negative feelings."
+  },
+  {
+   "question": "What are the names of the two brothers in Fullmetal Alchemist?",
+   "answers": [
+    "Light and Sayu Yagami",
+    "Goku and Raditz",
+    "Ace and Luffy",
+    "Edward and Alphonse Elric"
+   ],
+   "correct": 3,
+   "explanation": "The Elric brothers seek a way to restore their bodies."
+  },
+  {
+   "question": "What happened to Alphonse Elric's body in Fullmetal Alchemist?",
+   "answers": [
+    "He turned into a cat",
+    "He became a giant",
+    "His soul is bound to a suit of armor",
+    "He became invisible"
+   ],
+   "correct": 2,
+   "explanation": "Edward bound Al's soul to a suit of armor after a failed alchemy attempt."
+  },
+  {
+   "question": "What is the basic rule of alchemy in Fullmetal Alchemist?",
+   "answers": [
+    "Power of Friendship",
+    "Survival of the Fittest",
+    "Infinite Energy",
+    "Equivalent Exchange"
+   ],
+   "correct": 3,
+   "explanation": "To gain something, something of equal value must be lost."
+  },
+  {
+   "question": "Who created Fullmetal Alchemist?",
+   "answers": [
+    "Hiromu Arakawa",
+    "Naoko Takeuchi",
+    "Rumiko Takahashi",
+    "Akira Toriyama"
+   ],
+   "correct": 0,
+   "explanation": "Hiromu Arakawa created Fullmetal Alchemist in 2001."
+  },
+  {
+   "question": "Which Fullmetal Alchemist character is known as the Flame Alchemist?",
+   "answers": [
+    "Alex Louis Armstrong",
+    "Maes Hughes",
+    "Scar",
+    "Roy Mustang"
+   ],
+   "correct": 3,
+   "explanation": "Roy Mustang creates fire with a snap of his gloved fingers."
+  },
+  {
+   "question": "What are Edward Elric's mechanical arm and leg called?",
+   "answers": [
+    "Cyber limbs",
+    "Automail",
+    "Steel gear",
+    "Mecha parts"
+   ],
+   "correct": 1,
+   "explanation": "His friend Winry Rockbell builds and repairs his automail."
+  },
+  {
+   "question": "Which legendary object do the Elric brothers search for to fix their bodies?",
+   "answers": [
+    "The Dragon Balls",
+    "The Death Note",
+    "The One Piece",
+    "The Philosopher's Stone"
+   ],
+   "correct": 3,
+   "explanation": "The Philosopher's Stone can bypass the law of Equivalent Exchange."
+  },
+  {
+   "question": "Who is the main character of Hunter x Hunter?",
+   "answers": [
+    "Gon Freecss",
+    "Killua Zoldyck",
+    "Kurapika",
+    "Leorio"
+   ],
+   "correct": 0,
+   "explanation": "Gon sets out to become a Hunter like his father."
+  },
+  {
+   "question": "Which Hunter x Hunter character comes from a famous family of assassins?",
+   "answers": [
+    "Gon Freecss",
+    "Leorio Paradinight",
+    "Hisoka",
+    "Killua Zoldyck"
+   ],
+   "correct": 3,
+   "explanation": "Killua is a member of the Zoldyck assassin family."
+  },
+  {
+   "question": "Who created Hunter x Hunter?",
+   "answers": [
+    "Yoshihiro Togashi",
+    "Eiichiro Oda",
+    "Tite Kubo",
+    "Kohei Horikoshi"
+   ],
+   "correct": 0,
+   "explanation": "Yoshihiro Togashi also created Yu Yu Hakusho."
+  },
+  {
+   "question": "What is the name of the life-energy power system in Hunter x Hunter?",
+   "answers": [
+    "Chakra",
+    "Nen",
+    "Ki",
+    "Cursed energy"
+   ],
+   "correct": 1,
+   "explanation": "Nen lets people control their life energy, called aura."
+  },
+  {
+   "question": "Why does Gon want to become a Hunter?",
+   "answers": [
+    "To find his father",
+    "To win a cooking contest",
+    "To catch Pokémon",
+    "To defeat the Titans"
+   ],
+   "correct": 0,
+   "explanation": "Gon wants to meet his father, Ging, who is a Hunter."
+  },
+  {
+   "question": "Who is the main character of Bleach?",
+   "answers": [
+    "Renji Abarai",
+    "Ichigo Kurosaki",
+    "Uryu Ishida",
+    "Kisuke Urahara"
+   ],
+   "correct": 1,
+   "explanation": "Ichigo is a teenager who can see ghosts."
+  },
+  {
+   "question": "What does Ichigo become in Bleach?",
+   "answers": [
+    "A ninja",
+    "A pirate",
+    "A demon slayer",
+    "A Soul Reaper"
+   ],
+   "correct": 3,
+   "explanation": "Ichigo gains Soul Reaper powers to protect people from Hollows."
+  },
+  {
+   "question": "What are the Soul Reapers' swords called in Bleach?",
+   "answers": [
+    "Katana-X",
+    "Zanpakuto",
+    "Nichirin blades",
+    "Keyblades"
+   ],
+   "correct": 1,
+   "explanation": "Each Zanpakuto has its own spirit and name."
+  },
+  {
+   "question": "Who gives Ichigo his Soul Reaper powers at the start of Bleach?",
+   "answers": [
+    "Rukia Kuchiki",
+    "Orihime Inoue",
+    "Yoruichi Shihoin",
+    "Rangiku Matsumoto"
+   ],
+   "correct": 0,
+   "explanation": "Rukia transfers her powers to Ichigo during a Hollow attack."
+  },
+  {
+   "question": "Who created Bleach?",
+   "answers": [
+    "Masashi Kishimoto",
+    "Gege Akutami",
+    "Tite Kubo",
+    "Hiro Mashima"
+   ],
+   "correct": 2,
+   "explanation": "Tite Kubo's Bleach ran in Weekly Shonen Jump from 2001 to 2016."
+  },
+  {
+   "question": "What are the evil spirits that Soul Reapers fight in Bleach called?",
+   "answers": [
+    "Hollows",
+    "Curses",
+    "Ghouls",
+    "Akuma"
+   ],
+   "correct": 0,
+   "explanation": "Hollows are lost souls that turned into monsters."
+  },
+  {
+   "question": "What is the most powerful release of a Zanpakuto called in Bleach?",
+   "answers": [
+    "Kaio-ken",
+    "Bankai",
+    "Gear Fifth",
+    "Susanoo"
+   ],
+   "correct": 1,
+   "explanation": "Bankai is the second and final release, after Shikai."
+  },
+  {
+   "question": "What color is Ichigo Kurosaki's hair?",
+   "answers": [
+    "Orange",
+    "Blue",
+    "Green",
+    "Silver"
+   ],
+   "correct": 0,
+   "explanation": "Ichigo's bright orange hair often gets him into trouble."
+  },
+  {
+   "question": "What is Loid Forger's spy codename in Spy x Family?",
+   "answers": [
+    "Midnight",
+    "Shadow",
+    "Twilight",
+    "Phantom"
+   ],
+   "correct": 2,
+   "explanation": "Twilight is the top spy of the country of Westalis."
+  },
+  {
+   "question": "What special secret ability does Anya Forger have?",
+   "answers": [
+    "She can read minds",
+    "She can fly",
+    "She can turn invisible",
+    "She can talk to fish"
+   ],
+   "correct": 0,
+   "explanation": "Anya is a telepath, but she keeps it secret from her family."
+  },
+  {
+   "question": "What is Yor Forger's secret job in Spy x Family?",
+   "answers": [
+    "Spy",
+    "Assassin",
+    "Police officer",
+    "Doctor"
+   ],
+   "correct": 1,
+   "explanation": "Yor is a skilled assassin known as the Thorn Princess."
+  },
+  {
+   "question": "What special ability does the Forger family dog Bond have?",
+   "answers": [
+    "He can talk",
+    "He can fly",
+    "He can turn into a human",
+    "He can see the future"
+   ],
+   "correct": 3,
+   "explanation": "Bond can see visions of what is about to happen."
+  },
+  {
+   "question": "Who created Spy x Family?",
+   "answers": [
+    "Tatsuki Fujimoto",
+    "Tatsuya Endo",
+    "ONE",
+    "Hiromu Arakawa"
+   ],
+   "correct": 1,
+   "explanation": "Tatsuya Endo's Spy x Family began in 2019."
+  },
+  {
+   "question": "What is Anya Forger's favorite snack?",
+   "answers": [
+    "Cookies",
+    "Ice cream",
+    "Peanuts",
+    "Popcorn"
+   ],
+   "correct": 2,
+   "explanation": "Anya loves peanuts and munches them whenever she can."
+  },
+  {
+   "question": "Why is Saitama called One-Punch Man?",
+   "answers": [
+    "He only has one arm",
+    "He defeats any enemy with one punch",
+    "He punched only once",
+    "He owns one boxing glove"
+   ],
+   "correct": 1,
+   "explanation": "Saitama is so strong that a single punch beats almost anyone."
+  },
+  {
+   "question": "What is unusual about Saitama's appearance in One-Punch Man?",
+   "answers": [
+    "He has six arms",
+    "He is very tiny",
+    "He is completely bald",
+    "He always wears a mask"
+   ],
+   "correct": 2,
+   "explanation": "Saitama says he lost his hair from his intense training."
+  },
+  {
+   "question": "Who is Saitama's cyborg disciple in One-Punch Man?",
+   "answers": [
+    "Mumen Rider",
+    "King",
+    "Sonic",
+    "Genos"
+   ],
+   "correct": 3,
+   "explanation": "Genos becomes Saitama's student to learn the secret of his strength."
+  },
+  {
+   "question": "What is the pen name of the original creator of One-Punch Man?",
+   "answers": [
+    "ONE",
+    "TWO",
+    "Zero",
+    "Nobody"
+   ],
+   "correct": 0,
+   "explanation": "ONE first made One-Punch Man as a webcomic, later redrawn by Yusuke Murata."
+  },
+  {
+   "question": "What does Saitama say he is a hero for?",
+   "answers": [
+    "For money",
+    "For revenge",
+    "For fun",
+    "For fame"
+   ],
+   "correct": 2,
+   "explanation": "Saitama calls himself \"a hero for fun\"."
+  },
+  {
+   "question": "What is \"manga\"?",
+   "answers": [
+    "Japanese cartoons on TV",
+    "A type of sushi",
+    "A Japanese card game",
+    "Japanese comics"
+   ],
+   "correct": 3,
+   "explanation": "Manga are Japanese comics, often turned into anime."
+  },
+  {
+   "question": "Which audience is \"shonen\" manga mainly made for?",
+   "answers": [
+    "Teenage girls",
+    "Teenage boys",
+    "Adult women",
+    "Very young children"
+   ],
+   "correct": 1,
+   "explanation": "Shonen means \"boy\" and includes series like Naruto and One Piece."
+  },
+  {
+   "question": "Which audience is \"shojo\" manga mainly made for?",
+   "answers": [
+    "Teenage boys",
+    "Adult men",
+    "Teenage girls",
+    "Business workers"
+   ],
+   "correct": 2,
+   "explanation": "Shojo means \"girl\" and includes series like Sailor Moon."
+  },
+  {
+   "question": "What is an \"otaku\"?",
+   "answers": [
+    "A huge fan of anime, manga or games",
+    "A Japanese chef",
+    "A type of sword",
+    "A school uniform"
+   ],
+   "correct": 0,
+   "explanation": "Otaku describes someone deeply passionate about a hobby, often anime."
+  },
+  {
+   "question": "What does the Japanese word \"kawaii\" mean?",
+   "answers": [
+    "Scary",
+    "Cute",
+    "Strong",
+    "Hungry"
+   ],
+   "correct": 1,
+   "explanation": "Kawaii is used for anything adorable."
+  },
+  {
+   "question": "In anime, what does calling someone \"senpai\" mean?",
+   "answers": [
+    "They are your senior or upperclassman",
+    "They are your younger sibling",
+    "They are your enemy",
+    "They are your pet"
+   ],
+   "correct": 0,
+   "explanation": "Senpai is used for someone older or more experienced at school or work."
+  },
+  {
+   "question": "What is an \"isekai\" story?",
+   "answers": [
+    "A story about cooking",
+    "A sports tournament",
+    "A character is transported to another world",
+    "A detective mystery"
+   ],
+   "correct": 2,
+   "explanation": "Isekai means \"different world\" in Japanese."
+  },
+  {
+   "question": "What is a \"chibi\" art style?",
+   "answers": [
+    "Small, cute characters with big heads",
+    "Very realistic drawings",
+    "Black-and-white sketches",
+    "Giant robot designs"
+   ],
+   "correct": 0,
+   "explanation": "Chibi drawings make characters tiny and adorable."
+  },
+  {
+   "question": "In which direction do traditional Japanese manga read?",
+   "answers": [
+    "Left to right",
+    "Right to left",
+    "Bottom to top",
+    "In a spiral"
+   ],
+   "correct": 1,
+   "explanation": "Manga pages and panels are read from right to left."
+  },
+  {
+   "question": "What is \"cosplay\"?",
+   "answers": [
+    "Dressing up as a character",
+    "Playing video games online",
+    "Drawing manga",
+    "Singing anime songs"
+   ],
+   "correct": 0,
+   "explanation": "Cosplay comes from the words \"costume\" and \"play\"."
+  },
+  {
+   "question": "Which weekly magazine first published Naruto, One Piece and Dragon Ball?",
+   "answers": [
+    "Nakayoshi",
+    "Weekly Shonen Jump",
+    "Weekly Shonen Magazine",
+    "CoroCoro Comic"
+   ],
+   "correct": 1,
+   "explanation": "Weekly Shonen Jump is one of Japan's most famous manga magazines."
+  },
+  {
+   "question": "What does \"mecha\" mean in anime?",
+   "answers": [
+    "Stories about magic girls",
+    "Stories about cooking",
+    "Stories with giant robots",
+    "Stories about ghosts"
+   ],
+   "correct": 2,
+   "explanation": "Gundam and Evangelion are famous mecha series."
+  },
+  {
+   "question": "Who is known as the \"God of Manga\" and created Astro Boy?",
+   "answers": [
+    "Akira Toriyama",
+    "Osamu Tezuka",
+    "Hayao Miyazaki",
+    "Go Nagai"
+   ],
+   "correct": 1,
+   "explanation": "Osamu Tezuka hugely shaped how manga and anime look."
+  },
+  {
+   "question": "Doraemon is a robotic cat from which time?",
+   "answers": [
+    "The future",
+    "The past",
+    "Ancient Egypt",
+    "The age of dinosaurs"
+   ],
+   "correct": 0,
+   "explanation": "Doraemon travels back from the 22nd century to help a boy named Nobita."
+  },
+  {
+   "question": "Which sport is the anime Haikyu!! about?",
+   "answers": [
+    "Basketball",
+    "Soccer",
+    "Volleyball",
+    "Baseball"
+   ],
+   "correct": 2,
+   "explanation": "Shoyo Hinata dreams of becoming a great volleyball player."
+  },
+  {
+   "question": "In Yu-Gi-Oh!, what kind of game do the characters play?",
+   "answers": [
+    "A card game",
+    "A racing game",
+    "A board game",
+    "A video game"
+   ],
+   "correct": 0,
+   "explanation": "Yu-Gi-Oh! characters duel with monster cards."
+  },
+  {
+   "question": "In Neon Genesis Evangelion, what does Shinji Ikari pilot?",
+   "answers": [
+    "A spaceship",
+    "A submarine",
+    "A giant bio-machine called an Eva",
+    "A flying motorcycle"
+   ],
+   "correct": 2,
+   "explanation": "Shinji pilots Evangelion Unit-01."
+  },
+  {
+   "question": "Who directed the hit anime film Your Name?",
+   "answers": [
+    "Hayao Miyazaki",
+    "Mamoru Oshii",
+    "Isao Takahata",
+    "Makoto Shinkai"
+   ],
+   "correct": 3,
+   "explanation": "Makoto Shinkai's Your Name was released in 2016."
+  },
+  {
+   "question": "In Sword Art Online, what are players trapped in?",
+   "answers": [
+    "A haunted school",
+    "A sinking ship",
+    "A virtual reality game",
+    "A giant maze"
+   ],
+   "correct": 2,
+   "explanation": "Kirito and other players are stuck inside a VR online game."
+  },
+  {
+   "question": "What does Sakura collect in Cardcaptor Sakura?",
+   "answers": [
+    "Dragon Balls",
+    "Clow Cards",
+    "Pokémon",
+    "Jewel Seeds"
+   ],
+   "correct": 1,
+   "explanation": "Sakura must recapture the magical Clow Cards she released."
+  },
+  {
+   "question": "In Inuyasha, what kind of being is the title character?",
+   "answers": [
+    "A robot",
+    "A ghost",
+    "A half-demon",
+    "An alien"
+   ],
+   "correct": 2,
+   "explanation": "Inuyasha is half dog-demon and half human."
+  },
+  {
+   "question": "Which detective anime stars a teenager shrunk into a child's body?",
+   "answers": [
+    "Death Note",
+    "Detective Conan",
+    "Psycho-Pass",
+    "Moriarty the Patriot"
+   ],
+   "correct": 1,
+   "explanation": "Shinichi Kudo goes by Conan Edogawa after being shrunk."
+  }
+ ]
+}

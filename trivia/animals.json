@@ -1,0 +1,1656 @@
+{
+ "_how_to_edit": "One question per {...}. 'question': the text. 'answers': exactly 4. 'correct': the position of the right answer (0 = first, 1 = second, 2 = third, 3 = fourth). Optional 'explanation' (shown after answering) and 'image' (an https:// link, or a file name inside the images/ folder). Answers are shuffled when shown. The bot re-reads this file automatically. After editing, run: python check_trivia.py",
+ "category": "Animals",
+ "questions": [
+  {
+   "question": "What does a giant anteater mainly eat?",
+   "answers": [
+    "Fish",
+    "Ants and termites",
+    "Small birds",
+    "Leaves"
+   ],
+   "correct": 1,
+   "explanation": "Anteaters use a long sticky tongue to slurp up insects."
+  },
+  {
+   "question": "How many humps does a dromedary camel have?",
+   "answers": [
+    "None",
+    "1",
+    "3",
+    "2"
+   ],
+   "correct": 1,
+   "explanation": "Dromedaries have one hump; Bactrian camels have two."
+  },
+  {
+   "question": "Which animal is this? 🦒",
+   "answers": [
+    "Camel",
+    "Giraffe",
+    "Deer",
+    "Zebra"
+   ],
+   "correct": 1,
+   "explanation": "Giraffes are the tallest land animals."
+  },
+  {
+   "question": "Butterflies can taste using which part of their body?",
+   "answers": [
+    "Their feet",
+    "Their eyes",
+    "Their antennae only",
+    "Their wings"
+   ],
+   "correct": 0,
+   "explanation": "Butterflies have taste sensors on their feet."
+  },
+  {
+   "question": "Where does a hermit crab live?",
+   "answers": [
+    "In a nest",
+    "In a burrow it digs",
+    "In a borrowed shell",
+    "Inside coral only"
+   ],
+   "correct": 2,
+   "explanation": "Hermit crabs move into bigger shells as they grow."
+  },
+  {
+   "question": "Which animal is this? 🦏",
+   "answers": [
+    "Elephant",
+    "Rhinoceros",
+    "Hippopotamus",
+    "Warthog"
+   ],
+   "correct": 1,
+   "explanation": "A rhino's horn is made of keratin, like your fingernails."
+  },
+  {
+   "question": "Which animal is this? 🦫",
+   "answers": [
+    "Otter",
+    "Squirrel",
+    "Hamster",
+    "Beaver"
+   ],
+   "correct": 3,
+   "explanation": "Beavers build dams out of branches and mud."
+  },
+  {
+   "question": "Despite its name, the whale shark is a type of what?",
+   "answers": [
+    "Whale",
+    "Seal",
+    "Dolphin",
+    "Fish"
+   ],
+   "correct": 3,
+   "explanation": "Whale sharks are sharks, and all sharks are fish."
+  },
+  {
+   "question": "Which animal is this? 🐨",
+   "answers": [
+    "Koala",
+    "Panda",
+    "Sloth",
+    "Hamster"
+   ],
+   "correct": 0,
+   "explanation": "Koalas live in Australia and eat eucalyptus leaves."
+  },
+  {
+   "question": "What is the hard case a caterpillar forms before becoming a butterfly called?",
+   "answers": [
+    "Chrysalis",
+    "Hive",
+    "Nest",
+    "Cocoon shell"
+   ],
+   "correct": 0,
+   "explanation": "Inside the chrysalis, the caterpillar transforms into a butterfly."
+  },
+  {
+   "question": "Which animal is this? 🐜",
+   "answers": [
+    "Cricket",
+    "Ant",
+    "Spider",
+    "Mosquito"
+   ],
+   "correct": 1,
+   "explanation": "Ants live in big colonies with a queen."
+  },
+  {
+   "question": "What is the largest rodent in the world?",
+   "answers": [
+    "Capybara",
+    "Porcupine",
+    "Beaver",
+    "Rat"
+   ],
+   "correct": 0,
+   "explanation": "Capybaras live in South America and love the water."
+  },
+  {
+   "question": "How many hearts does an octopus have?",
+   "answers": [
+    "3",
+    "2",
+    "4",
+    "1"
+   ],
+   "correct": 0,
+   "explanation": "Two hearts pump blood to the gills and one pumps it to the rest of the body."
+  },
+  {
+   "question": "Which of these birds cannot fly?",
+   "answers": [
+    "Penguin",
+    "Pigeon",
+    "Eagle",
+    "Sparrow"
+   ],
+   "correct": 0,
+   "explanation": "Penguins use their wings as flippers for swimming."
+  },
+  {
+   "question": "Which animal is this? 🐳",
+   "answers": [
+    "Whale",
+    "Seal",
+    "Manatee",
+    "Shark"
+   ],
+   "correct": 0,
+   "explanation": "Whales are mammals, not fish, and breathe air."
+  },
+  {
+   "question": "What do bats use to find food in the dark?",
+   "answers": [
+    "Night vision goggles",
+    "Echolocation",
+    "Magnetism",
+    "Smell only"
+   ],
+   "correct": 1,
+   "explanation": "Bats make sounds and listen for the echoes."
+  },
+  {
+   "question": "What is the smallest bird in the world?",
+   "answers": [
+    "Sparrow",
+    "Robin",
+    "Bee hummingbird",
+    "Wren"
+   ],
+   "correct": 2,
+   "explanation": "Bee hummingbirds from Cuba are only about 5 cm long."
+  },
+  {
+   "question": "What is the largest living reptile?",
+   "answers": [
+    "Anaconda",
+    "Leatherback turtle",
+    "Komodo dragon",
+    "Saltwater crocodile"
+   ],
+   "correct": 3,
+   "explanation": "Big male saltwater crocodiles can grow longer than 5 metres."
+  },
+  {
+   "question": "Which animal is this? 🦭",
+   "answers": [
+    "Walrus",
+    "Manatee",
+    "Otter",
+    "Seal"
+   ],
+   "correct": 3,
+   "explanation": "Seals are clumsy on land but graceful swimmers."
+  },
+  {
+   "question": "What is a group of wolves called?",
+   "answers": [
+    "Swarm",
+    "Pride",
+    "Flock",
+    "Pack"
+   ],
+   "correct": 3,
+   "explanation": "Wolves hunt together as a pack."
+  },
+  {
+   "question": "The orca, or killer whale, is actually the largest member of which family?",
+   "answers": [
+    "Sea lions",
+    "Dolphins",
+    "Seals",
+    "Sharks"
+   ],
+   "correct": 1,
+   "explanation": "Orcas are the biggest dolphins in the world."
+  },
+  {
+   "question": "Spiders are not insects. Which group do they belong to?",
+   "answers": [
+    "Amphibians",
+    "Crustaceans",
+    "Arachnids",
+    "Reptiles"
+   ],
+   "correct": 2,
+   "explanation": "Scorpions, ticks and mites are arachnids too."
+  },
+  {
+   "question": "Which animal is this? 🦜",
+   "answers": [
+    "Parrot",
+    "Peacock",
+    "Robin",
+    "Toucan"
+   ],
+   "correct": 0,
+   "explanation": "Some parrots can copy human speech."
+  },
+  {
+   "question": "Which animal's cocoon is used to make silk?",
+   "answers": [
+    "Bee",
+    "Silkworm",
+    "Spider",
+    "Ant"
+   ],
+   "correct": 1,
+   "explanation": "Silkworms are the caterpillars of the silk moth."
+  },
+  {
+   "question": "What is a group of owls called?",
+   "answers": [
+    "Pod",
+    "Murder",
+    "Parliament",
+    "Gaggle"
+   ],
+   "correct": 2,
+   "explanation": "'A parliament of owls' is a well-known collective noun."
+  },
+  {
+   "question": "What is the long, deep winter sleep some animals take called?",
+   "answers": [
+    "Migration",
+    "Metamorphosis",
+    "Hibernation",
+    "Camouflage"
+   ],
+   "correct": 2,
+   "explanation": "Hedgehogs, dormice and some bats hibernate through winter."
+  },
+  {
+   "question": "Which animal is this? 🦊",
+   "answers": [
+    "Squirrel",
+    "Fox",
+    "Wolf",
+    "Raccoon"
+   ],
+   "correct": 1,
+   "explanation": "Foxes are members of the dog family."
+  },
+  {
+   "question": "Mammals that carry their babies in a pouch are called what?",
+   "answers": [
+    "Primates",
+    "Rodents",
+    "Marsupials",
+    "Amphibians"
+   ],
+   "correct": 2,
+   "explanation": "Kangaroos, koalas and wombats are marsupials."
+  },
+  {
+   "question": "How many main body parts does an insect have?",
+   "answers": [
+    "6",
+    "3",
+    "4",
+    "2"
+   ],
+   "correct": 1,
+   "explanation": "An insect's body has a head, thorax and abdomen."
+  },
+  {
+   "question": "What makes every zebra's stripe pattern special?",
+   "answers": [
+    "It glows at night",
+    "It is unique to each zebra",
+    "It is the same on all zebras",
+    "It changes every year"
+   ],
+   "correct": 1,
+   "explanation": "Like fingerprints, no two zebras have the same stripes."
+  },
+  {
+   "question": "Which animal is this? 🦂",
+   "answers": [
+    "Spider",
+    "Lobster",
+    "Scorpion",
+    "Crab"
+   ],
+   "correct": 2,
+   "explanation": "Scorpions have a stinger at the tip of their tail."
+  },
+  {
+   "question": "Which animal is this? 🦝",
+   "answers": [
+    "Raccoon",
+    "Badger",
+    "Fox",
+    "Skunk"
+   ],
+   "correct": 0,
+   "explanation": "Raccoons have a black 'mask' of fur around their eyes."
+  },
+  {
+   "question": "How many arms does an octopus have?",
+   "answers": [
+    "12",
+    "10",
+    "8",
+    "6"
+   ],
+   "correct": 2,
+   "explanation": "Octopus arms are covered in suckers."
+  },
+  {
+   "question": "Which animal is this? 🐘",
+   "answers": [
+    "Rhinoceros",
+    "Hippopotamus",
+    "Walrus",
+    "Elephant"
+   ],
+   "correct": 3,
+   "explanation": "Elephants are the largest land animals alive today."
+  },
+  {
+   "question": "What is the largest animal ever known to have lived?",
+   "answers": [
+    "Megalodon",
+    "Whale shark",
+    "Blue whale",
+    "African elephant"
+   ],
+   "correct": 2,
+   "explanation": "Blue whales can grow to around 30 metres long."
+  },
+  {
+   "question": "What do koalas mainly eat?",
+   "answers": [
+    "Eucalyptus leaves",
+    "Grass",
+    "Insects",
+    "Bamboo"
+   ],
+   "correct": 0,
+   "explanation": "Koalas eat eucalyptus leaves and get most of their water from them."
+  },
+  {
+   "question": "Giant pandas are native to which country?",
+   "answers": [
+    "Australia",
+    "China",
+    "Japan",
+    "India"
+   ],
+   "correct": 1,
+   "explanation": "Wild giant pandas live in the mountain forests of central China."
+  },
+  {
+   "question": "Whales breathe air through an opening on top of their head called a what?",
+   "answers": [
+    "Nostril fin",
+    "Gill",
+    "Spout valve",
+    "Blowhole"
+   ],
+   "correct": 3,
+   "explanation": "The 'spout' you see is the whale breathing out."
+  },
+  {
+   "question": "What is the fastest land animal?",
+   "answers": [
+    "Lion",
+    "Horse",
+    "Greyhound",
+    "Cheetah"
+   ],
+   "correct": 3,
+   "explanation": "Cheetahs can sprint at around 100 km/h (about 60 mph)."
+  },
+  {
+   "question": "Wild lemurs are found naturally on which island?",
+   "answers": [
+    "Madagascar",
+    "Hawaii",
+    "Iceland",
+    "Greenland"
+   ],
+   "correct": 0,
+   "explanation": "Lemurs live naturally only on Madagascar and nearby small islands."
+  },
+  {
+   "question": "Which animal is this? 🦘",
+   "answers": [
+    "Koala",
+    "Rabbit",
+    "Deer",
+    "Kangaroo"
+   ],
+   "correct": 3,
+   "explanation": "Kangaroos hop on their strong back legs and live in Australia."
+  },
+  {
+   "question": "Which animal is this? 🐝",
+   "answers": [
+    "Butterfly",
+    "Beetle",
+    "Fly",
+    "Bee"
+   ],
+   "correct": 3,
+   "explanation": "Honeybees make honey from flower nectar."
+  },
+  {
+   "question": "Which animal is this? 🦁",
+   "answers": [
+    "Hyena",
+    "Bear",
+    "Lion",
+    "Tiger"
+   ],
+   "correct": 2,
+   "explanation": "Lions live in groups called prides."
+  },
+  {
+   "question": "Which reptile is famous for changing its skin colour?",
+   "answers": [
+    "Python",
+    "Crocodile",
+    "Tortoise",
+    "Chameleon"
+   ],
+   "correct": 3,
+   "explanation": "Chameleons can change colour and move each eye on its own."
+  },
+  {
+   "question": "What do fish use to breathe underwater?",
+   "answers": [
+    "Fins",
+    "Gills",
+    "Scales",
+    "Lungs"
+   ],
+   "correct": 1,
+   "explanation": "Gills take oxygen out of the water."
+  },
+  {
+   "question": "Animals that have a backbone are called what?",
+   "answers": [
+    "Vertebrates",
+    "Mollusks",
+    "Arthropods",
+    "Invertebrates"
+   ],
+   "correct": 0,
+   "explanation": "Fish, birds, mammals, reptiles and amphibians are all vertebrates."
+  },
+  {
+   "question": "Which animal is this? 🐆",
+   "answers": [
+    "Tiger",
+    "Leopard",
+    "Lion",
+    "Lynx"
+   ],
+   "correct": 1,
+   "explanation": "Leopards are strong climbers and often rest in trees."
+  },
+  {
+   "question": "What does a camel's hump mainly store?",
+   "answers": [
+    "Milk",
+    "Air",
+    "Fat",
+    "Water"
+   ],
+   "correct": 2,
+   "explanation": "It's a myth that humps store water; they store fat for energy."
+  },
+  {
+   "question": "What is a group of geese on the ground called?",
+   "answers": [
+    "Gaggle",
+    "Pod",
+    "Pride",
+    "Murder"
+   ],
+   "correct": 0,
+   "explanation": "In the air, a group of geese can be called a skein."
+  },
+  {
+   "question": "What is a group of crows called?",
+   "answers": [
+    "Pride",
+    "Murder",
+    "Parliament",
+    "Gaggle"
+   ],
+   "correct": 1,
+   "explanation": "'A murder of crows' is a famous old collective noun."
+  },
+  {
+   "question": "Which animal has the longest pregnancy of any mammal?",
+   "answers": [
+    "Human",
+    "Elephant",
+    "Giraffe",
+    "Blue whale"
+   ],
+   "correct": 1,
+   "explanation": "Elephants are pregnant for about 22 months."
+  },
+  {
+   "question": "Which animal is this? 🦅",
+   "answers": [
+    "Pelican",
+    "Eagle",
+    "Owl",
+    "Parrot"
+   ],
+   "correct": 1,
+   "explanation": "Eagles have amazing eyesight for spotting prey from high up."
+  },
+  {
+   "question": "What is a group of fish swimming together called?",
+   "answers": [
+    "Herd",
+    "Flock",
+    "School",
+    "Pack"
+   ],
+   "correct": 2,
+   "explanation": "Swimming in a school helps fish stay safe from predators."
+  },
+  {
+   "question": "Which animal is this? 🦑",
+   "answers": [
+    "Shrimp",
+    "Squid",
+    "Jellyfish",
+    "Octopus"
+   ],
+   "correct": 1,
+   "explanation": "Squid can squirt ink to escape predators."
+  },
+  {
+   "question": "Which animal is this? 🐸",
+   "answers": [
+    "Lizard",
+    "Turtle",
+    "Hamster",
+    "Frog"
+   ],
+   "correct": 3,
+   "explanation": "Frogs are amphibians that start life as tadpoles."
+  },
+  {
+   "question": "Animals that are active mainly at night are called what?",
+   "answers": [
+    "Aquatic",
+    "Nocturnal",
+    "Diurnal",
+    "Migratory"
+   ],
+   "correct": 1,
+   "explanation": "Owls and bats are nocturnal."
+  },
+  {
+   "question": "Which of these mammals lays eggs?",
+   "answers": [
+    "Platypus",
+    "Otter",
+    "Kangaroo",
+    "Koala"
+   ],
+   "correct": 0,
+   "explanation": "The platypus is one of the very few egg-laying mammals."
+  },
+  {
+   "question": "Which animal is this? 🐺",
+   "answers": [
+    "Wolf",
+    "Hyena",
+    "Lynx",
+    "Fox"
+   ],
+   "correct": 0,
+   "explanation": "Wolves live and hunt in groups called packs."
+  },
+  {
+   "question": "Which animal is this? 🐌",
+   "answers": [
+    "Worm",
+    "Snail",
+    "Turtle",
+    "Caterpillar"
+   ],
+   "correct": 1,
+   "explanation": "Snails carry a shell on their back."
+  },
+  {
+   "question": "Which animal is this? 🐧",
+   "answers": [
+    "Penguin",
+    "Ostrich",
+    "Owl",
+    "Duck"
+   ],
+   "correct": 0,
+   "explanation": "Penguins are birds that cannot fly but are excellent swimmers."
+  },
+  {
+   "question": "Which animal is this? 🦢",
+   "answers": [
+    "Swan",
+    "Pelican",
+    "Duck",
+    "Flamingo"
+   ],
+   "correct": 0,
+   "explanation": "Swans have long, graceful necks."
+  },
+  {
+   "question": "A shark's skeleton is made mostly of what?",
+   "answers": [
+    "Wood",
+    "Cartilage",
+    "Shell",
+    "Bone"
+   ],
+   "correct": 1,
+   "explanation": "Cartilage is the bendy material in your ears and nose."
+  },
+  {
+   "question": "Which animal is this? 🦓",
+   "answers": [
+    "Zebra",
+    "Tapir",
+    "Donkey",
+    "Horse"
+   ],
+   "correct": 0,
+   "explanation": "Every zebra has its own unique stripe pattern."
+  },
+  {
+   "question": "Which of these animals is a mammal?",
+   "answers": [
+    "Dolphin",
+    "Octopus",
+    "Salmon",
+    "Shark"
+   ],
+   "correct": 0,
+   "explanation": "Dolphins breathe air and feed their babies milk."
+  },
+  {
+   "question": "What is the largest species of cat?",
+   "answers": [
+    "Leopard",
+    "Lion",
+    "Tiger",
+    "Jaguar"
+   ],
+   "correct": 2,
+   "explanation": "Tigers are the biggest of all wild cats."
+  },
+  {
+   "question": "Which animal is this? 🐙",
+   "answers": [
+    "Squid",
+    "Starfish",
+    "Octopus",
+    "Jellyfish"
+   ],
+   "correct": 2,
+   "explanation": "An octopus has eight arms."
+  },
+  {
+   "question": "How many arms do most starfish have?",
+   "answers": [
+    "4",
+    "5",
+    "6",
+    "8"
+   ],
+   "correct": 1,
+   "explanation": "Most starfish have five arms, though some species have many more."
+  },
+  {
+   "question": "Which animal is this? 🦞",
+   "answers": [
+    "Spider",
+    "Lobster",
+    "Crab",
+    "Shrimp"
+   ],
+   "correct": 1,
+   "explanation": "Lobsters have big claws and a hard shell."
+  },
+  {
+   "question": "The kiwi, a flightless bird, comes from which country?",
+   "answers": [
+    "Canada",
+    "Kenya",
+    "Australia",
+    "New Zealand"
+   ],
+   "correct": 3,
+   "explanation": "The kiwi is a national symbol of New Zealand."
+  },
+  {
+   "question": "What is the largest fish in the world?",
+   "answers": [
+    "Manta ray",
+    "Great white shark",
+    "Blue whale",
+    "Whale shark"
+   ],
+   "correct": 3,
+   "explanation": "Whale sharks are gentle giants that eat tiny plankton."
+  },
+  {
+   "question": "Kangaroos are native to which country?",
+   "answers": [
+    "South Africa",
+    "Australia",
+    "Brazil",
+    "India"
+   ],
+   "correct": 1,
+   "explanation": "The kangaroo is a national symbol of Australia."
+  },
+  {
+   "question": "What does a tiger's skin look like under its fur?",
+   "answers": [
+    "Plain white",
+    "Striped",
+    "Spotted",
+    "Plain orange"
+   ],
+   "correct": 1,
+   "explanation": "Tigers have stripes on their skin as well as their fur."
+  },
+  {
+   "question": "Which animal is this? 🦬",
+   "answers": [
+    "Bison",
+    "Rhinoceros",
+    "Moose",
+    "Cow"
+   ],
+   "correct": 0,
+   "explanation": "Bison are the heaviest land animals in North America."
+  },
+  {
+   "question": "What are the long sharp spines on a porcupine called?",
+   "answers": [
+    "Claws",
+    "Quills",
+    "Feathers",
+    "Scales"
+   ],
+   "correct": 1,
+   "explanation": "Porcupines can't shoot their quills, but they come out easily."
+  },
+  {
+   "question": "Which animal is this? 🦉",
+   "answers": [
+    "Penguin",
+    "Parrot",
+    "Eagle",
+    "Owl"
+   ],
+   "correct": 3,
+   "explanation": "Most owls hunt at night."
+  },
+  {
+   "question": "Which of these animals is a reptile?",
+   "answers": [
+    "Toad",
+    "Frog",
+    "Salamander",
+    "Turtle"
+   ],
+   "correct": 3,
+   "explanation": "Frogs, toads and salamanders are amphibians."
+  },
+  {
+   "question": "What is a baby kangaroo called?",
+   "answers": [
+    "Pup",
+    "Joey",
+    "Kid",
+    "Cub"
+   ],
+   "correct": 1,
+   "explanation": "A joey grows inside its mother's pouch."
+  },
+  {
+   "question": "How many legs does an insect have?",
+   "answers": [
+    "4",
+    "10",
+    "8",
+    "6"
+   ],
+   "correct": 3,
+   "explanation": "All adult insects have six legs."
+  },
+  {
+   "question": "What is an elephant's long nose called?",
+   "answers": [
+    "Tusk",
+    "Trunk",
+    "Beak",
+    "Snout"
+   ],
+   "correct": 1,
+   "explanation": "An elephant's trunk has tens of thousands of muscles."
+  },
+  {
+   "question": "Which animal is this? 🦡",
+   "answers": [
+    "Badger",
+    "Skunk",
+    "Raccoon",
+    "Hedgehog"
+   ],
+   "correct": 0,
+   "explanation": "Badgers are strong diggers that live in underground burrows."
+  },
+  {
+   "question": "Honeybees tell each other where flowers are by doing what?",
+   "answers": [
+    "A waggle dance",
+    "Singing",
+    "Changing colour",
+    "Leaving footprints"
+   ],
+   "correct": 0,
+   "explanation": "The waggle dance shows the direction and distance to food."
+  },
+  {
+   "question": "Why are flamingos pink?",
+   "answers": [
+    "From the sun",
+    "They are born pink",
+    "From the mud they stand in",
+    "Because of the food they eat"
+   ],
+   "correct": 3,
+   "explanation": "Pigments in the algae and shrimp they eat turn them pink."
+  },
+  {
+   "question": "Which feature do ALL birds have?",
+   "answers": [
+    "The ability to fly",
+    "Long tails",
+    "Webbed feet",
+    "Feathers"
+   ],
+   "correct": 3,
+   "explanation": "Some birds can't fly, but every bird has feathers."
+  },
+  {
+   "question": "A group of puppies or kittens born together is called a what?",
+   "answers": [
+    "Litter",
+    "Flock",
+    "Clutch",
+    "Pride"
+   ],
+   "correct": 0,
+   "explanation": "A clutch is a group of eggs."
+  },
+  {
+   "question": "Which animal is this? 🐞",
+   "answers": [
+    "Ladybird (ladybug)",
+    "Bee",
+    "Ant",
+    "Spider"
+   ],
+   "correct": 0,
+   "explanation": "Ladybirds help gardeners by eating aphids."
+  },
+  {
+   "question": "Which bird is the fastest animal on Earth when diving?",
+   "answers": [
+    "Ostrich",
+    "Hummingbird",
+    "Peregrine falcon",
+    "Bald eagle"
+   ],
+   "correct": 2,
+   "explanation": "Peregrine falcons can dive at over 300 km/h."
+  },
+  {
+   "question": "What does a caterpillar turn into?",
+   "answers": [
+    "Dragonfly",
+    "Bee",
+    "Butterfly or moth",
+    "Beetle"
+   ],
+   "correct": 2,
+   "explanation": "Caterpillars go through metamorphosis to become butterflies or moths."
+  },
+  {
+   "question": "What is the largest living bird?",
+   "answers": [
+    "Condor",
+    "Emu",
+    "Ostrich",
+    "Albatross"
+   ],
+   "correct": 2,
+   "explanation": "Ostriches can stand much taller than an adult human."
+  },
+  {
+   "question": "Which animal is this? 🦚",
+   "answers": [
+    "Parrot",
+    "Turkey",
+    "Flamingo",
+    "Peacock"
+   ],
+   "correct": 3,
+   "explanation": "Male peafowl show off their colourful tail feathers."
+  },
+  {
+   "question": "About how far can an owl turn its head?",
+   "answers": [
+    "About 270 degrees",
+    "A full 360 degrees",
+    "About 90 degrees",
+    "About 180 degrees"
+   ],
+   "correct": 0,
+   "explanation": "Owls can't move their eyes much, so they turn their heads instead."
+  },
+  {
+   "question": "What is a baby cow called?",
+   "answers": [
+    "Kid",
+    "Calf",
+    "Foal",
+    "Lamb"
+   ],
+   "correct": 1,
+   "explanation": "Baby elephants and baby whales are also called calves."
+  },
+  {
+   "question": "Which sea creature has eight arms and can squirt ink?",
+   "answers": [
+    "Starfish",
+    "Crab",
+    "Octopus",
+    "Jellyfish"
+   ],
+   "correct": 2,
+   "explanation": "Octopuses squirt ink to confuse predators."
+  },
+  {
+   "question": "What is the largest living primate?",
+   "answers": [
+    "Orangutan",
+    "Baboon",
+    "Gorilla",
+    "Chimpanzee"
+   ],
+   "correct": 2,
+   "explanation": "Adult male gorillas can weigh around 200 kg."
+  },
+  {
+   "question": "Which animal is this? 🦈",
+   "answers": [
+    "Shark",
+    "Tuna",
+    "Dolphin",
+    "Swordfish"
+   ],
+   "correct": 0,
+   "explanation": "Sharks are fish with skeletons made of cartilage."
+  },
+  {
+   "question": "What is a group of whales or dolphins called?",
+   "answers": [
+    "Pride",
+    "Flock",
+    "Pack",
+    "Pod"
+   ],
+   "correct": 3,
+   "explanation": "Pods help whales and dolphins work together."
+  },
+  {
+   "question": "Which animal is this? 🦥",
+   "answers": [
+    "Monkey",
+    "Koala",
+    "Raccoon",
+    "Sloth"
+   ],
+   "correct": 3,
+   "explanation": "Sloths spend most of their lives hanging in trees."
+  },
+  {
+   "question": "What is a baby swan called?",
+   "answers": [
+    "Cygnet",
+    "Gosling",
+    "Duckling",
+    "Chick"
+   ],
+   "correct": 0,
+   "explanation": "Cygnets are usually grey and fluffy."
+  },
+  {
+   "question": "Which animal is this? 🦦",
+   "answers": [
+    "Otter",
+    "Raccoon",
+    "Seal",
+    "Beaver"
+   ],
+   "correct": 0,
+   "explanation": "Sea otters sometimes hold hands while they sleep so they don't drift apart."
+  },
+  {
+   "question": "Which group of animals do bats belong to?",
+   "answers": [
+    "Mammals",
+    "Reptiles",
+    "Insects",
+    "Birds"
+   ],
+   "correct": 0,
+   "explanation": "Bats are the only mammals that can truly fly."
+  },
+  {
+   "question": "What is a baby horse called?",
+   "answers": [
+    "Calf",
+    "Cub",
+    "Foal",
+    "Joey"
+   ],
+   "correct": 2,
+   "explanation": "Foals can stand within an hour or so of being born."
+  },
+  {
+   "question": "Which lions grow a big, shaggy mane?",
+   "answers": [
+    "Adult females",
+    "Adult males",
+    "All lions",
+    "Cubs"
+   ],
+   "correct": 1,
+   "explanation": "A mane makes a male lion look bigger and more impressive."
+  },
+  {
+   "question": "Which animal is this? 🦋",
+   "answers": [
+    "Dragonfly",
+    "Butterfly",
+    "Ladybug",
+    "Bee"
+   ],
+   "correct": 1,
+   "explanation": "Butterflies start life as caterpillars."
+  },
+  {
+   "question": "Which animal is the closest living relative of whales?",
+   "answers": [
+    "Hippopotamus",
+    "Elephant",
+    "Shark",
+    "Seal"
+   ],
+   "correct": 0,
+   "explanation": "Scientists have found that hippos and whales share a common ancestor."
+  },
+  {
+   "question": "What is a group of flamingos called?",
+   "answers": [
+    "Flamboyance",
+    "Pride",
+    "Murder",
+    "Parade"
+   ],
+   "correct": 0,
+   "explanation": "A flamboyance of flamingos is a fittingly colourful name!"
+  },
+  {
+   "question": "Wild penguins live mostly in which half of the world?",
+   "answers": [
+    "Only in Europe",
+    "Only near the North Pole",
+    "Northern Hemisphere",
+    "Southern Hemisphere"
+   ],
+   "correct": 3,
+   "explanation": "Almost all wild penguins live south of the equator."
+  },
+  {
+   "question": "In a beehive, which bee lays the eggs?",
+   "answers": [
+    "The queen",
+    "The drones",
+    "The workers",
+    "The guards"
+   ],
+   "correct": 0,
+   "explanation": "A hive normally has just one queen."
+  },
+  {
+   "question": "Which animal is this? 🐪",
+   "answers": [
+    "Llama",
+    "Horse",
+    "Giraffe",
+    "Camel"
+   ],
+   "correct": 3,
+   "explanation": "Camels are well suited to life in hot, dry deserts."
+  },
+  {
+   "question": "Which of these does a jellyfish NOT have?",
+   "answers": [
+    "A mouth",
+    "Tentacles",
+    "A brain",
+    "A body"
+   ],
+   "correct": 2,
+   "explanation": "Jellyfish have a simple nerve net instead of a brain."
+  },
+  {
+   "question": "Including its two claws, how many legs does a crab have?",
+   "answers": [
+    "12",
+    "10",
+    "6",
+    "8"
+   ],
+   "correct": 1,
+   "explanation": "Crabs are decapods, which means 'ten feet'."
+  },
+  {
+   "question": "What is the main food of a blue whale?",
+   "answers": [
+    "Sharks",
+    "Krill",
+    "Squid",
+    "Seaweed"
+   ],
+   "correct": 1,
+   "explanation": "Blue whales eat tiny shrimp-like animals called krill, sometimes tonnes a day."
+  },
+  {
+   "question": "An elephant's tusks are actually very long what?",
+   "answers": [
+    "Teeth",
+    "Claws",
+    "Bones",
+    "Horns"
+   ],
+   "correct": 0,
+   "explanation": "Tusks are overgrown incisor teeth."
+  },
+  {
+   "question": "Which animal is this? 🦃",
+   "answers": [
+    "Turkey",
+    "Peacock",
+    "Ostrich",
+    "Duck"
+   ],
+   "correct": 0,
+   "explanation": "Male turkeys make a 'gobble' sound."
+  },
+  {
+   "question": "Dogs are famous for their super strong sense of what?",
+   "answers": [
+    "Sight",
+    "Touch",
+    "Taste",
+    "Smell"
+   ],
+   "correct": 3,
+   "explanation": "A dog's nose is many thousands of times more sensitive than ours."
+  },
+  {
+   "question": "Which bird can fly backwards?",
+   "answers": [
+    "Hummingbird",
+    "Eagle",
+    "Pigeon",
+    "Owl"
+   ],
+   "correct": 0,
+   "explanation": "Hummingbirds can hover and even fly backwards."
+  },
+  {
+   "question": "What is a baby goat called?",
+   "answers": [
+    "Calf",
+    "Lamb",
+    "Kid",
+    "Fawn"
+   ],
+   "correct": 2,
+   "explanation": "Yes, young goats share their name with human children!"
+  },
+  {
+   "question": "If a predator grabs its tail, what can many lizards do?",
+   "answers": [
+    "Turn invisible",
+    "Puff up like a balloon",
+    "Drop the tail and grow a new one",
+    "Spray ink"
+   ],
+   "correct": 2,
+   "explanation": "The wriggling dropped tail distracts the predator."
+  },
+  {
+   "question": "Which animal is this? 🦍",
+   "answers": [
+    "Baboon",
+    "Gorilla",
+    "Bear",
+    "Orangutan"
+   ],
+   "correct": 1,
+   "explanation": "Gorillas are the largest primates."
+  },
+  {
+   "question": "Which animal is this? 🐃",
+   "answers": [
+    "Hippopotamus",
+    "Rhinoceros",
+    "Cow",
+    "Water buffalo"
+   ],
+   "correct": 3,
+   "explanation": "Water buffalo love wallowing in water and mud."
+  },
+  {
+   "question": "In seahorses, which parent carries the eggs until they hatch?",
+   "answers": [
+    "The mother",
+    "Neither",
+    "The father",
+    "Both take turns"
+   ],
+   "correct": 2,
+   "explanation": "Male seahorses carry the eggs in a pouch and give birth."
+  },
+  {
+   "question": "An animal that eats both plants and meat is called a what?",
+   "answers": [
+    "Insectivore",
+    "Omnivore",
+    "Carnivore",
+    "Herbivore"
+   ],
+   "correct": 1,
+   "explanation": "Bears, pigs and humans are omnivores."
+  },
+  {
+   "question": "What is a baby frog called?",
+   "answers": [
+    "Minnow",
+    "Tadpole",
+    "Larva",
+    "Fry"
+   ],
+   "correct": 1,
+   "explanation": "Tadpoles live in water and breathe with gills."
+  },
+  {
+   "question": "Which animal is this? 🦩",
+   "answers": [
+    "Flamingo",
+    "Swan",
+    "Parrot",
+    "Peacock"
+   ],
+   "correct": 0,
+   "explanation": "Flamingos often stand on one leg."
+  },
+  {
+   "question": "Which animal is this? 🐅",
+   "answers": [
+    "Tiger",
+    "Lion",
+    "Jaguar",
+    "Cheetah"
+   ],
+   "correct": 0,
+   "explanation": "Tigers are the largest cats in the world."
+  },
+  {
+   "question": "Which animal is this? 🦔",
+   "answers": [
+    "Armadillo",
+    "Hedgehog",
+    "Squirrel",
+    "Mouse"
+   ],
+   "correct": 1,
+   "explanation": "Hedgehogs can roll into a spiky ball to protect themselves."
+  },
+  {
+   "question": "Which animal is this? 🕷️",
+   "answers": [
+    "Spider",
+    "Crab",
+    "Scorpion",
+    "Ant"
+   ],
+   "correct": 0,
+   "explanation": "Spiders have eight legs."
+  },
+  {
+   "question": "What is a group of lions called?",
+   "answers": [
+    "School",
+    "Pride",
+    "Pack",
+    "Herd"
+   ],
+   "correct": 1,
+   "explanation": "A pride is usually made up of related females, their cubs and a few males."
+  },
+  {
+   "question": "What is a baby deer called?",
+   "answers": [
+    "Kid",
+    "Calf",
+    "Foal",
+    "Fawn"
+   ],
+   "correct": 3,
+   "explanation": "Many fawns have white spots that help them hide."
+  },
+  {
+   "question": "Which sea animal is sometimes called a 'sea cow'?",
+   "answers": [
+    "Seal",
+    "Walrus",
+    "Manatee",
+    "Dolphin"
+   ],
+   "correct": 2,
+   "explanation": "Manatees are gentle plant-eaters."
+  },
+  {
+   "question": "What is the largest land animal alive today?",
+   "answers": [
+    "African elephant",
+    "Giraffe",
+    "Hippopotamus",
+    "White rhinoceros"
+   ],
+   "correct": 0,
+   "explanation": "African elephants can weigh over 6 tonnes."
+  },
+  {
+   "question": "Which animal is this? 🐼",
+   "answers": [
+    "Koala",
+    "Badger",
+    "Raccoon",
+    "Panda"
+   ],
+   "correct": 3,
+   "explanation": "Giant pandas eat mostly bamboo."
+  },
+  {
+   "question": "Which animal is this? 🦛",
+   "answers": [
+    "Elephant",
+    "Hippopotamus",
+    "Rhinoceros",
+    "Walrus"
+   ],
+   "correct": 1,
+   "explanation": "Hippos spend much of the day in water to stay cool."
+  },
+  {
+   "question": "An animal that eats mainly meat is called a what?",
+   "answers": [
+    "Carnivore",
+    "Herbivore",
+    "Omnivore",
+    "Frugivore"
+   ],
+   "correct": 0,
+   "explanation": "Lions and tigers are carnivores."
+  },
+  {
+   "question": "Which animal is this? 🐡",
+   "answers": [
+    "Sea urchin",
+    "Blowfish (pufferfish)",
+    "Jellyfish",
+    "Clownfish"
+   ],
+   "correct": 1,
+   "explanation": "Blowfish puff up into a ball when they feel threatened."
+  },
+  {
+   "question": "Which bird has the largest wingspan of any living bird?",
+   "answers": [
+    "Ostrich",
+    "Wandering albatross",
+    "Pelican",
+    "Bald eagle"
+   ],
+   "correct": 1,
+   "explanation": "Wandering albatrosses can have wings over 3 metres across."
+  },
+  {
+   "question": "Which animal is this? 🐊",
+   "answers": [
+    "Crocodile",
+    "Snake",
+    "Hippopotamus",
+    "Iguana"
+   ],
+   "correct": 0,
+   "explanation": "Crocodiles are reptiles with very powerful jaws."
+  },
+  {
+   "question": "An animal that eats only plants is called a what?",
+   "answers": [
+    "Herbivore",
+    "Carnivore",
+    "Insectivore",
+    "Omnivore"
+   ],
+   "correct": 0,
+   "explanation": "Cows, rabbits and elephants are herbivores."
+  },
+  {
+   "question": "Where do wild polar bears live?",
+   "answers": [
+    "The Arctic",
+    "The Sahara",
+    "Antarctica",
+    "The Amazon"
+   ],
+   "correct": 0,
+   "explanation": "Polar bears live around the North Pole, not the South Pole."
+  },
+  {
+   "question": "Which animal is this? 🦀",
+   "answers": [
+    "Lobster",
+    "Crab",
+    "Scorpion",
+    "Spider"
+   ],
+   "correct": 1,
+   "explanation": "Many crabs walk sideways."
+  },
+  {
+   "question": "Which animal is this? 🦨",
+   "answers": [
+    "Skunk",
+    "Squirrel",
+    "Badger",
+    "Raccoon"
+   ],
+   "correct": 0,
+   "explanation": "Skunks spray a very smelly liquid to scare off predators."
+  },
+  {
+   "question": "Which animal is this? 🦧",
+   "answers": [
+    "Orangutan",
+    "Baboon",
+    "Gorilla",
+    "Sloth"
+   ],
+   "correct": 0,
+   "explanation": "Orangutans have reddish-orange hair and live in the rainforests of Borneo and Sumatra."
+  },
+  {
+   "question": "What are the long teeth of a walrus called?",
+   "answers": [
+    "Antlers",
+    "Horns",
+    "Fangs",
+    "Tusks"
+   ],
+   "correct": 3,
+   "explanation": "Walruses use their tusks to help haul themselves onto ice."
+  },
+  {
+   "question": "Which animal is this? 🦙",
+   "answers": [
+    "Deer",
+    "Kangaroo",
+    "Llama",
+    "Goat"
+   ],
+   "correct": 2,
+   "explanation": "Llamas come from the Andes mountains of South America."
+  },
+  {
+   "question": "Which group of animals do frogs belong to?",
+   "answers": [
+    "Reptiles",
+    "Amphibians",
+    "Mammals",
+    "Fish"
+   ],
+   "correct": 1,
+   "explanation": "Amphibians usually start life in water and later live on land too."
+  },
+  {
+   "question": "Which animal is this? 🐬",
+   "answers": [
+    "Swordfish",
+    "Shark",
+    "Seal",
+    "Dolphin"
+   ],
+   "correct": 3,
+   "explanation": "Dolphins are mammals and breathe air through a blowhole."
+  },
+  {
+   "question": "What colour is a polar bear's skin?",
+   "answers": [
+    "White",
+    "Pink",
+    "Yellow",
+    "Black"
+   ],
+   "correct": 3,
+   "explanation": "Black skin helps polar bears soak up heat from the sun."
+  },
+  {
+   "question": "Which animal is this? 🐢",
+   "answers": [
+    "Turtle",
+    "Armadillo",
+    "Snail",
+    "Frog"
+   ],
+   "correct": 0,
+   "explanation": "Turtles carry a hard protective shell."
+  },
+  {
+   "question": "Which animal is this? 🦇",
+   "answers": [
+    "Bat",
+    "Crow",
+    "Owl",
+    "Moth"
+   ],
+   "correct": 0,
+   "explanation": "Bats are the only mammals that can truly fly."
+  },
+  {
+   "question": "Giant pandas are a type of what?",
+   "answers": [
+    "Raccoon",
+    "Monkey",
+    "Bear",
+    "Cat"
+   ],
+   "correct": 2,
+   "explanation": "Giant pandas belong to the bear family."
+  },
+  {
+   "question": "Which animal is this? 🐓",
+   "answers": [
+    "Parrot",
+    "Rooster",
+    "Duck",
+    "Turkey"
+   ],
+   "correct": 1,
+   "explanation": "A rooster is a male chicken."
+  },
+  {
+   "question": "How many legs does a spider have?",
+   "answers": [
+    "8",
+    "6",
+    "12",
+    "10"
+   ],
+   "correct": 0,
+   "explanation": "Spiders are arachnids, which have eight legs."
+  }
+ ]
+}

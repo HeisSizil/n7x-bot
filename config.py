@@ -54,5 +54,10 @@ WELCOME_CHANNEL_ID = _get_int("WELCOME_CHANNEL_ID")
 # Optional image for the welcome embed (must start with https://). Empty = the server's icon.
 WELCOME_IMAGE_URL = os.getenv("WELCOME_IMAGE_URL", "").strip()
 
+# --- Trivia (Stage 11) ---
+# Optional. "true" = /trivia also uses free questions from Open Trivia DB (opentdb.com).
+# If it's slow, down or rate limited, the local trivia/ files are used instead.
+OPENTDB_ENABLED = os.getenv("OPENTDB_ENABLED", "").strip().lower() in ("1", "true", "yes", "on")
+
 # --- Branding ---
 BRAND_COLOR = 0x7B2FF7  # N7X purple, used for embeds

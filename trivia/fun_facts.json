@@ -1,0 +1,1711 @@
+{
+ "_how_to_edit": "One question per {...}. 'question': the text. 'answers': exactly 4. 'correct': the position of the right answer (0 = first, 1 = second, 2 = third, 3 = fourth). Optional 'explanation' (shown after answering) and 'image' (an https:// link, or a file name inside the images/ folder). Answers are shuffled when shown. The bot re-reads this file automatically. After editing, run: python check_trivia.py",
+ "category": "Fun Facts",
+ "questions": [
+  {
+   "question": "Which planet is closest to the Sun?",
+   "answers": [
+    "Mercury",
+    "Venus",
+    "Mars",
+    "Earth"
+   ],
+   "correct": 0,
+   "explanation": "Mercury orbits closest to the Sun, completing a lap in just 88 Earth days."
+  },
+  {
+   "question": "What is the largest planet in our Solar System?",
+   "answers": [
+    "Saturn",
+    "Neptune",
+    "Uranus",
+    "Jupiter"
+   ],
+   "correct": 3,
+   "explanation": "Jupiter is so big that all the other planets could fit inside it."
+  },
+  {
+   "question": "Which planet is known as the Red Planet?",
+   "answers": [
+    "Venus",
+    "Jupiter",
+    "Mars",
+    "Mercury"
+   ],
+   "correct": 2,
+   "explanation": "Mars looks red because its surface is covered in rusty iron oxide dust."
+  },
+  {
+   "question": "Which planet is famous for its bright, wide rings made of ice and rock?",
+   "answers": [
+    "Mars",
+    "Saturn",
+    "Mercury",
+    "Venus"
+   ],
+   "correct": 1,
+   "explanation": "All four giant planets have rings, but Saturn's are by far the brightest and easiest to see."
+  },
+  {
+   "question": "How many planets are in our Solar System?",
+   "answers": [
+    "7",
+    "8",
+    "9",
+    "10"
+   ],
+   "correct": 1,
+   "explanation": "There are eight planets; Pluto was reclassified as a dwarf planet in 2006."
+  },
+  {
+   "question": "What kind of object is the Sun?",
+   "answers": [
+    "A star",
+    "A planet",
+    "A comet",
+    "A moon"
+   ],
+   "correct": 0,
+   "explanation": "The Sun is a star, a huge ball of hot gas powered by nuclear fusion."
+  },
+  {
+   "question": "Who was the first person to walk on the Moon?",
+   "answers": [
+    "Buzz Aldrin",
+    "Yuri Gagarin",
+    "John Glenn",
+    "Neil Armstrong"
+   ],
+   "correct": 3,
+   "explanation": "Neil Armstrong stepped onto the Moon on 20 July 1969 during Apollo 11."
+  },
+  {
+   "question": "Who was the first human to travel into space?",
+   "answers": [
+    "Neil Armstrong",
+    "Alan Shepard",
+    "Yuri Gagarin",
+    "John Glenn"
+   ],
+   "correct": 2,
+   "explanation": "Yuri Gagarin orbited Earth aboard Vostok 1 on 12 April 1961."
+  },
+  {
+   "question": "About how long does it take Earth to travel once around the Sun?",
+   "answers": [
+    "About 30 days",
+    "About 24 hours",
+    "About 365 days",
+    "About 100 days"
+   ],
+   "correct": 2,
+   "explanation": "One trip around the Sun takes about 365 and a quarter days, which is why we have leap years."
+  },
+  {
+   "question": "What causes day and night on Earth?",
+   "answers": [
+    "Earth orbiting the Sun",
+    "Earth spinning on its axis",
+    "The Moon blocking the Sun",
+    "Clouds covering the Sun"
+   ],
+   "correct": 1,
+   "explanation": "Earth spins once about every 24 hours, so each side takes turns facing the Sun."
+  },
+  {
+   "question": "What mainly causes Earth's seasons?",
+   "answers": [
+    "The tilt of Earth's axis",
+    "Earth's distance from the Sun",
+    "The phases of the Moon",
+    "Changes in the Sun's size"
+   ],
+   "correct": 0,
+   "explanation": "Earth's tilt means each hemisphere gets more direct sunlight at different times of year."
+  },
+  {
+   "question": "Which planet is the hottest in our Solar System?",
+   "answers": [
+    "Mercury",
+    "Mars",
+    "Jupiter",
+    "Venus"
+   ],
+   "correct": 3,
+   "explanation": "Venus is hotter than Mercury because its thick carbon dioxide atmosphere traps heat."
+  },
+  {
+   "question": "What is the name of the galaxy we live in?",
+   "answers": [
+    "Andromeda",
+    "The Whirlpool Galaxy",
+    "The Sombrero Galaxy",
+    "The Milky Way"
+   ],
+   "correct": 3,
+   "explanation": "Our Solar System is one of billions of star systems in the Milky Way."
+  },
+  {
+   "question": "About how long does sunlight take to reach Earth?",
+   "answers": [
+    "About 8 seconds",
+    "About 8 hours",
+    "About 8 minutes",
+    "About 8 days"
+   ],
+   "correct": 2,
+   "explanation": "Sunlight takes about 8 minutes and 20 seconds to travel to Earth."
+  },
+  {
+   "question": "What is a \"shooting star\" really?",
+   "answers": [
+    "A star falling to Earth",
+    "A meteor burning up in the atmosphere",
+    "A comet hitting the Moon",
+    "A satellite turning on"
+   ],
+   "correct": 1,
+   "explanation": "Shooting stars are small bits of space rock that glow as they burn up high in the sky."
+  },
+  {
+   "question": "What is the closest star to Earth?",
+   "answers": [
+    "The Sun",
+    "Proxima Centauri",
+    "Sirius",
+    "The North Star"
+   ],
+   "correct": 0,
+   "explanation": "The Sun is a star, and it is much closer than any other!"
+  },
+  {
+   "question": "Can sound travel through the empty vacuum of space?",
+   "answers": [
+    "No, sound needs something like air to travel through",
+    "Yes, but only very slowly",
+    "Yes, even faster than on Earth",
+    "Only near planets"
+   ],
+   "correct": 0,
+   "explanation": "Sound is a vibration of matter, so in empty space there is nothing to carry it."
+  },
+  {
+   "question": "What is the largest organ of the human body?",
+   "answers": [
+    "The liver",
+    "The brain",
+    "The lungs",
+    "The skin"
+   ],
+   "correct": 3,
+   "explanation": "Your skin covers your whole body and protects everything inside."
+  },
+  {
+   "question": "How many bones does a typical adult human have?",
+   "answers": [
+    "186",
+    "216",
+    "206",
+    "306"
+   ],
+   "correct": 2,
+   "explanation": "Babies are born with around 300 bones, and many fuse together as they grow."
+  },
+  {
+   "question": "Which organ pumps blood around your body?",
+   "answers": [
+    "The lungs",
+    "The heart",
+    "The liver",
+    "The kidneys"
+   ],
+   "correct": 1,
+   "explanation": "Your heart beats about 100,000 times a day."
+  },
+  {
+   "question": "How many chambers does the human heart have?",
+   "answers": [
+    "2",
+    "4",
+    "3",
+    "6"
+   ],
+   "correct": 1,
+   "explanation": "The heart has two atria on top and two ventricles below."
+  },
+  {
+   "question": "What is the smallest bone in the human body?",
+   "answers": [
+    "The stapes, in the ear",
+    "The pinky toe bone",
+    "The kneecap",
+    "The nose bone"
+   ],
+   "correct": 0,
+   "explanation": "The stapes, or stirrup bone, is only about 3 mm long."
+  },
+  {
+   "question": "What is the longest bone in the human body?",
+   "answers": [
+    "The spine",
+    "The humerus (upper arm bone)",
+    "The shin bone",
+    "The femur (thigh bone)"
+   ],
+   "correct": 3,
+   "explanation": "The femur runs from your hip to your knee."
+  },
+  {
+   "question": "What do red blood cells mainly carry around the body?",
+   "answers": [
+    "Sugar",
+    "Water",
+    "Oxygen",
+    "Vitamins"
+   ],
+   "correct": 2,
+   "explanation": "Red blood cells contain haemoglobin, which grabs oxygen in the lungs."
+  },
+  {
+   "question": "How many teeth does an adult usually have, including wisdom teeth?",
+   "answers": [
+    "28",
+    "20",
+    "32",
+    "36"
+   ],
+   "correct": 2,
+   "explanation": "Adults have 32 permanent teeth if all four wisdom teeth come through."
+  },
+  {
+   "question": "Which vitamin does your skin make when it is exposed to sunlight?",
+   "answers": [
+    "Vitamin C",
+    "Vitamin D",
+    "Vitamin A",
+    "Vitamin K"
+   ],
+   "correct": 1,
+   "explanation": "Vitamin D helps your body use calcium to build strong bones."
+  },
+  {
+   "question": "Is it true that humans only use 10% of their brain?",
+   "answers": [
+    "No, we use virtually all of our brain",
+    "Yes, only 10%",
+    "Yes, but only while asleep",
+    "No, we use only 50%"
+   ],
+   "correct": 0,
+   "explanation": "This is a popular myth; brain scans show activity throughout the whole brain."
+  },
+  {
+   "question": "What is the hardest substance in the human body?",
+   "answers": [
+    "Bone",
+    "Fingernails",
+    "Cartilage",
+    "Tooth enamel"
+   ],
+   "correct": 3,
+   "explanation": "Enamel, the outer layer of your teeth, is even harder than bone."
+  },
+  {
+   "question": "What is the normal human body temperature, roughly?",
+   "answers": [
+    "About 30 °C (86 °F)",
+    "About 40 °C (104 °F)",
+    "About 33 °C (91 °F)",
+    "About 37 °C (98.6 °F)"
+   ],
+   "correct": 3,
+   "explanation": "A healthy body temperature stays close to 37 °C."
+  },
+  {
+   "question": "When you hit your \"funny bone\", what are you actually hitting?",
+   "answers": [
+    "A bone",
+    "A muscle",
+    "A nerve",
+    "A blood vessel"
+   ],
+   "correct": 2,
+   "explanation": "The tingle comes from the ulnar nerve, which runs close to the skin at the elbow."
+  },
+  {
+   "question": "What is the largest internal organ in the human body?",
+   "answers": [
+    "The heart",
+    "The liver",
+    "The stomach",
+    "The brain"
+   ],
+   "correct": 1,
+   "explanation": "The liver does hundreds of jobs, like cleaning the blood and helping digestion."
+  },
+  {
+   "question": "Which blood type is known as the universal donor for red blood cells?",
+   "answers": [
+    "O negative",
+    "AB positive",
+    "A positive",
+    "B negative"
+   ],
+   "correct": 0,
+   "explanation": "O negative red blood cells can be given to people of any blood type."
+  },
+  {
+   "question": "Do identical twins have the same fingerprints?",
+   "answers": [
+    "No, their fingerprints are different",
+    "Yes, exactly the same",
+    "Only on their thumbs",
+    "Only when they are babies"
+   ],
+   "correct": 0,
+   "explanation": "Fingerprints form in the womb and are shaped by tiny random differences."
+  },
+  {
+   "question": "What is the chemical symbol for gold?",
+   "answers": [
+    "Go",
+    "Gd",
+    "Ag",
+    "Au"
+   ],
+   "correct": 3,
+   "explanation": "Au comes from the Latin word for gold, \"aurum\"."
+  },
+  {
+   "question": "Which element has the chemical symbol Fe?",
+   "answers": [
+    "Fluorine",
+    "Lead",
+    "Iron",
+    "Francium"
+   ],
+   "correct": 2,
+   "explanation": "Fe comes from \"ferrum\", the Latin word for iron."
+  },
+  {
+   "question": "What is the chemical formula for water?",
+   "answers": [
+    "CO2",
+    "H2O",
+    "O2",
+    "H2O2"
+   ],
+   "correct": 1,
+   "explanation": "Each water molecule has two hydrogen atoms and one oxygen atom."
+  },
+  {
+   "question": "Which gas makes up most of Earth's atmosphere?",
+   "answers": [
+    "Oxygen",
+    "Nitrogen",
+    "Carbon dioxide",
+    "Argon"
+   ],
+   "correct": 1,
+   "explanation": "Air is about 78% nitrogen and only about 21% oxygen."
+  },
+  {
+   "question": "What is the lightest chemical element?",
+   "answers": [
+    "Hydrogen",
+    "Helium",
+    "Oxygen",
+    "Lithium"
+   ],
+   "correct": 0,
+   "explanation": "Hydrogen is element number 1 and the most common element in the universe."
+  },
+  {
+   "question": "What is the chemical name for ordinary table salt?",
+   "answers": [
+    "Calcium carbonate",
+    "Potassium nitrate",
+    "Sodium bicarbonate",
+    "Sodium chloride"
+   ],
+   "correct": 3,
+   "explanation": "Table salt is made of sodium and chlorine joined together."
+  },
+  {
+   "question": "Which metal is a liquid at room temperature?",
+   "answers": [
+    "Iron",
+    "Aluminium",
+    "Mercury",
+    "Copper"
+   ],
+   "correct": 2,
+   "explanation": "Mercury is the only metal that is liquid at normal room temperature."
+  },
+  {
+   "question": "Which gas makes party balloons float?",
+   "answers": [
+    "Oxygen",
+    "Carbon dioxide",
+    "Helium",
+    "Nitrogen"
+   ],
+   "correct": 2,
+   "explanation": "Helium is lighter than air, so helium balloons rise."
+  },
+  {
+   "question": "Diamonds are made of which element?",
+   "answers": [
+    "Silicon",
+    "Carbon",
+    "Calcium",
+    "Quartz"
+   ],
+   "correct": 1,
+   "explanation": "Diamonds are carbon atoms packed tightly together under huge pressure."
+  },
+  {
+   "question": "Who is famous for creating the periodic table of elements in 1869?",
+   "answers": [
+    "Dmitri Mendeleev",
+    "Marie Curie",
+    "Isaac Newton",
+    "John Dalton"
+   ],
+   "correct": 0,
+   "explanation": "Mendeleev even left gaps for elements that had not been discovered yet."
+  },
+  {
+   "question": "At sea level, at what temperature does water boil?",
+   "answers": [
+    "90 °C (194 °F)",
+    "120 °C (248 °F)",
+    "80 °C (176 °F)",
+    "100 °C (212 °F)"
+   ],
+   "correct": 3,
+   "explanation": "On high mountains, water boils at a lower temperature because the air pressure is lower."
+  },
+  {
+   "question": "Dry ice is the frozen form of which substance?",
+   "answers": [
+    "Water",
+    "Nitrogen",
+    "Oxygen",
+    "Carbon dioxide"
+   ],
+   "correct": 3,
+   "explanation": "Dry ice is frozen carbon dioxide and is about -78 °C."
+  },
+  {
+   "question": "What is the hardest natural substance on Earth?",
+   "answers": [
+    "Gold",
+    "Granite",
+    "Diamond",
+    "Iron"
+   ],
+   "correct": 2,
+   "explanation": "Diamond is so hard that it is used to cut and polish other materials."
+  },
+  {
+   "question": "What is the \"lead\" in a pencil actually made of?",
+   "answers": [
+    "Lead metal",
+    "Graphite mixed with clay",
+    "Charcoal",
+    "Iron"
+   ],
+   "correct": 1,
+   "explanation": "Pencils have never contained lead; the core is graphite, a form of carbon."
+  },
+  {
+   "question": "Which scientist described the laws of motion and universal gravitation?",
+   "answers": [
+    "Isaac Newton",
+    "Albert Einstein",
+    "Galileo Galilei",
+    "Nikola Tesla"
+   ],
+   "correct": 0,
+   "explanation": "Newton published his laws of motion and gravity in 1687."
+  },
+  {
+   "question": "Roughly how fast does light travel?",
+   "answers": [
+    "About 300,000 km per second",
+    "About 300 km per second",
+    "About 3,000 km per hour",
+    "About 30 km per second"
+   ],
+   "correct": 0,
+   "explanation": "Light is so fast it could circle Earth about 7.5 times in one second."
+  },
+  {
+   "question": "Why do we see lightning before we hear thunder?",
+   "answers": [
+    "Thunder happens later",
+    "Our eyes are closer to the sky",
+    "Sound travels faster than light",
+    "Light travels much faster than sound"
+   ],
+   "correct": 3,
+   "explanation": "Light reaches us almost instantly, while sound travels about 1 km every 3 seconds."
+  },
+  {
+   "question": "What force keeps our feet on the ground?",
+   "answers": [
+    "Magnetism",
+    "Friction",
+    "Gravity",
+    "Air pressure"
+   ],
+   "correct": 2,
+   "explanation": "Gravity pulls everything with mass towards everything else."
+  },
+  {
+   "question": "How many colours are traditionally named in a rainbow?",
+   "answers": [
+    "5",
+    "7",
+    "6",
+    "9"
+   ],
+   "correct": 1,
+   "explanation": "Red, orange, yellow, green, blue, indigo and violet."
+  },
+  {
+   "question": "Which glass object can split white light into a rainbow of colours?",
+   "answers": [
+    "A mirror",
+    "A prism",
+    "A magnet",
+    "A thermometer"
+   ],
+   "correct": 1,
+   "explanation": "Isaac Newton used prisms to show that white light is made of many colours."
+  },
+  {
+   "question": "What happens when you put the north poles of two magnets together?",
+   "answers": [
+    "They push each other away",
+    "They stick together",
+    "Nothing at all",
+    "They lose their magnetism"
+   ],
+   "correct": 0,
+   "explanation": "Like poles repel, and opposite poles attract."
+  },
+  {
+   "question": "What does a barometer measure?",
+   "answers": [
+    "Temperature",
+    "Wind speed",
+    "Rainfall",
+    "Air pressure"
+   ],
+   "correct": 3,
+   "explanation": "Changes in air pressure help forecasters predict the weather."
+  },
+  {
+   "question": "Which scientist is famous for the equation E = mc²?",
+   "answers": [
+    "Isaac Newton",
+    "Stephen Hawking",
+    "Albert Einstein",
+    "Nikola Tesla"
+   ],
+   "correct": 2,
+   "explanation": "Einstein's equation shows that mass and energy are linked."
+  },
+  {
+   "question": "Does lightning never strike the same place twice?",
+   "answers": [
+    "True, it never does",
+    "True, unless it rains",
+    "False, it can strike the same place many times",
+    "Only during winter"
+   ],
+   "correct": 2,
+   "explanation": "Tall buildings and towers can be hit by lightning many times a year."
+  },
+  {
+   "question": "What causes the sound of thunder?",
+   "answers": [
+    "Clouds bumping together",
+    "Air heated very quickly by lightning",
+    "Rain hitting the ground",
+    "Wind blowing through clouds"
+   ],
+   "correct": 1,
+   "explanation": "Lightning heats the air so fast that it expands with a loud boom."
+  },
+  {
+   "question": "Why does the sky look blue on a clear day?",
+   "answers": [
+    "Air scatters blue sunlight more than red",
+    "It reflects the ocean",
+    "Space is blue",
+    "The Sun gives off only blue light"
+   ],
+   "correct": 0,
+   "explanation": "Tiny gas molecules scatter short blue wavelengths across the sky."
+  },
+  {
+   "question": "What instrument uses Earth's magnetic field to show direction?",
+   "answers": [
+    "A barometer",
+    "A telescope",
+    "A thermometer",
+    "A compass"
+   ],
+   "correct": 3,
+   "explanation": "A compass needle is a small magnet that lines up north to south."
+  },
+  {
+   "question": "What does the ozone layer protect us from?",
+   "answers": [
+    "Meteors",
+    "Cold temperatures",
+    "Strong winds",
+    "Harmful ultraviolet (UV) rays"
+   ],
+   "correct": 3,
+   "explanation": "The ozone layer high in the atmosphere absorbs most of the Sun's UV rays."
+  },
+  {
+   "question": "How many sides or arms does a snowflake usually have?",
+   "answers": [
+    "4",
+    "5",
+    "6",
+    "8"
+   ],
+   "correct": 2,
+   "explanation": "Snowflakes have six sides because of the way water molecules join when they freeze."
+  },
+  {
+   "question": "What is the process plants use to make food from sunlight?",
+   "answers": [
+    "Respiration",
+    "Photosynthesis",
+    "Germination",
+    "Pollination"
+   ],
+   "correct": 1,
+   "explanation": "Plants use sunlight, water and carbon dioxide to make sugar and oxygen."
+  },
+  {
+   "question": "What gives most plant leaves their green colour?",
+   "answers": [
+    "Chlorophyll",
+    "Carotene",
+    "Melanin",
+    "Iron"
+   ],
+   "correct": 0,
+   "explanation": "Chlorophyll absorbs red and blue light and reflects green."
+  },
+  {
+   "question": "Bamboo is actually a type of what?",
+   "answers": [
+    "Grass",
+    "Tree",
+    "Fern",
+    "Cactus"
+   ],
+   "correct": 0,
+   "explanation": "Some types of bamboo can grow almost a metre in a single day."
+  },
+  {
+   "question": "Botanically speaking, which of these is a berry?",
+   "answers": [
+    "Strawberry",
+    "Raspberry",
+    "Cherry",
+    "Banana"
+   ],
+   "correct": 3,
+   "explanation": "Bananas are true berries, while strawberries and raspberries are not."
+  },
+  {
+   "question": "What is the main ingredient of guacamole?",
+   "answers": [
+    "Cucumber",
+    "Green peas",
+    "Avocado",
+    "Spinach"
+   ],
+   "correct": 2,
+   "explanation": "Guacamole is mashed avocado, often with lime, onion and chilli."
+  },
+  {
+   "question": "What is hummus mainly made from?",
+   "answers": [
+    "Lentils",
+    "Chickpeas",
+    "Kidney beans",
+    "Peanuts"
+   ],
+   "correct": 1,
+   "explanation": "Hummus blends chickpeas with tahini, lemon juice and garlic."
+  },
+  {
+   "question": "What is tofu made from?",
+   "answers": [
+    "Rice",
+    "Soybeans",
+    "Wheat",
+    "Coconut"
+   ],
+   "correct": 1,
+   "explanation": "Tofu is made by curdling soy milk and pressing it into blocks."
+  },
+  {
+   "question": "Why does popcorn pop?",
+   "answers": [
+    "Water inside the kernel turns to steam",
+    "Air bubbles inside burst",
+    "The oil explodes",
+    "The salt reacts with heat"
+   ],
+   "correct": 0,
+   "explanation": "The steam builds pressure until the kernel bursts open."
+  },
+  {
+   "question": "What makes bread dough rise?",
+   "answers": [
+    "Salt",
+    "Sugar melting",
+    "Flour expanding",
+    "Yeast producing gas bubbles"
+   ],
+   "correct": 3,
+   "explanation": "Yeast eats sugars and releases carbon dioxide, which makes the dough puff up."
+  },
+  {
+   "question": "Raisins are dried versions of which fruit?",
+   "answers": [
+    "Plums",
+    "Cherries",
+    "Grapes",
+    "Figs"
+   ],
+   "correct": 2,
+   "explanation": "Grapes become raisins when they are dried in the sun or in dryers."
+  },
+  {
+   "question": "What is the main herb in traditional pesto sauce?",
+   "answers": [
+    "Parsley",
+    "Mint",
+    "Basil",
+    "Oregano"
+   ],
+   "correct": 2,
+   "explanation": "Classic pesto mixes basil, pine nuts, garlic, cheese and olive oil."
+  },
+  {
+   "question": "Chocolate is made from the seeds of which plant?",
+   "answers": [
+    "The coffee plant",
+    "The cacao tree",
+    "The vanilla orchid",
+    "The carob palm"
+   ],
+   "correct": 1,
+   "explanation": "Cacao seeds, also called cocoa beans, are fermented, roasted and ground."
+  },
+  {
+   "question": "Which vegetable is used to make sauerkraut?",
+   "answers": [
+    "Cabbage",
+    "Carrot",
+    "Cucumber",
+    "Onion"
+   ],
+   "correct": 0,
+   "explanation": "Sauerkraut is finely cut cabbage that has been fermented."
+  },
+  {
+   "question": "Botanically, a tomato is a what?",
+   "answers": [
+    "Vegetable",
+    "Root",
+    "Herb",
+    "Fruit"
+   ],
+   "correct": 3,
+   "explanation": "Tomatoes grow from flowers and contain seeds, so botanists call them fruits."
+  },
+  {
+   "question": "What gives chilli peppers their spicy heat?",
+   "answers": [
+    "Caffeine",
+    "Citric acid",
+    "Sodium",
+    "Capsaicin"
+   ],
+   "correct": 3,
+   "explanation": "Capsaicin tricks your nerves into feeling a burning sensation."
+  },
+  {
+   "question": "Peanuts are not true nuts. What are they?",
+   "answers": [
+    "Seeds of a tree",
+    "Grains",
+    "Legumes",
+    "Roots"
+   ],
+   "correct": 2,
+   "explanation": "Peanuts grow underground in pods, like their relatives peas and beans."
+  },
+  {
+   "question": "Oranges are famous for being rich in which vitamin?",
+   "answers": [
+    "Vitamin D",
+    "Vitamin C",
+    "Vitamin B12",
+    "Vitamin K"
+   ],
+   "correct": 1,
+   "explanation": "Vitamin C helps your body heal and supports your immune system."
+  },
+  {
+   "question": "Which spice comes from the thin red threads of a crocus flower?",
+   "answers": [
+    "Saffron",
+    "Paprika",
+    "Turmeric",
+    "Cinnamon"
+   ],
+   "correct": 0,
+   "explanation": "Saffron threads are picked by hand, which makes them very expensive."
+  },
+  {
+   "question": "Which of these is a type of pasta?",
+   "answers": [
+    "Fusilli",
+    "Focaccia",
+    "Falafel",
+    "Fondue"
+   ],
+   "correct": 0,
+   "explanation": "Fusilli is a spiral-shaped pasta."
+  },
+  {
+   "question": "How many players does a football (soccer) team have on the field?",
+   "answers": [
+    "9",
+    "10",
+    "12",
+    "11"
+   ],
+   "correct": 3,
+   "explanation": "Each team has 10 outfield players plus a goalkeeper."
+  },
+  {
+   "question": "How many players does a basketball team have on the court at once?",
+   "answers": [
+    "6",
+    "7",
+    "5",
+    "4"
+   ],
+   "correct": 2,
+   "explanation": "Basketball is played five against five."
+  },
+  {
+   "question": "How many players are on each side in indoor volleyball?",
+   "answers": [
+    "5",
+    "6",
+    "7",
+    "4"
+   ],
+   "correct": 1,
+   "explanation": "Indoor volleyball teams have six players on the court."
+  },
+  {
+   "question": "How many holes are played in a standard round of golf?",
+   "answers": [
+    "9",
+    "18",
+    "12",
+    "20"
+   ],
+   "correct": 1,
+   "explanation": "A full round of golf has 18 holes."
+  },
+  {
+   "question": "In tennis, what word is used for a score of zero?",
+   "answers": [
+    "Love",
+    "Nil",
+    "Duck",
+    "Zip"
+   ],
+   "correct": 0,
+   "explanation": "A score of 15-0 in tennis is called \"fifteen-love\"."
+  },
+  {
+   "question": "How many rings are on the Olympic flag?",
+   "answers": [
+    "4",
+    "6",
+    "7",
+    "5"
+   ],
+   "correct": 3,
+   "explanation": "The five interlocking rings represent the union of the continents."
+  },
+  {
+   "question": "In ten-pin bowling, what is it called when you knock down all the pins with your first ball?",
+   "answers": [
+    "A spare",
+    "A gutter",
+    "A strike",
+    "A split"
+   ],
+   "correct": 2,
+   "explanation": "Knocking all pins down with two balls is called a spare."
+  },
+  {
+   "question": "How long is a marathon race?",
+   "answers": [
+    "21.1 km (13.1 miles)",
+    "50 km (31 miles)",
+    "42.195 km (26.2 miles)",
+    "30 km (18.6 miles)"
+   ],
+   "correct": 2,
+   "explanation": "A half marathon is half that distance, 21.1 km."
+  },
+  {
+   "question": "In which sport do players score a \"try\"?",
+   "answers": [
+    "Cricket",
+    "Rugby",
+    "Tennis",
+    "Golf"
+   ],
+   "correct": 1,
+   "explanation": "A try is scored by putting the ball down over the opponent's goal line."
+  },
+  {
+   "question": "Which chess piece moves in an L-shape?",
+   "answers": [
+    "The knight",
+    "The bishop",
+    "The rook",
+    "The queen"
+   ],
+   "correct": 0,
+   "explanation": "The knight is also the only piece that can jump over other pieces."
+  },
+  {
+   "question": "In chess, what is it called when a king is under attack and cannot escape?",
+   "answers": [
+    "Stalemate",
+    "Castling",
+    "En passant",
+    "Checkmate"
+   ],
+   "correct": 3,
+   "explanation": "Checkmate ends the game."
+  },
+  {
+   "question": "How often are the Summer Olympic Games normally held?",
+   "answers": [
+    "Every year",
+    "Every 2 years",
+    "Every 5 years",
+    "Every 4 years"
+   ],
+   "correct": 3,
+   "explanation": "The Summer and Winter Games alternate, two years apart."
+  },
+  {
+   "question": "In football (soccer), which player may handle the ball inside their own penalty area?",
+   "answers": [
+    "The captain",
+    "The striker",
+    "The goalkeeper",
+    "Any defender"
+   ],
+   "correct": 2,
+   "explanation": "Outfield players cannot use their hands or arms."
+  },
+  {
+   "question": "In basketball, how many points is a shot from beyond the three-point line worth?",
+   "answers": [
+    "2",
+    "3",
+    "4",
+    "1"
+   ],
+   "correct": 1,
+   "explanation": "A regular shot is worth 2 points and a free throw is worth 1."
+  },
+  {
+   "question": "In which sport can a batter hit a \"home run\"?",
+   "answers": [
+    "Baseball",
+    "Cricket",
+    "Golf",
+    "Hockey"
+   ],
+   "correct": 0,
+   "explanation": "A home run lets the batter run around all the bases."
+  },
+  {
+   "question": "What is another name for table tennis?",
+   "answers": [
+    "Ping-pong",
+    "Paddleball",
+    "Squash",
+    "Pickleball"
+   ],
+   "correct": 0,
+   "explanation": "Ping-pong was originally a brand name for table tennis equipment."
+  },
+  {
+   "question": "Who is usually credited with inventing the telephone?",
+   "answers": [
+    "Thomas Edison",
+    "Nikola Tesla",
+    "Samuel Morse",
+    "Alexander Graham Bell"
+   ],
+   "correct": 3,
+   "explanation": "Bell received the first US patent for the telephone in 1876."
+  },
+  {
+   "question": "Which invention did Thomas Edison create in 1877 to record and play back sound?",
+   "answers": [
+    "The telephone",
+    "The radio",
+    "The phonograph",
+    "The television"
+   ],
+   "correct": 2,
+   "explanation": "The phonograph recorded sound as grooves on a cylinder."
+  },
+  {
+   "question": "Who made the first successful powered airplane flight in 1903?",
+   "answers": [
+    "The Montgolfier brothers",
+    "The Wright brothers",
+    "Amelia Earhart",
+    "Charles Lindbergh"
+   ],
+   "correct": 1,
+   "explanation": "Orville and Wilbur Wright flew at Kitty Hawk on 17 December 1903."
+  },
+  {
+   "question": "Who developed the printing press with movable type in Europe around 1440?",
+   "answers": [
+    "Leonardo da Vinci",
+    "Johannes Gutenberg",
+    "William Caxton",
+    "Galileo Galilei"
+   ],
+   "correct": 1,
+   "explanation": "Gutenberg's press made books much faster and cheaper to produce."
+  },
+  {
+   "question": "Who discovered penicillin in 1928?",
+   "answers": [
+    "Alexander Fleming",
+    "Louis Pasteur",
+    "Marie Curie",
+    "Edward Jenner"
+   ],
+   "correct": 0,
+   "explanation": "Fleming noticed mould killing bacteria in one of his lab dishes."
+  },
+  {
+   "question": "Who invented the World Wide Web?",
+   "answers": [
+    "Bill Gates",
+    "Steve Jobs",
+    "Alan Turing",
+    "Tim Berners-Lee"
+   ],
+   "correct": 3,
+   "explanation": "Tim Berners-Lee proposed the Web in 1989 while working at CERN."
+  },
+  {
+   "question": "Who developed the first vaccine, against smallpox, in 1796?",
+   "answers": [
+    "Louis Pasteur",
+    "Alexander Fleming",
+    "Edward Jenner",
+    "Jonas Salk"
+   ],
+   "correct": 2,
+   "explanation": "Jenner used cowpox to protect people from smallpox."
+  },
+  {
+   "question": "Marie Curie won Nobel Prizes for her work on what?",
+   "answers": [
+    "Electricity",
+    "Vaccines",
+    "Radioactivity",
+    "Gravity"
+   ],
+   "correct": 2,
+   "explanation": "Marie Curie was the first woman to win a Nobel Prize."
+  },
+  {
+   "question": "Who invented dynamite and later founded the Nobel Prizes?",
+   "answers": [
+    "Thomas Edison",
+    "Alfred Nobel",
+    "Albert Einstein",
+    "Henry Ford"
+   ],
+   "correct": 1,
+   "explanation": "Alfred Nobel left most of his fortune to create the Nobel Prizes."
+  },
+  {
+   "question": "Galileo used which instrument to discover moons orbiting Jupiter?",
+   "answers": [
+    "A telescope",
+    "A microscope",
+    "A compass",
+    "A barometer"
+   ],
+   "correct": 0,
+   "explanation": "In 1610 Galileo spotted Jupiter's four largest moons."
+  },
+  {
+   "question": "Who painted the Mona Lisa?",
+   "answers": [
+    "Michelangelo",
+    "Raphael",
+    "Vincent van Gogh",
+    "Leonardo da Vinci"
+   ],
+   "correct": 3,
+   "explanation": "The Mona Lisa hangs in the Louvre museum in Paris."
+  },
+  {
+   "question": "Who painted the ceiling of the Sistine Chapel?",
+   "answers": [
+    "Leonardo da Vinci",
+    "Raphael",
+    "Donatello",
+    "Michelangelo"
+   ],
+   "correct": 3,
+   "explanation": "Michelangelo painted the ceiling between 1508 and 1512."
+  },
+  {
+   "question": "Who painted \"The Starry Night\"?",
+   "answers": [
+    "Claude Monet",
+    "Pablo Picasso",
+    "Vincent van Gogh",
+    "Salvador Dalí"
+   ],
+   "correct": 2,
+   "explanation": "Van Gogh painted it in 1889."
+  },
+  {
+   "question": "Who developed the theory of evolution by natural selection?",
+   "answers": [
+    "Isaac Newton",
+    "Charles Darwin",
+    "Gregor Mendel",
+    "Louis Pasteur"
+   ],
+   "correct": 1,
+   "explanation": "Darwin published \"On the Origin of Species\" in 1859."
+  },
+  {
+   "question": "Morse code was first used to send messages over which invention?",
+   "answers": [
+    "The telegraph",
+    "The telephone",
+    "The radio",
+    "The television"
+   ],
+   "correct": 0,
+   "explanation": "Samuel Morse helped develop the telegraph and its code in the 1830s and 1840s."
+  },
+  {
+   "question": "How many keys does a standard modern piano have?",
+   "answers": [
+    "88",
+    "76",
+    "61",
+    "100"
+   ],
+   "correct": 0,
+   "explanation": "A standard piano has 52 white keys and 36 black keys."
+  },
+  {
+   "question": "How many strings does a standard guitar have?",
+   "answers": [
+    "4",
+    "5",
+    "8",
+    "6"
+   ],
+   "correct": 3,
+   "explanation": "Bass guitars usually have 4 strings."
+  },
+  {
+   "question": "How many strings does a violin have?",
+   "answers": [
+    "5",
+    "6",
+    "4",
+    "3"
+   ],
+   "correct": 2,
+   "explanation": "A violin's four strings are tuned to G, D, A and E."
+  },
+  {
+   "question": "Which instrument family does the trumpet belong to?",
+   "answers": [
+    "Woodwind",
+    "Brass",
+    "Strings",
+    "Percussion"
+   ],
+   "correct": 1,
+   "explanation": "Brass players make sound by buzzing their lips into a mouthpiece."
+  },
+  {
+   "question": "The saxophone is made of metal, but which instrument family is it in?",
+   "answers": [
+    "Brass",
+    "Woodwind",
+    "Percussion",
+    "Strings"
+   ],
+   "correct": 1,
+   "explanation": "The saxophone makes its sound with a reed, just like a clarinet."
+  },
+  {
+   "question": "Which is the largest and lowest-pitched bowed string instrument in an orchestra?",
+   "answers": [
+    "The double bass",
+    "The cello",
+    "The viola",
+    "The violin"
+   ],
+   "correct": 0,
+   "explanation": "The double bass is so tall that players usually stand or sit on a high stool."
+  },
+  {
+   "question": "How many lines are there on a standard musical staff?",
+   "answers": [
+    "4",
+    "6",
+    "7",
+    "5"
+   ],
+   "correct": 3,
+   "explanation": "Notes are written on the five lines and four spaces of the staff."
+  },
+  {
+   "question": "Which famous composer kept writing music even after he became almost completely deaf?",
+   "answers": [
+    "Wolfgang Amadeus Mozart",
+    "Johann Sebastian Bach",
+    "Ludwig van Beethoven",
+    "Frédéric Chopin"
+   ],
+   "correct": 2,
+   "explanation": "Beethoven wrote his famous Ninth Symphony while he was deaf."
+  },
+  {
+   "question": "Which instrument family does the xylophone belong to?",
+   "answers": [
+    "Strings",
+    "Woodwind",
+    "Percussion",
+    "Brass"
+   ],
+   "correct": 2,
+   "explanation": "A xylophone is played by striking wooden bars with mallets."
+  },
+  {
+   "question": "Which large instrument has many strings plucked by hand and a tall triangular frame?",
+   "answers": [
+    "The cello",
+    "The harp",
+    "The lute",
+    "The banjo"
+   ],
+   "correct": 1,
+   "explanation": "A concert harp usually has 47 strings."
+  },
+  {
+   "question": "What colour do you get when you mix blue and yellow paint?",
+   "answers": [
+    "Green",
+    "Purple",
+    "Orange",
+    "Brown"
+   ],
+   "correct": 0,
+   "explanation": "Blue and yellow are primary colours that make green."
+  },
+  {
+   "question": "What are the three traditional primary colours in painting?",
+   "answers": [
+    "Red, green and blue",
+    "Orange, green and purple",
+    "Black, white and grey",
+    "Red, yellow and blue"
+   ],
+   "correct": 3,
+   "explanation": "Mixing these three can make many other colours."
+  },
+  {
+   "question": "Screens make every colour using which three colours of light?",
+   "answers": [
+    "Red, yellow and blue",
+    "Cyan, magenta and black",
+    "Orange, purple and green",
+    "Red, green and blue"
+   ],
+   "correct": 3,
+   "explanation": "That's why screen colours are often written as RGB values."
+  },
+  {
+   "question": "What do you get when you mix all colours of light together?",
+   "answers": [
+    "Black",
+    "Brown",
+    "White light",
+    "Grey"
+   ],
+   "correct": 2,
+   "explanation": "Mixing light is different from mixing paint, where colours get darker."
+  },
+  {
+   "question": "On the traditional colour wheel, which colour is opposite (complementary to) red?",
+   "answers": [
+    "Blue",
+    "Green",
+    "Yellow",
+    "Purple"
+   ],
+   "correct": 1,
+   "explanation": "Complementary colours look extra bright when placed side by side."
+  },
+  {
+   "question": "How many letters are in the English alphabet?",
+   "answers": [
+    "26",
+    "24",
+    "25",
+    "28"
+   ],
+   "correct": 0,
+   "explanation": "The English alphabet has 5 vowels and 21 consonants."
+  },
+  {
+   "question": "Which letter is the most commonly used in written English?",
+   "answers": [
+    "E",
+    "A",
+    "S",
+    "T"
+   ],
+   "correct": 0,
+   "explanation": "E appears in many common words, like \"the\" and \"be\"."
+  },
+  {
+   "question": "The words \"alpha\" and \"beta\" come from the first two letters of which alphabet?",
+   "answers": [
+    "Latin",
+    "Hebrew",
+    "Cyrillic",
+    "Greek"
+   ],
+   "correct": 3,
+   "explanation": "In fact, the word \"alphabet\" itself comes from alpha and beta."
+  },
+  {
+   "question": "Braille is a writing system that people read using which sense?",
+   "answers": [
+    "Sight",
+    "Hearing",
+    "Touch",
+    "Smell"
+   ],
+   "correct": 2,
+   "explanation": "Braille uses raised dots and was created by Louis Braille."
+  },
+  {
+   "question": "What is a palindrome?",
+   "answers": [
+    "A word with no vowels",
+    "A word that reads the same backwards",
+    "A very long word",
+    "A word from another language"
+   ],
+   "correct": 1,
+   "explanation": "\"Racecar\" and \"level\" are palindromes."
+  },
+  {
+   "question": "Which famous stone helped experts decode ancient Egyptian hieroglyphs?",
+   "answers": [
+    "The Blarney Stone",
+    "The Rosetta Stone",
+    "The Stone of Destiny",
+    "The Philosopher's Stone"
+   ],
+   "correct": 1,
+   "explanation": "It had the same text written in hieroglyphs, Demotic and ancient Greek."
+  },
+  {
+   "question": "Which of these is a Japanese writing system?",
+   "answers": [
+    "Hiragana",
+    "Cyrillic",
+    "Devanagari",
+    "Hangul"
+   ],
+   "correct": 0,
+   "explanation": "Japanese uses hiragana, katakana and kanji."
+  },
+  {
+   "question": "Which language has the most native speakers in the world?",
+   "answers": [
+    "English",
+    "Spanish",
+    "Hindi",
+    "Mandarin Chinese"
+   ],
+   "correct": 3,
+   "explanation": "Mandarin Chinese has close to a billion native speakers."
+  },
+  {
+   "question": "What do we call words that sound the same but have different meanings, like \"sea\" and \"see\"?",
+   "answers": [
+    "Synonyms",
+    "Antonyms",
+    "Homophones",
+    "Acronyms"
+   ],
+   "correct": 2,
+   "explanation": "Other examples are \"flour\" and \"flower\"."
+  },
+  {
+   "question": "How is the distress signal SOS written in Morse code?",
+   "answers": [
+    "––– ··· –––",
+    "·–·– ·–·–",
+    "··· ––– ···",
+    "·· –– ··"
+   ],
+   "correct": 2,
+   "explanation": "Three dots, three dashes, three dots is easy to send and recognise."
+  },
+  {
+   "question": "What do you call a word made from the first letters of other words, like NASA?",
+   "answers": [
+    "A synonym",
+    "An acronym",
+    "A palindrome",
+    "A homophone"
+   ],
+   "correct": 1,
+   "explanation": "Other acronyms include \"scuba\" and \"laser\"."
+  },
+  {
+   "question": "What is the \"#\" symbol sometimes called, besides hash or pound sign?",
+   "answers": [
+    "Octothorpe",
+    "Ampersand",
+    "Asterisk",
+    "Tilde"
+   ],
+   "correct": 0,
+   "explanation": "The \"&\" symbol is called an ampersand."
+  },
+  {
+   "question": "The most common computer keyboard layout is named after its first six letters. What is it called?",
+   "answers": [
+    "ABCDEF",
+    "AZERTY",
+    "ASDFGH",
+    "QWERTY"
+   ],
+   "correct": 3,
+   "explanation": "QWERTY was designed for typewriters in the 1870s."
+  },
+  {
+   "question": "In which year did Christopher Columbus first reach the Americas?",
+   "answers": [
+    "1066",
+    "1776",
+    "1607",
+    "1492"
+   ],
+   "correct": 3,
+   "explanation": "Columbus landed in the Caribbean in October 1492."
+  },
+  {
+   "question": "Who was the first President of the United States?",
+   "answers": [
+    "Abraham Lincoln",
+    "Thomas Jefferson",
+    "George Washington",
+    "John Adams"
+   ],
+   "correct": 2,
+   "explanation": "George Washington became president in 1789."
+  },
+  {
+   "question": "Which famous ship sank in 1912 after hitting an iceberg?",
+   "answers": [
+    "The Lusitania",
+    "The Titanic",
+    "The Mayflower",
+    "The Bismarck"
+   ],
+   "correct": 1,
+   "explanation": "The Titanic sank on its very first voyage."
+  },
+  {
+   "question": "Which is the only one of the Seven Wonders of the Ancient World still standing?",
+   "answers": [
+    "The Great Pyramid of Giza",
+    "The Colossus of Rhodes",
+    "The Lighthouse of Alexandria",
+    "The Hanging Gardens of Babylon"
+   ],
+   "correct": 0,
+   "explanation": "The Great Pyramid is over 4,500 years old."
+  },
+  {
+   "question": "In which year did the Berlin Wall fall?",
+   "answers": [
+    "1989",
+    "1961",
+    "1975",
+    "1991"
+   ],
+   "correct": 0,
+   "explanation": "The wall fell on 9 November 1989."
+  },
+  {
+   "question": "Who wrote the play \"Romeo and Juliet\"?",
+   "answers": [
+    "Charles Dickens",
+    "Jane Austen",
+    "Geoffrey Chaucer",
+    "William Shakespeare"
+   ],
+   "correct": 3,
+   "explanation": "Shakespeare wrote dozens of plays and many poems."
+  },
+  {
+   "question": "What number does the Roman numeral X stand for?",
+   "answers": [
+    "5",
+    "50",
+    "10",
+    "100"
+   ],
+   "correct": 2,
+   "explanation": "V is 5, L is 50 and C is 100."
+  },
+  {
+   "question": "Can you see the Great Wall of China with the naked eye from the Moon?",
+   "answers": [
+    "Yes, easily",
+    "No, it is far too narrow",
+    "Only at night",
+    "Only with sunglasses"
+   ],
+   "correct": 1,
+   "explanation": "This is a famous myth; the wall is far too narrow to see from the Moon."
+  },
+  {
+   "question": "In which famous arena did gladiators fight in ancient Rome?",
+   "answers": [
+    "The Parthenon",
+    "The Colosseum",
+    "The Pantheon",
+    "The Acropolis"
+   ],
+   "correct": 1,
+   "explanation": "The Colosseum could hold tens of thousands of spectators."
+  },
+  {
+   "question": "Which civilization built the city of Machu Picchu?",
+   "answers": [
+    "The Inca",
+    "The Aztecs",
+    "The Maya",
+    "The Romans"
+   ],
+   "correct": 0,
+   "explanation": "Machu Picchu was built in the 1400s high in the mountains."
+  },
+  {
+   "question": "Who was the first emperor of Rome?",
+   "answers": [
+    "Julius Caesar",
+    "Nero",
+    "Constantine",
+    "Augustus"
+   ],
+   "correct": 3,
+   "explanation": "Julius Caesar was never emperor; his heir Augustus became the first in 27 BC."
+  },
+  {
+   "question": "Did Viking warriors really wear horned helmets in battle?",
+   "answers": [
+    "Yes, always",
+    "Only the kings did",
+    "No, that is a later myth",
+    "Only in winter"
+   ],
+   "correct": 2,
+   "explanation": "The horned helmet idea became popular through 19th-century art and opera costumes."
+  },
+  {
+   "question": "How many days are there in a leap year?",
+   "answers": [
+    "365",
+    "364",
+    "366",
+    "367"
+   ],
+   "correct": 2,
+   "explanation": "The extra day is 29 February."
+  },
+  {
+   "question": "Which month has the fewest days?",
+   "answers": [
+    "April",
+    "February",
+    "June",
+    "November"
+   ],
+   "correct": 1,
+   "explanation": "February has 28 days, or 29 in a leap year."
+  },
+  {
+   "question": "What does a thermometer measure?",
+   "answers": [
+    "Temperature",
+    "Weight",
+    "Air pressure",
+    "Humidity"
+   ],
+   "correct": 0,
+   "explanation": "Thermometers can show degrees Celsius, Fahrenheit or both."
+  }
+ ]
+}

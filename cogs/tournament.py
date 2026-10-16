@@ -29,8 +29,9 @@ from discord.ext import commands
 
 import database
 import tournament_engine as te
+import trivia_bank
 from cogs.games import (COLOR_DRAW, COLOR_GAME, COLOR_LOSE, COLOR_WIN, DAILY_GAME_XP_CAP, DICE_FACES, FOOTER,
-                        LETTER_EMOJI, LETTERS, _shuffler, load_trivia, today)
+                        LETTER_EMOJI, LETTERS, load_trivia, today)
 
 log = logging.getLogger("n7x.tournament")
 
@@ -72,16 +73,10 @@ def t_embed(title, description="", color=COLOR_GAME, header="🏆 N7X Tournament
     return embed
 
 
-def new_trivia_question():
-    """A random question from trivia.json with the answers shuffled securely, or None."""
-    questions = load_trivia()
-    if not questions:
-        return None
-    picked = secrets.choice(questions)
-    order = list(range(4))
-    _shuffler.shuffle(order)
-    return {"question": picked["question"], "choices": [picked["choices"][i] for i in order],
-            "answer": order.index(picked["answer"]), "explain": picked["explain"]}
+def new_trivia_question(asked=()):
+    """A random Mixed question (answers shuffled securely), avoiding ones already asked when possible."""
+    picked = trivia_bank.pick("mixed", 1, avoid=asked)
+    return picked[0] if picked else None
 
 
 def bot_response(kind, question):
@@ -98,6 +93,8 @@ def bot_response(kind, question):
 def describe_response(kind, response, question=None):
     if response is None:
         return "⏰ no answer"
+    if isinstance(response, int) and kind == "trivia":
+        return f"🧠 {response} point{'s' if response != 1 else ''}"   # mini quiz score
     if kind == "rps":
         return f"{te.RPS_SHAPES[response]} {response.capitalize()}"
     if kind == "dice":
@@ -186,11 +183,13 @@ class RoundView(discord.ui.View):
 class Session:
     """One tournament or duel in one channel: gives the engine its collect() and announce()."""
 
-    def __init__(self, channel, kind, header):
+    def __init__(self, channel, kind, header, quiz_questions=1):
         self.channel = channel
         self.kind = kind
         self.header = header
+        self.quiz_questions = quiz_questions   # trivia: questions per round (1 = first right & fastest)
         self.question = None
+        self.asked = []                        # trivia questions already used in this game
 
     async def send(self, embed, view=None, ping=()):
         message = await self.channel.send(embed=embed, view=view,
@@ -200,7 +199,35 @@ class Session:
         return message
 
     async def collect(self, players, kind, label, attempt):
-        question = new_trivia_question() if kind == "trivia" else None
+        if kind == "trivia" and self.quiz_questions > 1:
+            return await self.collect_quiz(players, label, attempt)
+        return await self.ask(players, kind, label, attempt)
+
+    async def collect_quiz(self, players, label, attempt):
+        """A mini quiz: every player answers each question; returns {player: points}."""
+        count = self.quiz_questions if attempt == 1 else 1   # replays are one sudden-death question
+        points = {player: 0 for player in players}
+        for number in range(1, count + 1):
+            title = (f"{label} • Question {number}/{count}" if attempt == 1
+                     else f"{label} • ⚡ Sudden death {attempt - 1}")
+            responses = await self.ask(players, "trivia", title, 1)
+            for player, response in responses.items():
+                if response and response[0]:
+                    points[player] += 1
+            q = self.question
+            right = [p.mention for p, r in responses.items() if r and r[0]]
+            score_line = " · ".join(f"{p.mention} **{points[p]}**" for p in players)
+            await self.send(t_embed(f"✅ {title}: answer",
+                                    f"**{LETTERS[q['answer']]}** - {q['choices'][q['answer']]}\n"
+                                    + (f"💡 {q['explain']}\n" if q["explain"] else "")
+                                    + f"\nRight: {', '.join(right) or 'nobody'}\n🧮 Points: {score_line}",
+                                    COLOR_WIN, header=self.header))
+        return points
+
+    async def ask(self, players, kind, label, attempt):
+        question = new_trivia_question(self.asked) if kind == "trivia" else None
+        if question:
+            self.asked.append(question["question"])
         self.question = question
         responses = {player: bot_response(kind, question) for player in players if is_bot(player)}
         humans = [player for player in players if not is_bot(player)]
@@ -255,7 +282,7 @@ class Session:
             await self.send(t_embed(f"🗂️ Bracket of {details['size']}", "\n".join(lines), header=self.header))
         elif event == "round_result":
             text = self.response_lines(details["responses"])
-            if self.kind == "trivia" and self.question:
+            if self.kind == "trivia" and self.question and self.quiz_questions == 1:
                 q = self.question
                 text += f"\n\n✅ Answer: **{LETTERS[q['answer']]}** - {q['choices'][q['answer']]}"
             text += ("\n\n➡️ Through: " + ", ".join(p.mention for p in details["advance"])
@@ -265,8 +292,10 @@ class Session:
             reason = {"rps": "All the same or all different shapes",
                       "dice": "Tied lowest roll",
                       "trivia": "Nobody got it right (or an exact tie)"}[self.kind]
+            if self.kind == "trivia" and self.quiz_questions > 1:
+                reason = "⚡ Tied on points: sudden death! One question at a time"
             text = self.response_lines(details["responses"])
-            if all(r is None for r in details["responses"].values()):
+            if all(r is None for r in details["responses"].values()) and self.quiz_questions == 1:
                 reason = "Nobody answered"
             await self.send(t_embed(f"🔁 {details['label']}: replay!", f"{text}\n\n{reason}, so we go again.",
                                     COLOR_DRAW, header=self.header))
@@ -284,8 +313,9 @@ class LobbyView(discord.ui.View):
     The host is NOT added automatically: they press Join like everyone else if they want to play.
     """
 
-    def __init__(self, host, kind, max_players, ends_at, test_mode=False):
+    def __init__(self, host, kind, max_players, ends_at, test_mode=False, questions=1):
         super().__init__(timeout=None)
+        self.questions = questions   # trivia only: questions per match
         self.host = host
         self.kind = kind
         self.max_players = max_players
@@ -306,6 +336,9 @@ class LobbyView(discord.ui.View):
                         f"{status}\n\n"
                         f"Needs at least {te.MIN_PLAYERS} players. 🥇 {PODIUM_XP[0]} · 🥈 {PODIUM_XP[1]} · "
                         f"🥉 {PODIUM_XP[2]} bonus game XP (no 🥉 with only 2 players). No real prizes.")
+        if self.kind == "trivia" and self.questions > 1:
+            embed.add_field(name="🧠 Mini quiz", value=f"{self.questions} questions per match. Most points goes "
+                                                      "through; a tie = ⚡ sudden death.", inline=False)
         embed.add_field(name="🎙️ Host", value=f"Hosted by {self.host.mention}\n_(plays only if they press Join)_",
                         inline=False)
         count = f"{len(self.players)}/{self.max_players}"
@@ -405,14 +438,15 @@ class Tournament(commands.Cog):
     @app_commands.command(name="tournament", description="🏆 [Mods] Host a tournament: RPS, dice or trivia")
     @app_commands.describe(game="Which game", max_players=f"Most players allowed (2-{MAX_PLAYERS_LIMIT}); fewer is fine",
                            join_seconds="How long people can join (15-300 seconds)",
-                           test_mode="Fill empty spots with 🤖 bot players for a demo (they never get XP)")
+                           test_mode="Fill empty spots with 🤖 bot players for a demo (they never get XP)",
+                           questions="Trivia only: questions per match (1-10, default 1)")
     @app_commands.choices(game=GAME_CHOICES)
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 60)
     async def tournament(self, interaction: discord.Interaction, game: app_commands.Choice[str],
                          max_players: app_commands.Range[int, 2, MAX_PLAYERS_LIMIT] = 8,
                          join_seconds: app_commands.Range[int, 15, 300] = 60,
-                         test_mode: bool = False):
+                         test_mode: bool = False, questions: app_commands.Range[int, 1, 10] = 1):
         if not is_mod(interaction.user):
             await interaction.response.send_message("Only mods can start tournaments.", ephemeral=True)
             return
@@ -420,11 +454,12 @@ class Tournament(commands.Cog):
             await interaction.response.send_message("A tournament is already running in this channel.", ephemeral=True)
             return
         if game.value == "trivia" and not load_trivia():
-            await interaction.response.send_message("No trivia questions available (check trivia.json).", ephemeral=True)
+            await interaction.response.send_message("No trivia questions available (run python check_trivia.py).", ephemeral=True)
             return
 
         self.busy_channels.add(interaction.channel.id)
-        lobby = LobbyView(interaction.user, game.value, max_players, int(time.time()) + join_seconds, test_mode)
+        lobby = LobbyView(interaction.user, game.value, max_players, int(time.time()) + join_seconds, test_mode,
+                          questions if game.value == "trivia" else 1)
         embed = lobby.embed()
         await interaction.response.send_message(embed=embed, view=lobby,
                                                 allowed_mentions=discord.AllowedMentions.none())
@@ -458,8 +493,8 @@ class Tournament(commands.Cog):
                     COLOR_LOSE), allowed_mentions=discord.AllowedMentions.none())
                 return
 
-            session = Session(channel, lobby.kind, "🏆 N7X Tournament")
-            engine = te.Engine(lobby.kind, session.collect, session.announce)
+            session = Session(channel, lobby.kind, "🏆 N7X Tournament", lobby.questions)
+            engine = te.Engine(lobby.kind, session.collect, session.announce, lobby.questions)
             log.info("Tournament started in #%s: %d players (%d bots), game=%s", channel.name, len(players),
                      sum(map(is_bot, players)), lobby.kind)
             podium = await engine.run_tournament(players)
@@ -514,7 +549,7 @@ class Tournament(commands.Cog):
             await interaction.response.send_message("Bots don't duel. Pick a member!", ephemeral=True)
             return
         if game.value == "trivia" and not load_trivia():
-            await interaction.response.send_message("No trivia questions available (check trivia.json).", ephemeral=True)
+            await interaction.response.send_message("No trivia questions available (run python check_trivia.py).", ephemeral=True)
             return
 
         invite = DuelInvite(challenger, opponent)

@@ -14,7 +14,6 @@ Rules (all games):
 """
 
 import asyncio
-import json
 import logging
 import os
 import secrets
@@ -26,7 +25,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+import config
 import database
+import trivia_bank
 from cogs.ranks import level_from_xp, progress_bar
 
 log = logging.getLogger("n7x.games")
@@ -72,7 +73,11 @@ WHEEL = [
     (8,  "🐻", "The bear market got you", 0),
 ]
 
-TRIVIA_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "trivia.json")
+TRIVIA_REVEAL_SECONDS = 2    # how long the answer + explanation stay up before the next question
+TRIVIA_MAX_TIMEOUTS = 2      # this many unanswered questions in a row end the quiz
+TRIVIA_WIN_PERCENT = 60      # a quiz counts as a win from this score on
+# Results card ratings: (minimum %, rating)
+TRIVIA_RATINGS = [(90, "🧠 N7X Genius"), (70, "🔥 Pro"), (40, "📈 Getting there"), (0, "💪 Keep practicing")]
 
 # =====================================================================
 # The N7X Arcade look: one color for games in progress, green = win, red = lose
@@ -89,7 +94,6 @@ RPS_BEATS = {"rock": "scissors", "paper": "rock", "scissors": "paper"}
 LETTERS = ["A", "B", "C", "D"]
 LETTER_EMOJI = {"A": "🇦", "B": "🇧", "C": "🇨", "D": "🇩"}
 
-_shuffler = secrets.SystemRandom()  # secure shuffling (for trivia answers)
 
 
 def today():
@@ -161,45 +165,22 @@ def title_for_level(level):
     return current[1], upcoming
 
 
-# =====================================================================
-# Trivia questions (trivia.json, re-read automatically when it changes)
-# =====================================================================
-_trivia_cache = {"mtime": None, "questions": []}
-
-
 def load_trivia():
-    """Valid questions from trivia.json. Broken entries are skipped (and logged once)."""
-    try:
-        mtime = os.path.getmtime(TRIVIA_FILE)
-    except OSError:
-        log.warning("trivia.json not found - /trivia has no questions")
-        return []
-    if mtime == _trivia_cache["mtime"]:
-        return _trivia_cache["questions"]
+    """Every local trivia question (all categories). Empty list = no questions available."""
+    return trivia_bank.pool("mixed")
 
-    try:
-        with open(TRIVIA_FILE, encoding="utf-8") as file:
-            data = json.load(file)
-    except ValueError as error:
-        log.warning("trivia.json is not valid JSON (%s) - keeping the previous questions", error)
-        return _trivia_cache["questions"]
 
-    raw = data.get("questions", []) if isinstance(data, dict) else data
-    questions = []
-    for number, item in enumerate(raw if isinstance(raw, list) else [], start=1):
-        try:
-            choices = [str(choice).strip() for choice in item["choices"]]
-            answer = LETTERS.index(str(item["answer"]).strip().upper())
-            if len(choices) != 4 or not all(choices) or not str(item["question"]).strip():
-                raise ValueError
-        except (KeyError, TypeError, ValueError):
-            log.warning("trivia.json: question %d is incomplete (needs question, 4 choices, answer A-D) - skipped", number)
-            continue
-        questions.append({"question": str(item["question"]).strip(), "choices": choices,
-                          "answer": answer, "explain": str(item.get("explain", "")).strip()})
-    _trivia_cache.update(mtime=mtime, questions=questions)
-    log.info("Loaded %d trivia question(s)", len(questions))
-    return questions
+def question_image(question):
+    """(image url for the embed, discord.File to attach or None) for a question's optional picture."""
+    image = question.get("image") or ""
+    if not image:
+        return None, None
+    if image.startswith(("http://", "https://")):
+        return image, None
+    path = os.path.join(trivia_bank.IMAGES_DIR, image)
+    if not os.path.isfile(path):
+        return None, None
+    return f"attachment://{image}", discord.File(path, filename=image)
 
 
 # =====================================================================
@@ -275,67 +256,151 @@ class RPSView(PlayerView):
             pass
 
 
-class TriviaView(PlayerView):
-    def __init__(self, player, guild_id, question):
-        super().__init__(player, TRIVIA_SECONDS)
+class QuizView(PlayerView):
+    """
+    A /trivia quiz in ONE message: each question is edited in, with A-D buttons and a timer.
+    Only the player can press. Two unanswered questions in a row end the quiz.
+    """
+
+    def __init__(self, player, guild_id, questions, category_label, asked_for):
+        super().__init__(player, timeout=None)   # the quiz loop handles the time itself
         self.guild_id = guild_id
-        self.question = question  # with shuffled "choices" and the matching "answer" index
+        self.questions = questions
+        self.category_label = category_label
+        self.asked_for = asked_for
+        self.number = 0              # current question (0-based)
+        self.score = 0
+        self.marks = []              # ✅ ❌ ⌛ per question
+        self.timeouts_in_row = 0
+        self.pick = None
+        self.accepting = False
+        self.answered = asyncio.Event()
         self.buttons = []
         for index, letter in enumerate(LETTERS):
-            button = discord.ui.Button(label=letter, style=discord.ButtonStyle.secondary)
+            button = discord.ui.Button(label=letter, emoji=LETTER_EMOJI[letter], style=discord.ButtonStyle.secondary)
             button.callback = self.make_callback(index)
             self.add_item(button)
             self.buttons.append(button)
 
-    def reveal(self, picked=None):
-        """Disable the buttons, mark the right answer green and a wrong pick red."""
-        self.disable_all()
-        self.buttons[self.question["answer"]].style = discord.ButtonStyle.success
-        if picked is not None and picked != self.question["answer"]:
-            self.buttons[picked].style = discord.ButtonStyle.danger
+    @property
+    def question(self):
+        return self.questions[self.number]
 
-    def result_text(self, headline):
+    def header(self):
+        return f"Question {self.number + 1}/{len(self.questions)} • Score {self.score}"
+
+    def question_embed(self, footer_line):
+        q = self.question
+        lines = [f"**{q['question']}**", ""]
+        lines += [f"{LETTER_EMOJI[letter]} {choice}" for letter, choice in zip(LETTERS, q["choices"])]
+        lines += ["", footer_line]
+        embed = arcade_embed(self.player, f"🧠 {self.header()}", "\n".join(lines))
+        embed.add_field(name="Category", value=self.category_label)
+        image_url, file = question_image(q)
+        if image_url:
+            embed.set_image(url=image_url)
+        return embed, file
+
+    def reveal_embed(self, headline, color):
         q = self.question
         right = q["answer"]
         lines = [f"**{q['question']}**", ""]
         for index, choice in enumerate(q["choices"]):
-            mark = " ✅" if index == right else ""
-            lines.append(f"{LETTER_EMOJI[LETTERS[index]]} {choice}{mark}")
-        lines.append("")
-        lines.append(headline)
+            lines.append(f"{LETTER_EMOJI[LETTERS[index]]} {choice}{' ✅' if index == right else ''}")
+        lines += ["", headline]
         if q["explain"]:
             lines.append(f"💡 {q['explain']}")
-        return "\n".join(lines)
+        embed = arcade_embed(self.player, f"🧠 {self.header()}", "\n".join(lines), color)
+        embed.add_field(name="Category", value=self.category_label)
+        image_url, _ = question_image(q)
+        if image_url:
+            embed.set_image(url=image_url)
+        return embed
+
+    def set_buttons(self, picked=None, reveal=False):
+        for index, button in enumerate(self.buttons):
+            button.disabled = reveal
+            button.style = discord.ButtonStyle.secondary
+            if reveal and index == self.question["answer"]:
+                button.style = discord.ButtonStyle.success
+            elif reveal and index == picked:
+                button.style = discord.ButtonStyle.danger
 
     def make_callback(self, index):
         async def callback(interaction: discord.Interaction):
-            if self.finished:
+            if not self.accepting:
+                await interaction.response.send_message("⌛ Too late for this question.", ephemeral=True)
                 return
-            self.finished = True
-            self.stop()
-            self.reveal(index)
+            self.accepting = False          # set before any await, so a double click can't count twice
+            self.pick = index
             correct = index == self.question["answer"]
-            outcome = "win" if correct else "loss"
-            headline = ("🎉 **Correct!**" if correct
-                        else f"❌ **Wrong!** The answer was **{LETTERS[self.question['answer']]}**.")
-            xp_line = finish_game(self.guild_id, self.player.id, outcome, TRIVIA_WIN_XP if correct else 0)
-            text = self.result_text(headline) + "\n\n" + xp_line
-            title = "🧠 Big brain!" if correct else "🧠 Not this time"
-            await interaction.response.edit_message(
-                embed=arcade_embed(self.player, title, text, COLOR_WIN if correct else COLOR_LOSE), view=self)
+            if correct:
+                self.score += 1
+                headline, color = "🎉 **Correct!**", COLOR_WIN
+            else:
+                headline, color = f"❌ **Wrong!** The answer was **{LETTERS[self.question['answer']]}**.", COLOR_LOSE
+            self.marks.append("✅" if correct else "❌")
+            self.timeouts_in_row = 0
+            self.set_buttons(index, reveal=True)
+            await interaction.response.edit_message(embed=self.reveal_embed(headline, color), view=self)
+            self.answered.set()
         return callback
 
-    async def on_timeout(self):
-        if self.finished or self.message is None:
-            return
-        self.finished = True
-        self.reveal()
-        text = (self.result_text(f"⌛ **Time's up!** The answer was **{LETTERS[self.question['answer']]}**.")
-                + "\n\n" + finish_game(self.guild_id, self.player.id, "loss", 0))
+    async def edit(self, **kwargs):
         try:
-            await self.message.edit(embed=arcade_embed(self.player, "🧠 Too slow!", text, COLOR_LOSE), view=self)
-        except discord.HTTPException:
-            pass
+            await self.message.edit(**kwargs)
+        except discord.HTTPException as error:
+            log.warning("Trivia: couldn't update the quiz message (%s)", error.status)
+
+    async def run(self):
+        """Ask every question, then show the results card. Returns the outcome ("win"/"loss")."""
+        ended_early = False
+        for number in range(len(self.questions)):
+            self.number = number
+            self.pick = None
+            self.answered.clear()
+            self.set_buttons()
+            ends = int(time.time()) + TRIVIA_SECONDS
+            embed, file = self.question_embed(f"⏱️ Time's up <t:{ends}:R> · ✨ {TRIVIA_WIN_XP} XP per right answer")
+            await self.edit(embed=embed, view=self, attachments=[file] if file else [])
+            self.accepting = True
+            try:
+                await asyncio.wait_for(self.answered.wait(), TRIVIA_SECONDS)
+            except asyncio.TimeoutError:
+                pass
+            self.accepting = False
+            if self.pick is None:
+                self.marks.append("⌛")
+                self.timeouts_in_row += 1
+                self.set_buttons(reveal=True)
+                await self.edit(embed=self.reveal_embed(
+                    f"⌛ **Time's up!** The answer was **{LETTERS[self.question['answer']]}**.", COLOR_DRAW), view=self)
+            if self.timeouts_in_row >= TRIVIA_MAX_TIMEOUTS:
+                ended_early = True
+                break
+            if self.number + 1 < len(self.questions):
+                await asyncio.sleep(TRIVIA_REVEAL_SECONDS)
+
+        self.finished = True
+        self.stop()
+        self.disable_all()
+        asked = len(self.marks)
+        percent = round(100 * self.score / asked) if asked else 0
+        outcome = "win" if percent >= TRIVIA_WIN_PERCENT else "loss"
+        rating = next(name for minimum, name in TRIVIA_RATINGS if percent >= minimum)
+        lines = [f"**{rating}**", "",
+                 f"🎯 Score: **{self.score}/{asked}** ({percent}%)",
+                 f"📚 {self.category_label}",
+                 " ".join(self.marks)]
+        if ended_early:
+            lines.append(f"\n⏹️ Quiz ended: {TRIVIA_MAX_TIMEOUTS} questions in a row without an answer.")
+        if len(self.questions) < self.asked_for:
+            lines.append(f"\nℹ️ Only {len(self.questions)} question(s) were available (you asked for {self.asked_for}).")
+        lines += ["", finish_game(self.guild_id, self.player.id, outcome, TRIVIA_WIN_XP * self.score)]
+        title = "🏁 Quiz complete!" if not ended_early else "🏁 Quiz over"
+        color = COLOR_WIN if outcome == "win" else COLOR_LOSE
+        await self.edit(embed=arcade_embed(self.player, title, "\n".join(lines), color), view=self, attachments=[])
+        return outcome
 
 
 def number_scale(number):
@@ -426,7 +491,12 @@ class HighLowView(PlayerView):
 class Games(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.recent_trivia = defaultdict(lambda: deque(maxlen=8))  # member -> recently asked questions
+        self.recent_trivia = defaultdict(lambda: deque(maxlen=100))  # member -> recently asked questions
+        self.http = None   # aiohttp session, only made if Open Trivia DB is turned on
+
+    async def cog_unload(self):
+        if self.http:
+            await self.http.close()
 
     # ------------------------------------------------------------------ /flip
     @app_commands.command(name="flip", description="🪙 Flip a coin: guess heads or tails")
@@ -513,41 +583,45 @@ class Games(commands.Cog):
         await animate(interaction, frames, final)
 
     # ---------------------------------------------------------------- /trivia
-    @app_commands.command(name="trivia", description="🧠 AI & Web3 trivia: pick A, B, C or D")
+    @app_commands.command(name="trivia", description="🧠 Trivia quiz: pick a category and how many questions")
+    @app_commands.describe(questions="How many questions (1-20, default 5)", category="Topic (default: Mixed)")
+    @app_commands.choices(category=[app_commands.Choice(name=label, value=key)
+                                    for key, (label, _) in trivia_bank.CATEGORIES.items()])
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, COOLDOWN_SECONDS)
-    async def trivia(self, interaction: discord.Interaction):
+    async def trivia(self, interaction: discord.Interaction, questions: app_commands.Range[int, 1, 20] = 5,
+                     category: app_commands.Choice[str] = None):
         player = interaction.user
-        questions = load_trivia()
-        if not questions:
+        key = category.value if category else "mixed"
+        label = trivia_bank.CATEGORIES[key][0]
+        if not trivia_bank.has_questions(key):
             await interaction.response.send_message(
-                "No trivia questions available. Check that `trivia.json` exists and is valid.", ephemeral=True)
+                f"No {label} questions available right now. Try another category!", ephemeral=True)
             return
 
-        # Avoid repeating the member's recent questions when possible.
+        # Answer Discord first (it only waits 3 seconds), then get the questions.
+        await interaction.response.send_message(embed=arcade_embed(
+            player, "🧠 N7X Trivia", f"Getting **{questions}** {label} question(s) ready... 🎲"))
+        message = await interaction.original_response()
+
+        session = None
+        if config.OPENTDB_ENABLED:
+            if self.http is None or self.http.closed:
+                import aiohttp
+                self.http = aiohttp.ClientSession()
+            session = self.http
         recent = self.recent_trivia[player.id]
-        fresh = [q for q in questions if q["question"] not in recent] or questions
-        picked = secrets.choice(fresh)
-        recent.append(picked["question"])
+        picked = await trivia_bank.get_questions(key, questions, recent, session, config.OPENTDB_ENABLED)
+        if not picked:
+            await message.edit(embed=arcade_embed(player, "🧠 N7X Trivia", f"No {label} questions available. "
+                                                  "Try another category!", COLOR_DRAW))
+            return
+        recent.extend(q["question"] for q in picked)
 
-        # Shuffle the answers (securely) and remember where the right one went.
-        order = list(range(4))
-        _shuffler.shuffle(order)
-        question = {
-            "question": picked["question"],
-            "choices": [picked["choices"][i] for i in order],
-            "answer": order.index(picked["answer"]),
-            "explain": picked["explain"],
-        }
-
-        ends = int(time.time()) + TRIVIA_SECONDS
-        lines = [f"**{question['question']}**", ""]
-        lines += [f"{LETTER_EMOJI[letter]} {choice}" for letter, choice in zip(LETTERS, question["choices"])]
-        lines += ["", f"⏱️ Time's up <t:{ends}:R> · ✨ {TRIVIA_WIN_XP} XP for the right answer"]
-        view = TriviaView(player, interaction.guild.id, question)
-        await interaction.response.send_message(embed=arcade_embed(player, "🧠 N7X Trivia", "\n".join(lines)),
-                                                view=view)
-        view.message = await interaction.original_response()
+        view = QuizView(player, interaction.guild.id, picked, label, questions)
+        view.message = message
+        log.info("Trivia quiz started: user=%s category=%s questions=%d", player.id, key, len(picked))
+        await view.run()
 
     # --------------------------------------------------------------- /highlow
     @app_commands.command(name="highlow", description="🃏 Higher or Lower: build the longest streak you can")

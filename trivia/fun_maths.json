@@ -1,0 +1,226 @@
+{
+ "_how_to_edit": "One question per {...}. 'question': the text. 'answers': exactly 4. 'correct': the position of the right answer (0 = first, 1 = second, 2 = third, 3 = fourth). Optional 'explanation' (shown after answering) and 'image' (an https:// link, or a file name inside the images/ folder). Answers are shuffled when shown. The bot re-reads this file automatically. After editing, run: python check_trivia.py. Fun Maths also makes brand-new questions in code (trivia_bank.py), so this file is only for extra puzzles.",
+ "category": "Fun Maths",
+ "questions": [
+  {
+   "question": "How many sides does a hexagon have?",
+   "answers": [
+    "6",
+    "5",
+    "8",
+    "7"
+   ],
+   "correct": 0,
+   "explanation": "Hexa means six."
+  },
+  {
+   "question": "How many degrees are in a right angle?",
+   "answers": [
+    "360",
+    "90",
+    "180",
+    "45"
+   ],
+   "correct": 1,
+   "explanation": "A right angle is a quarter turn: 90°."
+  },
+  {
+   "question": "How many degrees do the angles of a triangle add up to?",
+   "answers": [
+    "90",
+    "270",
+    "180",
+    "360"
+   ],
+   "correct": 2,
+   "explanation": "Every triangle's angles add up to 180°."
+  },
+  {
+   "question": "How many minutes are in 2 hours?",
+   "answers": [
+    "100",
+    "60",
+    "200",
+    "120"
+   ],
+   "correct": 3,
+   "explanation": "2 × 60 = 120"
+  },
+  {
+   "question": "How many seconds are in one minute?",
+   "answers": [
+    "60",
+    "100",
+    "30",
+    "120"
+   ],
+   "correct": 0,
+   "explanation": "One minute = 60 seconds."
+  },
+  {
+   "question": "What is the smallest prime number?",
+   "answers": [
+    "3",
+    "0",
+    "2",
+    "1"
+   ],
+   "correct": 2,
+   "explanation": "2 is the only even prime number."
+  },
+  {
+   "question": "How many sides does an octagon have?",
+   "answers": [
+    "6",
+    "10",
+    "12",
+    "8"
+   ],
+   "correct": 3,
+   "explanation": "Octo means eight, like an octopus' arms."
+  },
+  {
+   "question": "What is the Roman numeral for 10?",
+   "answers": [
+    "X",
+    "V",
+    "L",
+    "C"
+   ],
+   "correct": 0,
+   "explanation": "V = 5, X = 10, L = 50, C = 100."
+  },
+  {
+   "question": "What is the Roman numeral for 50?",
+   "answers": [
+    "X",
+    "L",
+    "C",
+    "D"
+   ],
+   "correct": 1,
+   "explanation": "L stands for 50."
+  },
+  {
+   "question": "How many centimetres are in one metre?",
+   "answers": [
+    "1000",
+    "50",
+    "100",
+    "10"
+   ],
+   "correct": 2,
+   "explanation": "Centi means one hundredth."
+  },
+  {
+   "question": "How many grams are in one kilogram?",
+   "answers": [
+    "100",
+    "10",
+    "500",
+    "1000"
+   ],
+   "correct": 3,
+   "explanation": "Kilo means a thousand."
+  },
+  {
+   "question": "Which number is NOT even: 14, 22, 37 or 48?",
+   "answers": [
+    "37",
+    "14",
+    "22",
+    "48"
+   ],
+   "correct": 0,
+   "explanation": "37 can't be split into two equal whole numbers."
+  },
+  {
+   "question": "What is half of 3/4?",
+   "answers": [
+    "6/8",
+    "3/8",
+    "3/2",
+    "1/4"
+   ],
+   "correct": 1,
+   "explanation": "3/4 ÷ 2 = 3/8"
+  },
+  {
+   "question": "How many days are in a leap year?",
+   "answers": [
+    "364",
+    "360",
+    "366",
+    "365"
+   ],
+   "correct": 2,
+   "explanation": "A leap year adds 29 February."
+  },
+  {
+   "question": "How many zeros are in one million?",
+   "answers": [
+    "5",
+    "7",
+    "9",
+    "6"
+   ],
+   "correct": 3,
+   "explanation": "1,000,000 has six zeros."
+  },
+  {
+   "question": "A dozen eggs is how many eggs?",
+   "answers": [
+    "12",
+    "10",
+    "6",
+    "20"
+   ],
+   "correct": 0,
+   "explanation": "A dozen is 12."
+  },
+  {
+   "question": "What is 0.5 written as a percentage?",
+   "answers": [
+    "500%",
+    "50%",
+    "5%",
+    "0.5%"
+   ],
+   "correct": 1,
+   "explanation": "0.5 = 50/100 = 50%"
+  },
+  {
+   "question": "How many faces does a cube have?",
+   "answers": [
+    "8",
+    "12",
+    "6",
+    "4"
+   ],
+   "correct": 2,
+   "explanation": "A cube has 6 square faces, like a dice."
+  },
+  {
+   "question": "What do you call a shape with 5 sides?",
+   "answers": [
+    "Hexagon",
+    "Octagon",
+    "Heptagon",
+    "Pentagon"
+   ],
+   "correct": 3,
+   "explanation": "Penta means five."
+  },
+  {
+   "question": "How many weeks are in a year?",
+   "answers": [
+    "40",
+    "52",
+    "48",
+    "60"
+   ],
+   "correct": 1,
+   "explanation": "365 days ÷ 7 is about 52 weeks."
+  }
+ ]
+}

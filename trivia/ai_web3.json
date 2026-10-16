@@ -1,0 +1,1667 @@
+{
+ "_how_to_edit": "One question per {...}. 'question': the text. 'answers': exactly 4. 'correct': the position of the right answer (0 = first, 1 = second, 2 = third, 3 = fourth). Optional 'explanation' (shown after answering) and 'image' (an https:// link, or a file name inside the images/ folder). Answers are shuffled when shown. The bot re-reads this file automatically. After editing, run: python check_trivia.py",
+ "category": "AI & Web3",
+ "questions": [
+  {
+   "question": "What does \"LLM\" stand for?",
+   "answers": [
+    "Large Language Model",
+    "Linked Learning Machine",
+    "Logical Language Module",
+    "Long Loop Memory"
+   ],
+   "correct": 0,
+   "explanation": "LLMs like the ones behind chatbots are trained on huge amounts of text to predict and generate language."
+  },
+  {
+   "question": "In AI agents, what is a \"tool call\"?",
+   "answers": [
+    "The model asking the app to run an outside function or API",
+    "A phone call made by the AI",
+    "Restarting the AI model",
+    "Deleting the model's memory"
+   ],
+   "correct": 0,
+   "explanation": "Agents become useful by calling tools: search, calculators, databases, other APIs."
+  },
+  {
+   "question": "What is a \"multi-agent system\"?",
+   "answers": [
+    "Several AI agents working together on a task",
+    "One AI with many passwords",
+    "A computer with several screens",
+    "A blockchain with many miners"
+   ],
+   "correct": 0,
+   "explanation": "For example, one agent plans, another researches and another checks the work."
+  },
+  {
+   "question": "What does \"RAG\" mean in AI?",
+   "answers": [
+    "Retrieval-Augmented Generation",
+    "Random Answer Generator",
+    "Rapid Agent Gateway",
+    "Recursive Algorithm Graph"
+   ],
+   "correct": 0,
+   "explanation": "RAG looks up relevant documents first, then lets the model answer using them."
+  },
+  {
+   "question": "When an AI \"hallucinates\", it...",
+   "answers": [
+    "States something false as if it were true",
+    "Generates images instead of text",
+    "Shuts down to save power",
+    "Runs faster than normal"
+   ],
+   "correct": 0,
+   "explanation": "That's why good AI systems check facts against trusted sources."
+  },
+  {
+   "question": "The Transformer architecture behind modern LLMs was introduced in which 2017 paper?",
+   "answers": [
+    "Attention Is All You Need",
+    "Deep Blue Strikes Back",
+    "The Bitcoin Whitepaper",
+    "Neural Networks for Dummies"
+   ],
+   "correct": 0,
+   "explanation": "Written by researchers at Google, it introduced the attention-based Transformer."
+  },
+  {
+   "question": "For a language model, what is a \"token\"?",
+   "answers": [
+    "A small chunk of text the model reads and writes",
+    "A crypto coin the model mines",
+    "A password for the API",
+    "A type of GPU"
+   ],
+   "correct": 0,
+   "explanation": "A token is often a word or part of a word. Models have limits measured in tokens."
+  },
+  {
+   "question": "What is a model's \"context window\"?",
+   "answers": [
+    "The maximum amount of text it can consider at once",
+    "The app window it runs in",
+    "The time of day it works best",
+    "The list of languages it speaks"
+   ],
+   "correct": 0,
+   "explanation": "Anything beyond the context window is invisible to the model in that moment."
+  },
+  {
+   "question": "What does \"fine-tuning\" a model mean?",
+   "answers": [
+    "Training a pretrained model further on specific data",
+    "Turning the volume down",
+    "Deleting half of its parameters",
+    "Running it on a faster computer"
+   ],
+   "correct": 0,
+   "explanation": "Fine-tuning adapts a general model to a specific task or style."
+  },
+  {
+   "question": "What is \"prompt injection\"?",
+   "answers": [
+    "Hidden instructions in input that try to hijack an AI's behavior",
+    "A faster way to type prompts",
+    "A medical treatment for robots",
+    "Adding more GPUs to a server"
+   ],
+   "correct": 0,
+   "explanation": "It's a key security risk for AI agents that read web pages, emails or messages."
+  },
+  {
+   "question": "Since \"The Merge\" in 2022, which consensus mechanism does Ethereum use?",
+   "answers": [
+    "Proof of Stake",
+    "Proof of Work",
+    "Proof of Authority",
+    "Proof of Space"
+   ],
+   "correct": 0,
+   "explanation": "Validators stake ETH instead of miners using energy-hungry hardware."
+  },
+  {
+   "question": "What is a \"smart contract\"?",
+   "answers": [
+    "A program on a blockchain that runs automatically when its conditions are met",
+    "A legal contract signed with a smart pen",
+    "An AI lawyer",
+    "A phone plan for crypto users"
+   ],
+   "correct": 0,
+   "explanation": "Once deployed, its code runs exactly as written, which is why audits matter."
+  },
+  {
+   "question": "What does \"DAO\" stand for?",
+   "answers": [
+    "Decentralized Autonomous Organization",
+    "Digital Asset Office",
+    "Distributed AI Operator",
+    "Data Access Order"
+   ],
+   "correct": 0,
+   "explanation": "DAOs let members vote on decisions, often using tokens."
+  },
+  {
+   "question": "What is the maximum number of bitcoins that will ever exist?",
+   "answers": [
+    "21 million",
+    "100 million",
+    "1 billion",
+    "There is no limit"
+   ],
+   "correct": 0,
+   "explanation": "The 21 million cap is built into Bitcoin's rules."
+  },
+  {
+   "question": "Who published the Bitcoin whitepaper in 2008?",
+   "answers": [
+    "Satoshi Nakamoto",
+    "Vitalik Buterin",
+    "Elon Musk",
+    "Alan Turing"
+   ],
+   "correct": 0,
+   "explanation": "Satoshi Nakamoto is a pseudonym. Their real identity is still unknown."
+  },
+  {
+   "question": "What does \"NFT\" stand for?",
+   "answers": [
+    "Non-Fungible Token",
+    "New Financial Technology",
+    "Network File Transfer",
+    "Not For Trading"
+   ],
+   "correct": 0,
+   "explanation": "Non-fungible means each token is unique and not interchangeable with another."
+  },
+  {
+   "question": "On Ethereum, what is a \"gas fee\"?",
+   "answers": [
+    "A fee paid to process a transaction or run a smart contract",
+    "The price of fuel for mining rigs",
+    "A tax on NFTs only",
+    "A fee for creating an email"
+   ],
+   "correct": 0,
+   "explanation": "Gas measures the computation a transaction needs."
+  },
+  {
+   "question": "What is a wallet \"seed phrase\"?",
+   "answers": [
+    "A list of words that can restore a crypto wallet",
+    "A password for Discord",
+    "A wallet's public address",
+    "A promo code for free tokens"
+   ],
+   "correct": 0,
+   "explanation": "Anyone with your seed phrase controls your funds. Never share it, not even with \"support\"."
+  },
+  {
+   "question": "What is a \"Layer 2\" in blockchain?",
+   "answers": [
+    "A network built on top of a main chain to make transactions faster and cheaper",
+    "The second block ever mined",
+    "A backup copy of a wallet",
+    "A type of NFT artwork"
+   ],
+   "correct": 0,
+   "explanation": "Rollups are a popular kind of Layer 2."
+  },
+  {
+   "question": "What does \"DeFi\" stand for?",
+   "answers": [
+    "Decentralized Finance",
+    "Default Firmware",
+    "Digital Fiction",
+    "Defined Fees"
+   ],
+   "correct": 0,
+   "explanation": "DeFi apps offer lending, trading and more using smart contracts instead of banks."
+  },
+  {
+   "question": "What is a \"stablecoin\"?",
+   "answers": [
+    "A token designed to keep a steady value, often pegged to the US dollar",
+    "A coin that never moves between wallets",
+    "A coin that can only be mined in stables",
+    "A coin with no blockchain"
+   ],
+   "correct": 0,
+   "explanation": "Stability isn't guaranteed: it depends on how the stablecoin is backed."
+  },
+  {
+   "question": "In crypto, what is a \"rug pull\"?",
+   "answers": [
+    "When a project's creators run off with investors' money",
+    "A sudden rise in price",
+    "A way to clean your hardware wallet",
+    "Moving tokens to a Layer 2"
+   ],
+   "correct": 0,
+   "explanation": "Anonymous teams, unaudited contracts and heavy hype are common warning signs."
+  },
+  {
+   "question": "What do Bitcoin miners do?",
+   "answers": [
+    "Compete to add new blocks by solving computational puzzles",
+    "Dig for physical gold coins",
+    "Design new crypto logos",
+    "Approve user passwords"
+   ],
+   "correct": 0,
+   "explanation": "This is called Proof of Work. Miners earn new bitcoin and fees as a reward."
+  },
+  {
+   "question": "What does \"HODL\" mean in crypto slang?",
+   "answers": [
+    "Holding on to crypto instead of selling",
+    "Selling everything at once",
+    "A type of hardware wallet",
+    "A blockchain programming language"
+   ],
+   "correct": 0,
+   "explanation": "It started as a typo of \"hold\" in a 2013 forum post and became a meme."
+  },
+  {
+   "question": "Which programming language is most commonly used for Ethereum smart contracts?",
+   "answers": [
+    "Solidity",
+    "HTML",
+    "COBOL",
+    "Scratch"
+   ],
+   "correct": 0,
+   "explanation": "Solidity was designed specifically for the Ethereum Virtual Machine."
+  },
+  {
+   "question": "What is a blockchain \"oracle\"?",
+   "answers": [
+    "A service that brings outside data, like prices, onto the blockchain",
+    "A fortune teller who predicts prices",
+    "The first miner on a network",
+    "A wallet with a huge balance"
+   ],
+   "correct": 0,
+   "explanation": "Smart contracts can't read the internet by themselves, so oracles feed them data."
+  },
+  {
+   "question": "Which IBM computer beat world chess champion Garry Kasparov in a 1997 match?",
+   "answers": [
+    "Watson",
+    "HAL 9000",
+    "ENIAC",
+    "Deep Blue"
+   ],
+   "correct": 3,
+   "explanation": "Deep Blue's 1997 win was the first time a computer beat a reigning world champion in a match."
+  },
+  {
+   "question": "In 2016, DeepMind's AlphaGo beat a top human champion at which board game?",
+   "answers": [
+    "Chess",
+    "Go",
+    "Checkers",
+    "Backgammon"
+   ],
+   "correct": 1,
+   "explanation": "Go was long thought too complex for computers to master so soon."
+  },
+  {
+   "question": "Which Go champion did AlphaGo defeat in a famous 2016 match in Seoul?",
+   "answers": [
+    "Garry Kasparov",
+    "Ke Jie",
+    "Magnus Carlsen",
+    "Lee Sedol"
+   ],
+   "correct": 3,
+   "explanation": "AlphaGo won the five-game match 4 to 1."
+  },
+  {
+   "question": "Which company's research lab created AlphaGo?",
+   "answers": [
+    "IBM",
+    "Intel",
+    "DeepMind",
+    "Nvidia"
+   ],
+   "correct": 2,
+   "explanation": "DeepMind, owned by Google, built AlphaGo and later AlphaFold."
+  },
+  {
+   "question": "In 2011, IBM's Watson computer beat human champions on which TV quiz show?",
+   "answers": [
+    "Wheel of Fortune",
+    "Family Feud",
+    "The Price Is Right",
+    "Jeopardy!"
+   ],
+   "correct": 3,
+   "explanation": "Watson beat two of the show's greatest champions."
+  },
+  {
+   "question": "DeepMind's AlphaFold is famous for predicting what?",
+   "answers": [
+    "Tomorrow's weather",
+    "Stock prices",
+    "The 3D shapes of proteins",
+    "Football scores"
+   ],
+   "correct": 2,
+   "explanation": "Knowing a protein's shape helps scientists understand diseases and design medicines."
+  },
+  {
+   "question": "Who proposed a famous test of whether a machine can pass as a human in conversation?",
+   "answers": [
+    "Ada Lovelace",
+    "Charles Babbage",
+    "Thomas Edison",
+    "Alan Turing"
+   ],
+   "correct": 3,
+   "explanation": "It's now known as the Turing test."
+  },
+  {
+   "question": "What did Alan Turing originally call the test now named after him?",
+   "answers": [
+    "The Thinking Test",
+    "The Robot Exam",
+    "The Imitation Game",
+    "The Mind Match"
+   ],
+   "correct": 2,
+   "explanation": "He described it in his 1950 paper \"Computing Machinery and Intelligence\"."
+  },
+  {
+   "question": "The term \"artificial intelligence\" is linked to a famous 1956 summer workshop at which US college?",
+   "answers": [
+    "Dartmouth College",
+    "Harvard University",
+    "Yale University",
+    "Princeton University"
+   ],
+   "correct": 0,
+   "explanation": "The Dartmouth workshop is often called the birth of AI as a field."
+  },
+  {
+   "question": "ELIZA, created at MIT in the 1960s, was an early example of what?",
+   "answers": [
+    "A chatbot",
+    "A video game",
+    "A search engine",
+    "A robot vacuum"
+   ],
+   "correct": 0,
+   "explanation": "ELIZA imitated a therapist by turning your words back into questions."
+  },
+  {
+   "question": "What does CAPTCHA try to check?",
+   "answers": [
+    "That the user is a human, not a bot",
+    "That your password is strong",
+    "That your internet is fast",
+    "That your email is valid"
+   ],
+   "correct": 0,
+   "explanation": "CAPTCHA stands for a \"Completely Automated Public Turing test to tell Computers and Humans Apart\"."
+  },
+  {
+   "question": "The perceptron, invented in the 1950s, was an early type of what?",
+   "answers": [
+    "Spreadsheet",
+    "Computer virus",
+    "Web browser",
+    "Neural network"
+   ],
+   "correct": 3,
+   "explanation": "It was a single artificial neuron that could learn simple patterns."
+  },
+  {
+   "question": "What does \"ML\" stand for in tech?",
+   "answers": [
+    "Machine Learning",
+    "Manual Logic",
+    "Main Loop",
+    "Memory Link"
+   ],
+   "correct": 0,
+   "explanation": "Machine learning lets computers learn patterns from data instead of following hand-written rules."
+  },
+  {
+   "question": "In \"supervised learning\", what does the model learn from?",
+   "answers": [
+    "No data at all",
+    "Examples with the correct answers (labels)",
+    "Only random noise",
+    "Its own guesses with no feedback"
+   ],
+   "correct": 1,
+   "explanation": "For example, photos already labeled \"cat\" or \"dog\"."
+  },
+  {
+   "question": "What does \"unsupervised learning\" do?",
+   "answers": [
+    "Learns only from a teacher's answers",
+    "Finds patterns in data that has no labels",
+    "Runs without electricity",
+    "Trains while nobody is watching the screen"
+   ],
+   "correct": 1,
+   "explanation": "Grouping customers by similar habits is a classic example."
+  },
+  {
+   "question": "How does \"reinforcement learning\" work?",
+   "answers": [
+    "It copies a textbook word for word",
+    "An agent learns by trial and error using rewards",
+    "It only reads labeled photos",
+    "It deletes wrong answers from the internet"
+   ],
+   "correct": 1,
+   "explanation": "Good actions earn rewards, so the agent learns to repeat them."
+  },
+  {
+   "question": "What is \"training data\"?",
+   "answers": [
+    "The model's final answers",
+    "A gym schedule for robots",
+    "The cost of running a model",
+    "The examples used to teach an AI model"
+   ],
+   "correct": 3,
+   "explanation": "The quality of the training data strongly shapes how good the model is."
+  },
+  {
+   "question": "What is \"overfitting\" in machine learning?",
+   "answers": [
+    "Memorizing training data and doing badly on new data",
+    "Using too big a screen",
+    "Training a model too little",
+    "Running out of disk space"
+   ],
+   "correct": 0,
+   "explanation": "A good model learns general patterns, not just the examples it saw."
+  },
+  {
+   "question": "Artificial neural networks were loosely inspired by what?",
+   "answers": [
+    "The solar system",
+    "The human brain",
+    "Car engines",
+    "Beehives"
+   ],
+   "correct": 1,
+   "explanation": "They use connected \"neurons\" that pass signals to each other."
+  },
+  {
+   "question": "What makes \"deep learning\" deep?",
+   "answers": [
+    "Neural networks with many layers",
+    "Training underwater",
+    "Very long prompts",
+    "Using only one huge neuron"
+   ],
+   "correct": 0,
+   "explanation": "Each layer learns more complex features than the one before."
+  },
+  {
+   "question": "Which type of computer chip is widely used to train AI models?",
+   "answers": [
+    "PSU (Power Supply Unit)",
+    "RAM stick",
+    "GPU (Graphics Processing Unit)",
+    "Sound card"
+   ],
+   "correct": 2,
+   "explanation": "GPUs do many calculations in parallel, which suits neural networks."
+  },
+  {
+   "question": "In a neural network, what are \"weights\" or \"parameters\"?",
+   "answers": [
+    "How heavy the computer is",
+    "Numbers the model adjusts while learning",
+    "The model's file name",
+    "Passwords for the model"
+   ],
+   "correct": 1,
+   "explanation": "Training is mostly the process of tuning these numbers."
+  },
+  {
+   "question": "Why do we keep a separate \"test set\" of data?",
+   "answers": [
+    "To make training faster",
+    "To check how the model does on examples it never saw",
+    "To store the model's passwords",
+    "To pay for the computer time"
+   ],
+   "correct": 1,
+   "explanation": "It shows whether the model really learned or just memorized."
+  },
+  {
+   "question": "Predicting a number, like tomorrow's temperature, is called what kind of ML task?",
+   "answers": [
+    "Regression",
+    "Classification",
+    "Clustering",
+    "Tokenization"
+   ],
+   "correct": 0,
+   "explanation": "Classification picks a category, regression predicts a number."
+  },
+  {
+   "question": "Sorting emails into \"spam\" or \"not spam\" is an example of what?",
+   "answers": [
+    "Regression",
+    "Mining",
+    "Classification",
+    "Compression"
+   ],
+   "correct": 2,
+   "explanation": "The model picks one of a fixed set of categories."
+  },
+  {
+   "question": "What does \"NLP\" stand for in AI?",
+   "answers": [
+    "Neural Logic Program",
+    "Natural Language Processing",
+    "New Learning Platform",
+    "Network Link Protocol"
+   ],
+   "correct": 1,
+   "explanation": "NLP is about computers understanding and generating human language."
+  },
+  {
+   "question": "What is \"computer vision\"?",
+   "answers": [
+    "AI that understands images and video",
+    "Screen brightness settings",
+    "Glasses for programmers",
+    "A virtual reality headset"
+   ],
+   "correct": 0,
+   "explanation": "Face unlock and reading road signs are computer vision tasks."
+  },
+  {
+   "question": "What is \"generative AI\"?",
+   "answers": [
+    "AI that creates new content like text, images or music",
+    "AI that only deletes files",
+    "AI that controls power plants",
+    "AI that can only answer yes or no"
+   ],
+   "correct": 0,
+   "explanation": "Chatbots and image generators are both generative AI."
+  },
+  {
+   "question": "What does \"GPT\" stand for?",
+   "answers": [
+    "General Purpose Technology",
+    "Global Prompt Tool",
+    "Graphical Processing Thread",
+    "Generative Pre-trained Transformer"
+   ],
+   "correct": 3,
+   "explanation": "It describes a model that generates text, is pretrained, and uses the Transformer design."
+  },
+  {
+   "question": "In AI, what is a \"prompt\"?",
+   "answers": [
+    "The model's loading screen",
+    "A reminder alarm",
+    "The instruction or text you give the model",
+    "The price of using the model"
+   ],
+   "correct": 2,
+   "explanation": "Clearer prompts usually get better answers."
+  },
+  {
+   "question": "What is \"prompt engineering\"?",
+   "answers": [
+    "Building computer hardware",
+    "Fixing broken keyboards",
+    "Designing website buttons",
+    "Writing and refining prompts to get better results"
+   ],
+   "correct": 3,
+   "explanation": "Being specific and giving context are core prompt tips."
+  },
+  {
+   "question": "What is a \"system prompt\"?",
+   "answers": [
+    "Background instructions that set how the AI behaves in a chat",
+    "The computer's startup message",
+    "An error from the operating system",
+    "A prompt only robots can read"
+   ],
+   "correct": 0,
+   "explanation": "Apps use it to give the AI a role, rules and tone."
+  },
+  {
+   "question": "What is \"few-shot prompting\"?",
+   "answers": [
+    "Asking only very short questions",
+    "Limiting the model to a few answers per day",
+    "Giving the model a few examples in the prompt",
+    "Training a model on a few photos"
+   ],
+   "correct": 2,
+   "explanation": "Examples show the model the exact pattern you want."
+  },
+  {
+   "question": "What is \"chain-of-thought\" prompting?",
+   "answers": [
+    "Linking several chatbots with a chain",
+    "Sending the same prompt many times",
+    "Asking the model to reason step by step",
+    "Writing the prompt backwards"
+   ],
+   "correct": 2,
+   "explanation": "Working step by step often helps with maths and logic."
+  },
+  {
+   "question": "What does a higher \"temperature\" setting usually do to an LLM's output?",
+   "answers": [
+    "Makes the computer hotter",
+    "Makes it always give the same answer",
+    "Makes it more random and creative",
+    "Makes it answer in capital letters"
+   ],
+   "correct": 2,
+   "explanation": "Lower temperature gives more focused, predictable answers."
+  },
+  {
+   "question": "In AI, what is \"inference\"?",
+   "answers": [
+    "Collecting training data",
+    "Using a trained model to produce answers",
+    "Building the GPU",
+    "Deleting an old model"
+   ],
+   "correct": 1,
+   "explanation": "Training teaches the model; inference is when you actually use it."
+  },
+  {
+   "question": "In AI, what is an \"embedding\"?",
+   "answers": [
+    "A video inside a web page",
+    "A sticker in a chat",
+    "A list of numbers that represents the meaning of something",
+    "A model's licence key"
+   ],
+   "correct": 2,
+   "explanation": "Texts with similar meanings get similar embeddings."
+  },
+  {
+   "question": "What is \"pretraining\" for an LLM?",
+   "answers": [
+    "Testing a model before buying a GPU",
+    "Writing the prompt in advance",
+    "The first big training run on a huge amount of text",
+    "Charging the laptop before use"
+   ],
+   "correct": 2,
+   "explanation": "Fine-tuning and other steps usually come after pretraining."
+  },
+  {
+   "question": "What does \"RLHF\" stand for?",
+   "answers": [
+    "Rapid Language with High Fidelity",
+    "Robot Learning for Home Furniture",
+    "Reinforcement Learning from Human Feedback",
+    "Real-time Logic for Hardware Functions"
+   ],
+   "correct": 2,
+   "explanation": "People rate answers, and the model learns which ones are preferred."
+  },
+  {
+   "question": "What does the \"large\" in Large Language Model mostly refer to?",
+   "answers": [
+    "The size of the computer case",
+    "The length of its name",
+    "The font size of its answers",
+    "Its huge number of parameters and training data"
+   ],
+   "correct": 3,
+   "explanation": "Modern LLMs have billions of parameters."
+  },
+  {
+   "question": "What is an \"AI agent\"?",
+   "answers": [
+    "An AI that can take actions toward a goal, often using tools",
+    "A secret agent made of metal",
+    "A person who sells AI software",
+    "A virus that spreads AI"
+   ],
+   "correct": 0,
+   "explanation": "Agents plan steps, use tools and check results to finish tasks."
+  },
+  {
+   "question": "What does \"human in the loop\" mean for AI systems?",
+   "answers": [
+    "A person reviews or approves the AI's important actions",
+    "A human trapped in a computer",
+    "The AI runs in an endless loop",
+    "A person types every answer manually"
+   ],
+   "correct": 0,
+   "explanation": "It's a common safety practice for AI agents."
+  },
+  {
+   "question": "What does \"multimodal\" AI mean?",
+   "answers": [
+    "It runs on many computers at once",
+    "It can work with several types of data, like text and images",
+    "It has many different moods",
+    "It speaks only one language"
+   ],
+   "correct": 1,
+   "explanation": "A multimodal model might read a photo and answer questions about it."
+  },
+  {
+   "question": "What is a model's \"knowledge cutoff\"?",
+   "answers": [
+    "The maximum length of a prompt",
+    "When the model shuts down for the day",
+    "The date after which it has no training data",
+    "The point where it refuses all questions"
+   ],
+   "correct": 2,
+   "explanation": "Events after the cutoff are unknown to the model unless given to it."
+  },
+  {
+   "question": "What is a \"deepfake\"?",
+   "answers": [
+    "A very deep neural network",
+    "A fake crypto wallet",
+    "AI-made fake video or audio of a real person",
+    "A broken hard drive"
+   ],
+   "correct": 2,
+   "explanation": "Be careful: seeing or hearing something is no longer proof it's real."
+  },
+  {
+   "question": "What is \"bias\" in AI?",
+   "answers": [
+    "Unfair or skewed results, often from unbalanced training data",
+    "The model's favourite colour",
+    "A speed boost for GPUs",
+    "The cost of a subscription"
+   ],
+   "correct": 0,
+   "explanation": "Diverse, carefully checked data helps reduce bias."
+  },
+  {
+   "question": "What does \"speech recognition\" do?",
+   "answers": [
+    "Turns text into images",
+    "Turns spoken words into text",
+    "Recognizes famous speeches only",
+    "Makes music louder"
+   ],
+   "correct": 1,
+   "explanation": "Voice assistants and automatic captions rely on it."
+  },
+  {
+   "question": "What does a \"text-to-image\" model do?",
+   "answers": [
+    "Reads text out loud",
+    "Scans printed books",
+    "Counts words in an image",
+    "Creates pictures from a written description"
+   ],
+   "correct": 3,
+   "explanation": "You type \"a cat in a spacesuit\" and it draws one."
+  },
+  {
+   "question": "Many popular image generators are \"diffusion models\". How do they create images?",
+   "answers": [
+    "By copying a random photo from the web",
+    "By removing noise step by step from a random image",
+    "By drawing with a robot arm",
+    "By mixing paint colours digitally"
+   ],
+   "correct": 1,
+   "explanation": "They start from static and gradually turn it into a picture."
+  },
+  {
+   "question": "What is \"sentiment analysis\"?",
+   "answers": [
+    "Measuring internet speed",
+    "Counting how many words are in a text",
+    "Detecting whether text is positive, negative or neutral",
+    "Translating emojis into Latin"
+   ],
+   "correct": 2,
+   "explanation": "Companies use it to understand reviews and feedback."
+  },
+  {
+   "question": "Streaming apps suggesting shows you might like use what kind of AI system?",
+   "answers": [
+    "A recommendation system",
+    "A blockchain oracle",
+    "A compiler",
+    "A firewall"
+   ],
+   "correct": 0,
+   "explanation": "It learns from what you and similar users watch."
+  },
+  {
+   "question": "What does \"AGI\" stand for?",
+   "answers": [
+    "Automated Graphics Interface",
+    "Advanced Gaming Integration",
+    "Algorithmic Growth Index",
+    "Artificial General Intelligence"
+   ],
+   "correct": 3,
+   "explanation": "AGI means AI that could handle most intellectual tasks a human can."
+  },
+  {
+   "question": "In AI, what are \"guardrails\"?",
+   "answers": [
+    "Metal rails around a data center",
+    "Rules and checks that keep an AI's behavior safe",
+    "Fast lanes for GPUs",
+    "Extra memory chips"
+   ],
+   "correct": 1,
+   "explanation": "They help block harmful or off-topic outputs."
+  },
+  {
+   "question": "In the Transformer architecture, what does \"attention\" help the model do?",
+   "answers": [
+    "Stay awake during training",
+    "Focus on the most relevant words in the input",
+    "Send notifications to users",
+    "Remember your passwords"
+   ],
+   "correct": 1,
+   "explanation": "Attention lets each word look at the other words around it."
+  },
+  {
+   "question": "What is a blockchain?",
+   "answers": [
+    "A shared digital record of transactions grouped into linked blocks",
+    "A chain used to lock computers",
+    "A type of cloud storage folder",
+    "A social media app for crypto"
+   ],
+   "correct": 0,
+   "explanation": "Every block points to the one before it, forming a chain."
+  },
+  {
+   "question": "How is each block in a blockchain linked to the one before it?",
+   "answers": [
+    "It uses the same password",
+    "It's stored in the same folder",
+    "It has the same number of transactions",
+    "It contains the previous block's hash"
+   ],
+   "correct": 3,
+   "explanation": "Changing an old block would break every link after it."
+  },
+  {
+   "question": "In blockchain, what is a \"hash\"?",
+   "answers": [
+    "A hashtag on social media",
+    "A type of wallet",
+    "A fixed-length digital fingerprint of data",
+    "A mining machine"
+   ],
+   "correct": 2,
+   "explanation": "Change the data even slightly and the hash changes completely."
+  },
+  {
+   "question": "What is a blockchain \"node\"?",
+   "answers": [
+    "A crypto coin",
+    "A knot in a network cable",
+    "A type of NFT",
+    "A computer that keeps a copy of the blockchain and follows its rules"
+   ],
+   "correct": 3,
+   "explanation": "Thousands of nodes make a network hard to shut down."
+  },
+  {
+   "question": "What does \"decentralized\" mean for a blockchain?",
+   "answers": [
+    "It has no internet connection",
+    "It's run by one central bank",
+    "No single company or person controls it",
+    "It only works in one country"
+   ],
+   "correct": 2,
+   "explanation": "Control is spread across many participants."
+  },
+  {
+   "question": "What is the very first block of a blockchain called?",
+   "answers": [
+    "The genesis block",
+    "The alpha block",
+    "The zero coin",
+    "The master block"
+   ],
+   "correct": 0,
+   "explanation": "Bitcoin's genesis block was mined in January 2009."
+  },
+  {
+   "question": "In which year was Bitcoin's first block mined?",
+   "answers": [
+    "2005",
+    "2009",
+    "2012",
+    "2015"
+   ],
+   "correct": 1,
+   "explanation": "The network went live in January 2009, a few months after the whitepaper."
+  },
+  {
+   "question": "What is the title of the 2008 Bitcoin whitepaper?",
+   "answers": [
+    "The Future of Money",
+    "Blockchain for Beginners",
+    "Bitcoin: A Peer-to-Peer Electronic Cash System",
+    "Digital Gold Explained"
+   ],
+   "correct": 2,
+   "explanation": "It's only nine pages long and is free to read online."
+  },
+  {
+   "question": "What is the smallest unit of a bitcoin called?",
+   "answers": [
+    "A satoshi",
+    "A wei",
+    "A bit-cent",
+    "A nakamoto"
+   ],
+   "correct": 0,
+   "explanation": "It's named after Bitcoin's pseudonymous creator."
+  },
+  {
+   "question": "How many satoshis make one bitcoin?",
+   "answers": [
+    "1,000",
+    "1 million",
+    "21 million",
+    "100 million"
+   ],
+   "correct": 3,
+   "explanation": "One satoshi is 0.00000001 BTC."
+  },
+  {
+   "question": "What happens during a Bitcoin \"halving\"?",
+   "answers": [
+    "The reward for mining a new block is cut in half",
+    "Half of all bitcoins are deleted",
+    "The price is cut in half",
+    "Transaction fees are cut in half by law"
+   ],
+   "correct": 0,
+   "explanation": "Halvings happen every 210,000 blocks, roughly every four years."
+  },
+  {
+   "question": "About how long does it take on average to add a new block to Bitcoin?",
+   "answers": [
+    "About 1 second",
+    "About 10 minutes",
+    "About 1 hour",
+    "About 1 day"
+   ],
+   "correct": 1,
+   "explanation": "The network adjusts mining difficulty to keep this pace."
+  },
+  {
+   "question": "In 2010, a programmer famously paid 10,000 bitcoins for what?",
+   "answers": [
+    "A used car",
+    "A laptop",
+    "A plane ticket",
+    "Two pizzas"
+   ],
+   "correct": 3,
+   "explanation": "May 22 is celebrated as Bitcoin Pizza Day."
+  },
+  {
+   "question": "Which consensus mechanism does Bitcoin use?",
+   "answers": [
+    "Proof of Stake",
+    "Proof of History",
+    "Proof of Work",
+    "Proof of Identity"
+   ],
+   "correct": 2,
+   "explanation": "Miners use computing power to secure the network."
+  },
+  {
+   "question": "What is the Lightning Network?",
+   "answers": [
+    "A weather service for miners",
+    "A Layer 2 for fast, cheap Bitcoin payments",
+    "A new coin that replaced Bitcoin",
+    "A cable connecting data centers"
+   ],
+   "correct": 1,
+   "explanation": "Payments happen off-chain and settle on Bitcoin later."
+  },
+  {
+   "question": "Who proposed Ethereum?",
+   "answers": [
+    "Satoshi Nakamoto",
+    "Vitalik Buterin",
+    "Bill Gates",
+    "Tim Berners-Lee"
+   ],
+   "correct": 1,
+   "explanation": "He described Ethereum in a whitepaper in late 2013."
+  },
+  {
+   "question": "In which year did the Ethereum network launch?",
+   "answers": [
+    "2009",
+    "2012",
+    "2019",
+    "2015"
+   ],
+   "correct": 3,
+   "explanation": "Ethereum's first live release went online in July 2015."
+  },
+  {
+   "question": "What is the native coin of the Ethereum network called?",
+   "answers": [
+    "Bitcoin",
+    "Ethercoin",
+    "Gas",
+    "Ether"
+   ],
+   "correct": 3,
+   "explanation": "Its ticker is ETH, and it's used to pay gas fees."
+  },
+  {
+   "question": "What is the smallest unit of Ether called?",
+   "answers": [
+    "Wei",
+    "Satoshi",
+    "Gwei-cent",
+    "Bit"
+   ],
+   "correct": 0,
+   "explanation": "One ether equals 10^18 wei."
+  },
+  {
+   "question": "Ethereum gas prices are usually quoted in which unit?",
+   "answers": [
+    "Satoshi",
+    "Kilowatt",
+    "Ounce",
+    "Gwei"
+   ],
+   "correct": 3,
+   "explanation": "One gwei is one billion wei."
+  },
+  {
+   "question": "What does \"EVM\" stand for?",
+   "answers": [
+    "Electronic Voting Machine",
+    "Encrypted Value Market",
+    "Ether Validation Module",
+    "Ethereum Virtual Machine"
+   ],
+   "correct": 3,
+   "explanation": "The EVM runs smart contract code on every Ethereum node."
+  },
+  {
+   "question": "Ethereum addresses usually start with which two characters?",
+   "answers": [
+    "BT",
+    "0x",
+    "ET",
+    "@@"
+   ],
+   "correct": 1,
+   "explanation": "\"0x\" just means the rest is written in hexadecimal."
+  },
+  {
+   "question": "What is ENS?",
+   "answers": [
+    "Ethereum News Station",
+    "Encrypted Node Storage",
+    "Ether Notification System",
+    "Ethereum Name Service, which gives addresses readable names like name.eth"
+   ],
+   "correct": 3,
+   "explanation": "It works a bit like domain names for wallets."
+  },
+  {
+   "question": "Ethereum's switch to Proof of Stake cut its energy use by roughly how much?",
+   "answers": [
+    "About 10%",
+    "About 25%",
+    "More than 99%",
+    "About 50%"
+   ],
+   "correct": 2,
+   "explanation": "Validators replaced energy-hungry mining hardware."
+  },
+  {
+   "question": "Why can Ethereum gas fees rise suddenly?",
+   "answers": [
+    "Oil prices went up",
+    "Miners took a holiday",
+    "The weather got colder",
+    "More people want to use the network at the same time"
+   ],
+   "correct": 3,
+   "explanation": "Fees work like an auction for limited block space."
+  },
+  {
+   "question": "If an Ethereum transaction fails, what usually happens to the gas fee?",
+   "answers": [
+    "It is still paid for the work done",
+    "It is always refunded in full",
+    "It is doubled as a penalty",
+    "It is sent to your seed phrase"
+   ],
+   "correct": 0,
+   "explanation": "Validators still did the computation, so gas is used."
+  },
+  {
+   "question": "What is a crypto \"wallet\"?",
+   "answers": [
+    "A leather wallet with a chip",
+    "A bank account at a crypto bank",
+    "A tool that stores your keys and lets you manage your crypto",
+    "A folder of NFT pictures"
+   ],
+   "correct": 2,
+   "explanation": "Your coins live on the blockchain; the wallet holds the keys to them."
+  },
+  {
+   "question": "Which of these is safe to share so someone can send you crypto?",
+   "answers": [
+    "Your seed phrase",
+    "Your public wallet address",
+    "Your private key",
+    "Your wallet password"
+   ],
+   "correct": 1,
+   "explanation": "Your address is like an account number; keys are like the vault combination."
+  },
+  {
+   "question": "What is a \"private key\"?",
+   "answers": [
+    "Your public username",
+    "A key to a crypto office",
+    "A secret code that proves you own and control your crypto",
+    "A free code for airdrops"
+   ],
+   "correct": 2,
+   "explanation": "Anyone who has your private key can move your funds."
+  },
+  {
+   "question": "A seed phrase usually has how many words?",
+   "answers": [
+    "3 or 4",
+    "50 or 100",
+    "12 or 24",
+    "Just 1"
+   ],
+   "correct": 2,
+   "explanation": "Write the words down in the exact order shown."
+  },
+  {
+   "question": "What is the safest way to store your seed phrase?",
+   "answers": [
+    "As a screenshot in your photos",
+    "Offline, written on paper or metal in a safe place",
+    "In a Discord message to yourself",
+    "In a public cloud note"
+   ],
+   "correct": 1,
+   "explanation": "Anything online can be hacked or leaked."
+  },
+  {
+   "question": "Someone in your DMs says they're \"support\" and asks for your seed phrase. What should you do?",
+   "answers": [
+    "Share it so they can fix your wallet",
+    "Never share it: it's a scam",
+    "Share only half of it",
+    "Send it by email instead"
+   ],
+   "correct": 1,
+   "explanation": "Real support teams will never ask for your seed phrase."
+  },
+  {
+   "question": "What is a \"hardware wallet\"?",
+   "answers": [
+    "A wallet made of metal coins",
+    "A computer used for mining",
+    "A phone case for crypto",
+    "A physical device that keeps your keys offline"
+   ],
+   "correct": 3,
+   "explanation": "Transactions are signed on the device, so keys never touch your computer."
+  },
+  {
+   "question": "What does \"Not your keys, not your coins\" mean?",
+   "answers": [
+    "Lost keys can be reset by email",
+    "If someone else holds your keys, you don't fully control the crypto",
+    "Coins without keys are free to take",
+    "You need physical keys to open a wallet"
+   ],
+   "correct": 1,
+   "explanation": "It's a reminder of the risk of leaving funds on a platform."
+  },
+  {
+   "question": "What is a \"custodial\" wallet?",
+   "answers": [
+    "One you protect with a guard dog",
+    "One where a company holds the keys for you",
+    "One that only stores NFTs",
+    "One with no keys at all"
+   ],
+   "correct": 1,
+   "explanation": "With non-custodial wallets, you hold the keys yourself."
+  },
+  {
+   "question": "If you lose your seed phrase and your device breaks, what usually happens?",
+   "answers": [
+    "The blockchain emails you a new one",
+    "The coins move to a backup bank",
+    "Customer service resets it",
+    "You can lose access to your crypto for good"
+   ],
+   "correct": 3,
+   "explanation": "There's no \"forgot password\" button on a blockchain."
+  },
+  {
+   "question": "What is \"phishing\"?",
+   "answers": [
+    "Mining crypto near water",
+    "A way to speed up transactions",
+    "Sending tokens to a friend",
+    "Tricking people with fake sites or messages to steal their info"
+   ],
+   "correct": 3,
+   "explanation": "Always check the URL before connecting your wallet."
+  },
+  {
+   "question": "A stranger sends you a link to claim a \"free NFT\". What is the safest move?",
+   "answers": [
+    "Connect fast before it runs out",
+    "Share your seed phrase to verify",
+    "Don't connect your wallet to unknown sites",
+    "Forward it to all your friends"
+   ],
+   "correct": 2,
+   "explanation": "Fake mint and claim pages are a common way to drain wallets."
+  },
+  {
+   "question": "A project promises \"guaranteed\" huge returns with no risk. This is most likely...",
+   "answers": [
+    "A safe investment",
+    "A scam",
+    "A government bond",
+    "A normal bank account"
+   ],
+   "correct": 1,
+   "explanation": "No real investment can guarantee big returns without risk."
+  },
+  {
+   "question": "Before sending crypto, what should you double-check?",
+   "answers": [
+    "The recipient address and the network",
+    "The colour of the wallet app",
+    "The weather forecast",
+    "Your phone's battery level"
+   ],
+   "correct": 0,
+   "explanation": "Mistakes are usually permanent."
+  },
+  {
+   "question": "Can a confirmed blockchain transaction usually be reversed?",
+   "answers": [
+    "Yes, by calling the blockchain",
+    "No, it's generally permanent",
+    "Yes, within 30 days",
+    "Yes, by any miner on request"
+   ],
+   "correct": 1,
+   "explanation": "That's why careful checking before sending matters so much."
+  },
+  {
+   "question": "What is a token \"approval\" in a wallet?",
+   "answers": [
+    "Permission for a smart contract to spend some of your tokens",
+    "A like on your NFT",
+    "A wallet's password reset",
+    "A badge for long-time holders"
+   ],
+   "correct": 0,
+   "explanation": "Revoke approvals you no longer need to reduce risk."
+  },
+  {
+   "question": "Which is a good extra security step for crypto exchange accounts?",
+   "answers": [
+    "Turn on two-factor authentication (2FA)",
+    "Use the same password everywhere",
+    "Post your login on social media",
+    "Turn off all security alerts"
+   ],
+   "correct": 0,
+   "explanation": "An authenticator app adds a strong second layer of protection."
+  },
+  {
+   "question": "What is a \"smart contract audit\"?",
+   "answers": [
+    "A security review of the contract's code",
+    "A tax check on your wallet",
+    "A count of all NFTs",
+    "A vote by miners"
+   ],
+   "correct": 0,
+   "explanation": "Audits reduce risk, but they don't guarantee code is bug-free."
+  },
+  {
+   "question": "Are transactions on public blockchains like Bitcoin visible to anyone?",
+   "answers": [
+    "No, they are fully secret",
+    "Only banks can view them",
+    "Only the sender can view them",
+    "Yes, anyone can view them"
+   ],
+   "correct": 3,
+   "explanation": "Addresses are pseudonymous, but the history is public."
+  },
+  {
+   "question": "What is a \"block explorer\"?",
+   "answers": [
+    "A website to look up blocks, transactions and addresses",
+    "A game about digging blocks",
+    "A wallet for explorers",
+    "A miner that finds new coins"
+   ],
+   "correct": 0,
+   "explanation": "Paste a transaction hash to see its status."
+  },
+  {
+   "question": "What does it mean when a transaction gets a \"confirmation\"?",
+   "answers": [
+    "It has been included in a block",
+    "The recipient said thank you",
+    "Your bank approved it",
+    "It was cancelled"
+   ],
+   "correct": 0,
+   "explanation": "More confirmations make it even harder to undo."
+  },
+  {
+   "question": "What does \"immutable\" mean for blockchain data?",
+   "answers": [
+    "It can be edited by anyone",
+    "It disappears after a day",
+    "Once recorded, it's practically impossible to change",
+    "It is stored on paper"
+   ],
+   "correct": 2,
+   "explanation": "That's what makes blockchains trustworthy records."
+  },
+  {
+   "question": "What is a \"consensus mechanism\"?",
+   "answers": [
+    "A group chat for miners",
+    "A way to choose a coin's logo",
+    "The way a blockchain's nodes agree on which transactions are valid",
+    "A tax rule for crypto"
+   ],
+   "correct": 2,
+   "explanation": "Proof of Work and Proof of Stake are the best-known examples."
+  },
+  {
+   "question": "In Proof of Stake, who adds new blocks?",
+   "answers": [
+    "Validators who have staked coins",
+    "Miners solving puzzles with GPUs",
+    "A central bank",
+    "Random social media users"
+   ],
+   "correct": 0,
+   "explanation": "Validators put their coins at stake to be trusted with the job."
+  },
+  {
+   "question": "What does \"staking\" mean?",
+   "answers": [
+    "Hammering a wallet into the ground",
+    "Selling coins quickly",
+    "Locking up coins to help secure a network, often for rewards",
+    "Mining with a graphics card"
+   ],
+   "correct": 2,
+   "explanation": "Staked coins can often be lost or penalized if rules are broken."
+  },
+  {
+   "question": "In Proof of Stake, what is \"slashing\"?",
+   "answers": [
+    "A penalty that takes stake from a validator who breaks the rules",
+    "A big price drop",
+    "Cutting a coin in half",
+    "Deleting old blocks"
+   ],
+   "correct": 0,
+   "explanation": "It gives validators a strong reason to behave honestly."
+  },
+  {
+   "question": "What does \"fungible\" mean?",
+   "answers": [
+    "Made of mushrooms",
+    "Interchangeable, like one dollar for another",
+    "Impossible to trade",
+    "One of a kind"
+   ],
+   "correct": 1,
+   "explanation": "NFTs are non-fungible: each one is unique."
+  },
+  {
+   "question": "ERC-20 is a common Ethereum standard for what?",
+   "answers": [
+    "Hardware wallets",
+    "Mining machines",
+    "Domain names",
+    "Fungible tokens"
+   ],
+   "correct": 3,
+   "explanation": "Following a standard makes tokens work with many wallets and apps."
+  },
+  {
+   "question": "ERC-721 is a common Ethereum standard for what?",
+   "answers": [
+    "Gas fees",
+    "Bitcoin mining",
+    "Seed phrases",
+    "NFTs"
+   ],
+   "correct": 3,
+   "explanation": "Each ERC-721 token has its own unique ID."
+  },
+  {
+   "question": "What does it mean to \"mint\" an NFT?",
+   "answers": [
+    "Create it and record it on the blockchain",
+    "Make it smell fresh",
+    "Sell it for profit",
+    "Delete it from a wallet"
+   ],
+   "correct": 0,
+   "explanation": "Minting usually costs a gas fee."
+  },
+  {
+   "question": "What does it mean to \"burn\" tokens?",
+   "answers": [
+    "Set fire to a hardware wallet",
+    "Sell them very quickly",
+    "Lend them to a friend",
+    "Send them to an address no one can use, removing them for good"
+   ],
+   "correct": 3,
+   "explanation": "Burning reduces the amount of a token in circulation."
+  },
+  {
+   "question": "What is an \"airdrop\" in crypto?",
+   "answers": [
+    "Tokens sent to many wallets for free",
+    "Coins dropped from a plane",
+    "A wallet backup in the cloud",
+    "A failed transaction"
+   ],
+   "correct": 0,
+   "explanation": "Be careful: fake airdrops are a common scam."
+  },
+  {
+   "question": "What is a \"governance token\"?",
+   "answers": [
+    "A token issued by a government",
+    "A token that can't be traded",
+    "A token for paying taxes",
+    "A token that lets holders vote on a project's decisions"
+   ],
+   "correct": 3,
+   "explanation": "DAOs often use governance tokens for voting."
+  },
+  {
+   "question": "What is a \"multisig\" wallet?",
+   "answers": [
+    "A wallet with many colours",
+    "A wallet for many coins only",
+    "A wallet that needs several signatures to approve a transaction",
+    "A wallet signed by a celebrity"
+   ],
+   "correct": 2,
+   "explanation": "Teams and DAOs use multisigs so no single person controls the funds."
+  },
+  {
+   "question": "What does \"DEX\" stand for?",
+   "answers": [
+    "Digital Exchange Index",
+    "Direct Ether Transfer",
+    "Decentralized Exchange",
+    "Data Export"
+   ],
+   "correct": 2,
+   "explanation": "A DEX lets people trade directly from their wallets using smart contracts."
+  },
+  {
+   "question": "What is a \"liquidity pool\"?",
+   "answers": [
+    "Tokens locked in a smart contract so people can trade them",
+    "A pool filled with coins",
+    "A savings account at a bank",
+    "A group of miners"
+   ],
+   "correct": 0,
+   "explanation": "Liquidity providers earn a share of trading fees."
+  },
+  {
+   "question": "What does \"AMM\" stand for in DeFi?",
+   "answers": [
+    "Automated Market Maker",
+    "Advanced Mining Machine",
+    "Anonymous Money Market",
+    "Asset Management Module"
+   ],
+   "correct": 0,
+   "explanation": "AMMs set prices with a formula instead of an order book."
+  },
+  {
+   "question": "In blockchain, what is a \"bridge\"?",
+   "answers": [
+    "A cable between two miners",
+    "A tool that moves assets between different blockchains",
+    "A wallet backup",
+    "A type of NFT art"
+   ],
+   "correct": 1,
+   "explanation": "Bridges are useful but have been a common target for hackers."
+  },
+  {
+   "question": "What do \"rollups\" do?",
+   "answers": [
+    "Roll back old transactions",
+    "Bundle many transactions and post them to the main chain",
+    "Delete unused wallets",
+    "Print paper receipts"
+   ],
+   "correct": 1,
+   "explanation": "Sharing costs across many transactions makes each one cheaper."
+  },
+  {
+   "question": "What is a \"testnet\"?",
+   "answers": [
+    "A network for school exams",
+    "A faster version of the main network",
+    "A practice network where tokens have no real value",
+    "A wallet for testing passwords"
+   ],
+   "correct": 2,
+   "explanation": "Developers try out apps on testnets before going live."
+  },
+  {
+   "question": "What is a \"dApp\"?",
+   "answers": [
+    "A diet app",
+    "A data backup app",
+    "A digital art gallery",
+    "A decentralized application that runs on a blockchain"
+   ],
+   "correct": 3,
+   "explanation": "dApps use smart contracts instead of a central server for key logic."
+  },
+  {
+   "question": "What does \"Web3\" usually refer to?",
+   "answers": [
+    "The third version of a website",
+    "A web browser from 2003",
+    "An internet built on blockchains where users can own their assets",
+    "A new kind of Wi-Fi"
+   ],
+   "correct": 2,
+   "explanation": "Web1 was mostly reading, Web2 added sharing, Web3 adds ownership."
+  },
+  {
+   "question": "In crypto slang, what is a \"whale\"?",
+   "answers": [
+    "A very slow transaction",
+    "A large mining rig",
+    "A cartoon NFT",
+    "Someone who holds a very large amount of a coin"
+   ],
+   "correct": 3,
+   "explanation": "Big trades by whales can move prices."
+  },
+  {
+   "question": "What does \"FOMO\" stand for?",
+   "answers": [
+    "Future Of Money Online",
+    "Fear Of Missing Out",
+    "Free Online Market Order",
+    "First Order Market Offer"
+   ],
+   "correct": 1,
+   "explanation": "FOMO can push people into rushed decisions."
+  },
+  {
+   "question": "What does \"DYOR\" stand for?",
+   "answers": [
+    "Deposit Your Own Reserves",
+    "Do Your Own Research",
+    "Don't Yield On Returns",
+    "Decentralized Yield Over Rewards"
+   ],
+   "correct": 1,
+   "explanation": "Always check facts yourself before trusting a project."
+  }
+ ]
+}
