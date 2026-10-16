@@ -18,7 +18,7 @@ cogs/             One file per feature (add a file here to add a feature)
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
   automod.py      Auto-deletes spam and bad words, warns, logs
-  moderation.py   /warn, /warnings, /kick, /timeout, /summarize
+  moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /summarize
 facts.md          Facts about N7X that /ask is allowed to use
 bad_words.txt     Words the auto-mod deletes (edit freely)
 .env.example      Template for your secret settings
@@ -93,7 +93,8 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | Command | Who can use it | What it does |
 |---|---|---|
 | `/warn <member> <reason>` | Timeout Members | Saves a warning, DMs the member, posts to mod-log |
-| `/warnings <member>` | Timeout Members | Shows a member's warnings |
+| `/warnings <member>` | Timeout Members | Shows a member's latest 10 warnings, numbered (#1 = oldest) |
+| `/clearwarnings <member> [number] [reason]` | Timeout Members | Clears ALL of a member's warnings, or just one by its number from `/warnings` |
 | `/kick <member> <reason>` | Kick Members | Kicks a member (they can rejoin with an invite) |
 | `/timeout <member> <minutes> <reason>` | Timeout Members | Mutes a member for up to 28 days |
 | `/summarize [channel]` | Manage Messages | Private AI summary of a channel's last 50 messages |
@@ -136,6 +137,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
   - It **deletes** the message, posts a short notice in the channel (it disappears after 10s), **DMs a warning**, saves it, and posts a note in mod-log with a hidden excerpt so mods can judge. During a spam burst it keeps deleting but warns only once a minute.
   - Settings are at the top of `cogs/automod.py`.
 - **The bot suggests, humans decide:** when a member reaches 3 warnings, mod-log suggests a human review. The bot has no ban command and never bans.
+- **Clearing warnings:** run `/warnings` to see the numbers, then `/clearwarnings member:@x number:3` to remove one, or leave out `number` to clear all of them. Numbers count from the oldest (#1), so after clearing one, the later ones move up (old #4 becomes #3). Every clear is posted in mod-log (who, whose, how many, which, reason). Old mod-log messages are never deleted, so the history stays.
 - Mods can't act on themselves, the owner, the bot, or anyone with an equal or higher role. For `/kick` and `/timeout`, the **bot's role must be above the member's role** (Server Settings → Roles → drag the bot's role up).
 - **`/summarize` privacy:** the last 50 messages are sent to the AI provider to make the summary. Nothing is saved. Mods can only summarize channels they can read themselves.
 

@@ -232,14 +232,33 @@ def count_warnings(guild_id, user_id):
     return row["n"]
 
 
-def get_warnings(guild_id, user_id, limit=10):
-    """Return a member's most recent warnings, newest first."""
-    return fetch_all(
+def get_numbered_warnings(guild_id, user_id):
+    """
+    Return ALL of a member's warnings as a list of (number, row), oldest first.
+    Warning #1 is their first warning. These are the numbers /warnings shows
+    and /clearwarnings uses. New warnings never change existing numbers.
+    """
+    rows = fetch_all(
         """
-        SELECT moderator_id, reason, created_at FROM warnings
+        SELECT id, moderator_id, reason, created_at FROM warnings
         WHERE guild_id = ? AND user_id = ?
-        ORDER BY created_at DESC
-        LIMIT ?
+        ORDER BY created_at ASC, id ASC
         """,
-        (guild_id, user_id, limit),
+        (guild_id, user_id),
     )
+    return list(enumerate(rows, start=1))
+
+
+def delete_warning(warning_id):
+    """Delete one warning by its database ID."""
+    execute("DELETE FROM warnings WHERE id = ?", (warning_id,))
+
+
+def delete_all_warnings(guild_id, user_id):
+    """Delete every warning a member has in this server. Returns how many were deleted."""
+    with connect() as conn:
+        result = conn.execute(
+            "DELETE FROM warnings WHERE guild_id = ? AND user_id = ?",
+            (guild_id, user_id),
+        )
+        return result.rowcount

@@ -2,7 +2,7 @@
 cogs/moderation.py - Commands for mods.
 
 Every command checks Discord permissions, so only mods can use them:
-- /warn, /warnings, /timeout  need "Timeout Members" (Moderate Members)
+- /warn, /warnings, /clearwarnings, /timeout  need "Timeout Members" (Moderate Members)
 - /kick                       needs "Kick Members"
 - /summarize                  needs "Manage Messages"
 
@@ -28,6 +28,7 @@ log = logging.getLogger("n7x.moderation")
 # --- Settings you can tweak ---
 SUMMARY_MESSAGE_COUNT = 50   # how many recent messages /summarize reads
 MAX_CHARS_PER_MESSAGE = 300  # long messages are cut to this before going to the AI
+WARNINGS_SHOWN = 10          # how many warnings /warnings lists (newest first)
 
 SUMMARY_PROMPT = """You help the moderators of N7X, a Discord community about AI agents and Web3.
 You will get recent messages from one channel, oldest first, inside <messages> tags.
@@ -81,21 +82,84 @@ class Moderation(commands.Cog):
             await interaction.response.send_message(f"{member.mention} has no warnings. 🎉", ephemeral=True)
             return
 
-        rows = database.get_warnings(interaction.guild.id, member.id, limit=10)
+        # Show the latest 10, but with their real numbers (#1 = oldest),
+        # so a mod can use the number with /clearwarnings.
+        numbered = database.get_numbered_warnings(interaction.guild.id, member.id)
+        latest = numbered[-WARNINGS_SHOWN:]
         lines = []
-        for row in rows:
+        for number, row in reversed(latest):  # newest at the top
             when = f"<t:{int(row['created_at'])}:R>"  # Discord shows this as "3 days ago"
-            lines.append(f"• {when} by <@{row['moderator_id']}>: {row['reason']}")
+            lines.append(f"**#{number}** · {when} by <@{row['moderator_id']}>: {row['reason']}")
 
         embed = discord.Embed(
             title=f"Warnings for {member.display_name}: {total}",
             description="\n".join(lines),
             color=mod_tools.COLOR_WARN,
         )
-        if total > len(rows):
-            embed.set_footer(text=f"Showing the latest {len(rows)} of {total}.")
+        shown = f"Showing #{latest[0][0]}–#{latest[-1][0]} of {total}. " if total > len(latest) else ""
+        embed.set_footer(text=f"{shown}Remove one with /clearwarnings and its number.")
         await interaction.response.send_message(embed=embed, ephemeral=True,
                                                 allowed_mentions=discord.AllowedMentions.none())
+
+    # --------------------------------------------------------- /clearwarnings
+    @app_commands.command(name="clearwarnings", description="[Mods] Clear all of a member's warnings, or one by number")
+    @app_commands.describe(
+        member="Whose warnings to clear",
+        number="Only clear this warning (the # shown in /warnings). Leave empty to clear ALL.",
+        reason="Why (posted in mod-log)",
+    )
+    @app_commands.guild_only()
+    @app_commands.default_permissions(moderate_members=True)   # hidden from non-mods
+    @app_commands.checks.has_permissions(moderate_members=True)  # enforced
+    async def clearwarnings(self, interaction: discord.Interaction, member: discord.Member,
+                            number: app_commands.Range[int, 1, 10000] = None,
+                            reason: app_commands.Range[str, 1, 300] = None):
+        # Same safety rules as /warn: not yourself (no clearing your own record),
+        # not the owner, and not someone with an equal or higher role.
+        problem = mod_tools.check_can_act(interaction, member, needs_bot_above=False)
+        if problem:
+            await interaction.response.send_message(problem, ephemeral=True)
+            return
+
+        guild = interaction.guild
+        numbered = database.get_numbered_warnings(guild.id, member.id)
+        if not numbered:
+            await interaction.response.send_message(f"{member.mention} has no warnings to clear.", ephemeral=True)
+            return
+
+        if number is None:
+            # Clear everything.
+            cleared = database.delete_all_warnings(guild.id, member.id)
+            what = f"all {cleared} warning(s)"
+        else:
+            if number > len(numbered):
+                await interaction.response.send_message(
+                    f"{member.mention} only has {len(numbered)} warning(s). Use `/warnings` to see the numbers.",
+                    ephemeral=True,
+                )
+                return
+            row = numbered[number - 1][1]
+            database.delete_warning(row["id"])
+            cleared = 1
+            what = f"warning #{number} (\"{row['reason']}\")"
+
+        remaining = database.count_warnings(guild.id, member.id)
+        await interaction.response.send_message(
+            f"🧹 Cleared {what} from {member.mention}. They now have **{remaining}** warning(s).",
+            ephemeral=True,
+            allowed_mentions=discord.AllowedMentions.none(),
+        )
+
+        # Mod-log keeps a permanent record. Old mod-log messages are never deleted.
+        note = discord.Embed(title="🧹 Warnings cleared", color=mod_tools.COLOR_INFO, timestamp=discord.utils.utcnow())
+        note.add_field(name="Member", value=f"{member.mention} ({member})")
+        note.add_field(name="By", value=interaction.user.mention)
+        note.add_field(name="Cleared", value=str(cleared))
+        note.add_field(name="Remaining", value=str(remaining))
+        note.add_field(name="Which", value=what[:1000], inline=False)
+        note.add_field(name="Reason", value=reason or "No reason given", inline=False)
+        await mod_tools.send_mod_log(guild, note)
+        log.info("%s cleared %s from %s (%s): %s", interaction.user, what, member, member.id, reason or "no reason")
 
     # ------------------------------------------------------------------ /kick
     @app_commands.command(name="kick", description="[Mods] Kick a member (they can rejoin with an invite)")
