@@ -10,7 +10,7 @@ bot.py            Starts the bot, loads features, catches errors
 config.py         Reads settings from .env
 database.py       All SQLite database code
 ai_providers.py   Talks to Gemini / Groq / OpenRouter with automatic fallback
-mod_tools.py      Shared moderation helpers (warnings, mod-log)
+mod_tools.py      Shared moderation actions + safety checks (used by slash commands, auto-mod and assistant)
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
@@ -19,6 +19,7 @@ cogs/             One file per feature (add a file here to add a feature)
   ask.py          /ask (AI answers, N7X facts from facts.md)
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /summarize
+  mod_assistant.py  AI mod assistant: mods ask in plain words, confirm with a button
 facts.md          Facts about N7X that /ask is allowed to use
 bad_words.txt     Words the auto-mod deletes (edit freely)
 .env.example      Template for your secret settings
@@ -141,11 +142,40 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Mods can't act on themselves, the owner, the bot, or anyone with an equal or higher role. For `/kick` and `/timeout`, the **bot's role must be above the member's role** (Server Settings → Roles → drag the bot's role up).
 - **`/summarize` privacy:** the last 50 messages are sent to the AI provider to make the summary. Nothing is saved. Mods can only summarize channels they can read themselves.
 
+### How the mod assistant works
+Mods can ask the bot to do moderation in plain words instead of slash commands.
+
+**Setup (optional channel):**
+1. Create a private channel only mods can see, e.g. `#mod-assistant`. Give the bot **View Channel**, **Send Messages**, **Embed Links** and **Read Message History** there.
+2. Right-click it → **Copy Channel ID** and add it to `.env`: `MOD_ASSISTANT_CHANNEL_ID=123456789012345678`
+3. Restart the bot.
+
+Without the channel, mods can still **@mention the bot** in any channel.
+
+**Using it:** in the assistant channel (or by @mentioning the bot), write things like:
+- `show warnings for @user`
+- `warn @user for spamming links`
+- `clear warning 2 from @user` / `clear all warnings for @user because appeal accepted`
+- `timeout @user for 2 hours, spam`
+- `kick @user for scam DMs`
+- `summarize #general`
+
+**Rules it follows:**
+- Only members with **Timeout Members** or **Manage Messages** can use it; anyone else is ignored silently. Each tool still needs the same permission as its slash command (e.g. kicking needs **Kick Members**).
+- Members must be **@mentioned** (or given by user ID). If you just type a name, it asks you to mention them.
+- It can only do these 6 things: show warnings, warn, clear warnings, timeout (max 28 days), kick, summarize. **No bans, no role changes.** Anything else gets "I didn't understand that, try rephrasing."
+- Warn, clear, timeout and kick show **Confirm / Cancel** buttons. Only the mod who asked can press them, they expire after **60 seconds**, and every safety check runs **again** when Confirm is pressed.
+- Showing warnings and summaries are private: outside the assistant/mod-log channels, the result is sent to you by **DM**.
+- **5 requests per minute** per mod.
+- Every request is posted in mod-log: who asked, what was understood, and the outcome (done, cancelled, expired or blocked).
+- Only the mod's own message is sent to the AI (plus the channel's messages for `summarize`). The terminal logs IDs and outcomes, never message text.
+
 ## Adding a new feature
 
 1. Create a new file in `cogs/`, e.g. `cogs/myfeature.py`.
 2. Copy the structure of `cogs/general.py` (a class, your commands, and an `async def setup(bot)` at the bottom).
 3. Restart the bot. It loads every file in `cogs/` automatically, and `/help` lists the new commands.
+   (A feature without slash commands can add a `/help` line by setting `help_entry = ("Title", "text")` on its cog, like `cogs/mod_assistant.py`.)
 
 ## Troubleshooting
 

@@ -43,6 +43,9 @@ COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "").strip()
 # --- Channels ---
 # Where the bot posts moderation notes (deleted spam, warnings, kicks...).
 MOD_LOG_CHANNEL_ID = _get_int("MOD_LOG_CHANNEL_ID")
+# Optional. Every message mods send in this channel goes to the AI mod assistant.
+# (Mods can also @mention the bot anywhere.)
+MOD_ASSISTANT_CHANNEL_ID = _get_int("MOD_ASSISTANT_CHANNEL_ID")
 
 # --- Branding ---
 BRAND_COLOR = 0x7B2FF7  # N7X purple, used for embeds
