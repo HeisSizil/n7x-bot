@@ -71,6 +71,9 @@ class HostPanelTests(unittest.IsolatedAsyncioTestCase):
         import cogs.tournament as tc
         self.tc, self.dc = tc, dc
         tc.SEND_GAP = 0
+        tc.BATCH_WINDOW = 0.01
+        import game_panel
+        game_panel.BOARD_MIN_INTERVAL = 0
         tc.ROUND_SECONDS = 5          # long enough for the host to act while players are pending
         dc.DICE_FRAME_DELAY = 0
         self.channel = BoardChannel(tc)

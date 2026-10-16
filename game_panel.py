@@ -13,12 +13,19 @@ The game logic behind the controls is in Session (cogs/tournament.py):
 session.cancel(by), session.remove(player, by), session.skip(by).
 """
 
+import asyncio
 import logging
 import time
 
 import discord
 
 log = logging.getLogger("n7x.panel")
+
+# --- Settings you can tweak ---
+BOARD_MIN_INTERVAL = 2.0     # edit the scoreboard at most once every this many seconds (updates are batched)
+BOARD_TOP = 10               # players shown on the scoreboard (everyone can check "My position")
+MAX_NAMES = 20               # names shown in lists before "and N more"
+MESSAGE_LIMIT = 2000         # Discord's limit for normal message text
 
 COLOR_BOARD = 0x8B5CF6
 STATUS = {"in": "🟢 in", "out": "❌ out", "bye": "🎟️ bye", "waiting": "⏳ waiting", "removed": "🚫 removed"}
@@ -28,6 +35,63 @@ NO_PING = discord.AllowedMentions.none()
 def is_mod(member):
     perms = getattr(member, "guild_permissions", None)
     return bool(perms and (perms.moderate_members or perms.manage_messages))
+
+
+# =====================================================================
+# Keeping messages inside Discord's limits
+# =====================================================================
+
+def clip_list(items, limit=MAX_NAMES, sep="\n"):
+    """The first `limit` items, then "...and N more"."""
+    items = list(items)
+    shown = sep.join(items[:limit])
+    if len(items) > limit:
+        shown += f"{sep}…and {len(items) - limit} more"
+    return shown
+
+
+def clip(text, limit):
+    text = str(text)
+    return text if len(text) <= limit else text[:limit - 1] + "…"
+
+
+def fit_embed(embed):
+    """Trim an embed so it can never break Discord's limits (title 256, description 4096,
+    25 fields of 256/1024, footer 2048, author 256, 6000 characters in total)."""
+    if embed is None:
+        return None
+    if embed.title:
+        embed.title = clip(embed.title, 256)
+    if embed.description:
+        embed.description = clip(embed.description, 4096)
+    while len(embed.fields) > 25:
+        embed.remove_field(len(embed.fields) - 1)
+    for index, field in enumerate(embed.fields):
+        embed.set_field_at(index, name=clip(field.name or "-", 256), value=clip(field.value or "-", 1024),
+                           inline=field.inline)
+    if embed.footer and embed.footer.text:
+        embed.set_footer(text=clip(embed.footer.text, 2048), icon_url=embed.footer.icon_url)
+    if embed.author and embed.author.name:
+        embed.set_author(name=clip(embed.author.name, 256), icon_url=embed.author.icon_url)
+    while len(embed) > 6000 and embed.description and len(embed.description) > 100:
+        embed.description = clip(embed.description, max(100, len(embed.description) - (len(embed) - 5990)))
+    while len(embed) > 6000 and embed.fields:
+        embed.remove_field(len(embed.fields) - 1)
+    return embed
+
+
+def mention_chunks(players, limit=MESSAGE_LIMIT, prefix=""):
+    """Mentions split into messages that each fit Discord's 2000-character limit."""
+    chunks, current = [], prefix
+    for player in players:
+        piece = player.mention + " "
+        if len(current) + len(piece) > limit:
+            chunks.append(current.rstrip())
+            current = ""
+        current += piece
+    if current.strip():
+        chunks.append(current.rstrip())
+    return chunks
 
 
 class Scoreboard:
@@ -47,6 +111,8 @@ class Scoreboard:
         self.message = None
         self.view = PanelButton(self)
         self.edits = 0               # how many times the board was updated (handy for tests)
+        self.last_edit = 0.0
+        self.pending = None          # a scheduled (batched) update
 
     # ------------------------------------------------------------- state
     def active(self):
@@ -66,9 +132,28 @@ class Scoreboard:
         return leaders[0] if len(leaders) == 1 else None
 
     # ------------------------------------------------------------ display
-    def line(self, player, leader):
+    def line(self, player, leader, rank=None):
         crown = " 👑" if player == leader else ""
-        return f"{player.mention}{crown} · **{self.score[player]}** · {STATUS[self.status[player]]}"
+        number = f"**#{rank}** " if rank else ""
+        return f"{number}{player.mention}{crown} · **{self.score[player]}** · {STATUS[self.status[player]]}"
+
+    def ranking(self):
+        """Players best first (removed players last)."""
+        return sorted(self.players, key=lambda p: (self.status[p] == "removed", self.status[p] == "out",
+                                                   -self.score[p]))
+
+    def position(self, member):
+        """(rank, player) for a member, or None if they're not playing."""
+        for rank, player in enumerate(self.ranking(), start=1):
+            if player.id == member.id:
+                return rank, player
+        return None
+
+    def totals(self):
+        counts = {status: 0 for status in STATUS}
+        for status in self.status.values():
+            counts[status] += 1
+        return " · ".join(f"{STATUS[s]} **{n}**" for s, n in counts.items() if n or s in ("in", "out", "waiting"))
 
     def embed(self, final_text=None, cancelled=False):
         leader = self.leader()
@@ -89,30 +174,52 @@ class Scoreboard:
                 lines = "\n".join(self.line(p, None) for p in team) or "-"
                 embed.add_field(name=f"{'🔵' if name == 'A' else '🔴'} Team {name}: {total}", value=lines)
         else:
-            ranked = sorted(self.players, key=lambda p: (self.status[p] == "removed", -self.score[p]))
-            embed.add_field(name="Players · score · status",
-                            value="\n".join(self.line(p, leader) for p in ranked)[:1024] or "-", inline=False)
-        embed.set_footer(text=f"Host: {self.host.display_name} · N7X Bot")
-        return embed
+            ranked = self.ranking()
+            top = "\n".join(self.line(p, leader, rank) for rank, p in enumerate(ranked[:BOARD_TOP], start=1))
+            name = "Players · score · status" if len(ranked) <= BOARD_TOP else f"Top {BOARD_TOP} of {len(ranked)}"
+            embed.add_field(name=name, value=top or "-", inline=False)
+            embed.add_field(name="Totals", value=self.totals(), inline=False)
+        embed.set_footer(text=f"Host: {self.host.display_name} · 📍 My position shows your place · N7X Bot")
+        return fit_embed(embed)
 
     async def post(self):
         self.message = await self.session.channel.send(embed=self.embed(), view=self.view, allowed_mentions=NO_PING)
+        self.last_edit = time.monotonic()
 
     async def refresh(self):
-        if not self.message or self.finished:
+        """Ask for an update. Updates are batched: at most one edit every BOARD_MIN_INTERVAL seconds."""
+        if not self.message or self.finished or self.pending:
             return
+        wait = self.last_edit + BOARD_MIN_INTERVAL - time.monotonic()
+        if wait > 0:
+            self.pending = asyncio.create_task(self._edit_later(wait))
+            return
+        await self._edit()
+
+    async def _edit_later(self, wait):
+        await asyncio.sleep(wait)
+        self.pending = None
+        if not self.finished:
+            await self._edit()
+
+    async def _edit(self):
         self.edits += 1
+        self.last_edit = time.monotonic()
         try:
             await self.message.edit(embed=self.embed(), view=self.view, allowed_mentions=NO_PING)
         except discord.HTTPException as error:
-            log.warning("Scoreboard update failed (%s)", error.status)
+            log.warning("Scoreboard update failed (%s)", error.status)   # keep playing; next update retries
 
     async def finish(self, final_text, cancelled=False):
         """Turn the board into the final card and disable the Host panel button."""
         if self.finished:
             return
         self.finished = True
+        if self.pending:
+            self.pending.cancel()
+            self.pending = None
         self.view.panel.disabled = True
+        self.view.my_position.disabled = True
         self.view.stop()
         if not self.message:
             return
@@ -137,13 +244,21 @@ class Scoreboard:
             answered = [p for p in view.humans.values() if p in view.responses]
             pending = [p for p in view.humans.values() if p not in view.responses]
             left = max(0, int(view.ends_at - time.monotonic()))
+            # Big rounds: counts, plus the first names only (so the panel stays readable).
             embed.add_field(name=f"✅ Answered ({len(answered)})",
-                            value="\n".join(p.display_name for p in answered) or "-")
+                            value=(clip_list(p.display_name for p in answered) if len(answered) <= MAX_NAMES
+                                   else f"{len(answered)} players") or "-")
             embed.add_field(name=f"⏳ Pending ({len(pending)})",
-                            value="\n".join(p.display_name for p in pending) or "-")
+                            value=clip_list(p.display_name for p in pending) or "-")
             embed.add_field(name="⏱️ Time left", value=f"{left}s", inline=False)
         embed.set_footer(text="Picks stay hidden, even from the host.")
-        return embed
+        return fit_embed(embed)
+
+    def pending_players(self):
+        view = self.session.current_view
+        if view is None or view.closed:
+            return []
+        return [p for p in view.humans.values() if p not in view.responses]
 
 
 class PanelButton(discord.ui.View):
@@ -163,6 +278,17 @@ class PanelButton(discord.ui.View):
             return
         await interaction.response.send_message(embed=self.board.panel_embed(),
                                                 view=HostControls(self.board, interaction.user), ephemeral=True)
+
+    @discord.ui.button(label="My position", emoji="📍", style=discord.ButtonStyle.secondary)
+    async def my_position(self, interaction: discord.Interaction, button: discord.ui.Button):
+        found = self.board.position(interaction.user)
+        if not found:
+            await interaction.response.send_message("You're not playing in this game.", ephemeral=True)
+            return
+        rank, player = found
+        await interaction.response.send_message(
+            f"You: #{rank} of {len(self.board.players)} · score **{self.board.score[player]}** · "
+            f"{STATUS[self.board.status[player]]}", ephemeral=True)
 
 
 class ControlBase(discord.ui.View):
@@ -202,7 +328,9 @@ class HostControls(ControlBase):
 
     @discord.ui.button(label="Remove a player", emoji="🚫", style=discord.ButtonStyle.secondary)
     async def remove(self, interaction: discord.Interaction, button: discord.ui.Button):
-        choices = self.board.active()[:25]
+        # A menu holds 25 names: players still pending in this round come first (the usual AFK suspects).
+        pending = [p for p in self.board.pending_players() if p in self.board.active()]
+        choices = (pending + [p for p in self.board.active() if p not in pending])[:25]
         if not choices:
             await interaction.response.edit_message(content="Nobody to remove.", view=self)
             return

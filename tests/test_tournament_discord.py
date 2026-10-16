@@ -67,7 +67,7 @@ class FakeChannel:
         return FakeMessage(embed, view)
 
     async def press(self, view, player, index):
-        await asyncio.sleep(0.01 + player.id / 1000)   # lower ids press first (keeps tests predictable)
+        await asyncio.sleep(0.01 + (player.id % 1000) / 1000)   # lower ids press first (keeps tests predictable)
         interaction = NS(user=player, response=NS(send_message=self.ignore))
         if await view.interaction_check(interaction):
             await view.children[index].callback(interaction)
@@ -100,6 +100,9 @@ class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
         import cogs.tournament as tc
         self.tc = tc
         tc.SEND_GAP = 0
+        tc.BATCH_WINDOW = 0.01
+        import game_panel
+        game_panel.BOARD_MIN_INTERVAL = 0
         tc.ROUND_SECONDS = 2
         self.channel = FakeChannel(tc)
         self.guild = NS(id=1)

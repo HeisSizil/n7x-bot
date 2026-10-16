@@ -49,6 +49,9 @@ class DuelModeTests(unittest.IsolatedAsyncioTestCase):
         import cogs.tournament as tc
         self.dc, self.tc = dc, tc
         tc.SEND_GAP = 0
+        tc.BATCH_WINDOW = 0.01
+        import game_panel
+        game_panel.BOARD_MIN_INTERVAL = 0
         tc.ROUND_SECONDS = 1
         dc.DICE_FRAME_DELAY = 0
         self.old_secrets = tc.secrets
@@ -308,25 +311,39 @@ class DuelModeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(database.fetch_all("SELECT * FROM duel_stats"), [])   # bots never get stats
         self.no_xp_anywhere()
 
-    async def test_free_for_all_needs_3(self):
-        result = await self.run_ffa([2, 3])
+    async def test_free_for_all_one_player_cancels(self):
+        result = await self.run_ffa([2])
         self.assertIn("cancelled", result.title)
-        self.assertIn("at least **3**", result.description)
+        self.assertIn("at least **2** are needed", result.description)
+        self.assertIn("only counts as a player if they pressed **Join**", result.description)
         self.assertEqual(self.cog.busy, set())
 
-    async def test_free_for_all_host_start_needs_3_and_lobby_cap(self):
+    async def test_free_for_all_with_2_players_has_no_bronze(self):
+        self.channel.plan = {2: lambda v: PAPER, 3: lambda v: ROCK}
+        result = await self.run_ffa([2, 3])
+        self.assertEqual(result.title, "🏆 Free for all results")
+        self.assertIn("🥇 <@2>", result.description)
+        self.assertIn("🥈 <@3>", result.description)
+        self.assertNotIn("🥉", result.description)
+        self.no_xp_anywhere()
+
+    async def test_free_for_all_host_start_needs_2_and_lobby_cap(self):
         lobby = self.tc.LobbyView(self.host, "dice", 3, int(time.time()) + 60, free_for_all=True,
                                   on_join=self.cog.claim, on_leave=self.cog.release)
         replies = []
-        for n in (2, 3):
-            await lobby.join.callback(NS(user=self.p[n], response=self.lobby_reply(replies)))
+        await lobby.join.callback(NS(user=self.p[2], response=self.lobby_reply(replies)))
         await lobby.start.callback(NS(user=self.host, response=self.lobby_reply(replies)))
-        self.assertIn("at least 3", replies[-1])
-        await lobby.join.callback(NS(user=self.p[4], response=self.lobby_reply(replies)))
+        self.assertIn("at least 2", replies[-1])
+        self.assertFalse(lobby.start_now.is_set())
+        for n in (3, 4):
+            await lobby.join.callback(NS(user=self.p[n], response=self.lobby_reply(replies)))
         await lobby.join.callback(NS(user=self.p[5], response=self.lobby_reply(replies)))
         self.assertEqual(replies[-1], "Lobby is full.")
         self.assertNotIn(5, self.cog.busy)
+        self.assertIn("👥 Players (FULL 3/3)", [f.name for f in lobby.embed().fields])
         self.assertEqual(lobby.embed().title, "⚔️ 🎲 Dice Free for all")
+        await lobby.start.callback(NS(user=self.host, response=self.lobby_reply(replies)))
+        self.assertTrue(lobby.start_now.is_set())
 
     # ------------------------------------------------------------ restart
     async def test_restart_cancels_running_games(self):

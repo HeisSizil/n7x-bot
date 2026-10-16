@@ -383,6 +383,9 @@ class TournamentTriviaQuizTests(TempDatabase):
         import cogs.tournament as tc
         self.tc = tc
         tc.SEND_GAP = 0
+        tc.BATCH_WINDOW = 0.01
+        import game_panel
+        game_panel.BOARD_MIN_INTERVAL = 0
         tc.ROUND_SECONDS = 2
         self.channel = FakeChannel(tc)
         self.host = FakeMember(1, "host", mod=True)

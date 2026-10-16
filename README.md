@@ -112,8 +112,8 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/highlow` | 🃏 Higher or Lower: guess the next number (1-13) and build a streak |
 | `/gameprofile [member]` | 🎮 Level, title, game XP, wins and best streaks |
 | `/gamesleaderboard` | 🏆 Top 10 by game wins, with plays and win rate |
-| `/tournament <game> [max_players] [join_seconds] [test_mode] [questions]` | 🏆 **Mods only** (Manage Messages or Timeout Members): host an RPS, dice or trivia tournament (2+ players) |
-| `/duel <game> [mode] [opponent] [questions] [max_players] [test_mode]` | ⚔️ RPS, dice or trivia duels: 1v1 (pick an `opponent`), 2v2, 3v3, 4v4 or Free for all. Anyone can host. No XP, just bragging rights |
+| `/tournament <game> [max_players] [join_seconds] [test_mode] [questions]` | 🏆 **Mods only** (Manage Messages or Timeout Members): host an RPS, dice or trivia tournament (2-100 players) |
+| `/duel <game> [mode] [opponent] [questions] [max_players] [test_mode]` | ⚔️ RPS, dice or trivia duels: 1v1 (pick an `opponent`), 2v2, 3v3, 4v4 or Free for all (2-100 players). Anyone can host. No XP, just bragging rights |
 | `/duelstats [member]` | 📊 1v1 wins/losses, team wins/losses, free-for-all podiums and tournament podiums (each counted separately) |
 
 **Mod commands** (hidden from regular members; Discord checks the mod's permissions):
@@ -205,7 +205,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Upgrading from Stage 7: your existing game stats are kept. Lifetime game XP and streaks start counting from this version.
 
 ### How tournaments and duels work
-**Starting a tournament (mods only):** `/tournament game:<RPS/Dice/Trivia>` with optional `max_players` (2-16, default 8), `join_seconds` (15-300, default 60) and `test_mode`.
+**Starting a tournament (mods only):** `/tournament game:<RPS/Dice/Trivia>` with optional `max_players` (2-100, default 8), `join_seconds` (15-300, default 60) and `test_mode`.
 - Only members with **Manage Messages** or **Timeout Members** can start one. Anyone else gets a private "Only mods can start tournaments."
 - A lobby appears with **Join**, **Leave** and **Start now**. It shows **"Hosted by @host"** separately from the player list.
 - **The host is not a player automatically.** To play, the host presses **Join** like everyone else; otherwise they just host. A host who didn't join is never pinged and never put in the bracket.
@@ -214,7 +214,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - At least **2 players** are needed, counting only people who pressed Join (plus 🤖 bots in test mode). Otherwise it's cancelled with a message saying how many joined, how many are needed, and that the host only counts if they pressed Join.
 - One tournament per channel at a time.
 
-**Playing a round:** the players in the round are pinged and press buttons (others can watch but not press). Picks stay hidden until everyone has chosen. **No answer within 30 seconds = you lose that round.**
+**Playing a round:** the players who have to act are pinged and press buttons (others can watch but not press). Picks stay hidden until everyone has chosen. **No answer within 30 seconds = you lose that round.**
 - **RPS:** if exactly two different shapes are played, the winning shape goes through and the others are out (e.g. 2 scissors + 1 paper → the scissors players go through). All the same, or all three shapes → replay.
 - **Dice:** press Roll. The lowest roll is out; a tied lowest roll → roll again.
 - **Trivia:** the same question for everyone. Wrong answers are out; if everyone is right, the slowest is out; if nobody is right → new question.
@@ -224,20 +224,20 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 **Brackets and the podium**
 - **2 players:** one match (the final). Winner 🥇, loser 🥈, no 🥉 and no 3rd place XP. RPS ties replay, dice ties re-roll (higher wins), trivia: a wrong answer loses, both right = faster wins, both wrong = new question.
 - **3 players:** one group round. The player who's out gets 🥉 and the other two play the final for 🥇/🥈. (If only one player survives the group round, they get 🥇 and the other two play for 🥈/🥉.)
-- **4+ players:** single elimination. If the number of players doesn't fit the bracket (5, 6, 7, 9...), random **free passes (byes)** are given in round 1 only, so nobody gets two byes and every semi-final is a real match. The two semi-final losers play a **3rd place match**, then the **final**.
+- **4+ players:** always a bracket (the group round is only for exactly 3 players, so RPS can't replay forever with many players). If the number of players doesn't fit the bracket (5, 6, 7, 9...), random **free passes (byes)** are given in round 1 only, so nobody gets two byes and every semi-final is a real match. The two semi-final losers play a **3rd place match**, then the **final**.
 - **Results card:** 🥇 🥈 🥉 with mentions and bonus game XP: **50 / 30 / 20**, still limited by the 100 game XP daily cap. Podium finishes are saved and shown in `/duelstats`.
 
 **Test mode:** empty spots up to `max_players` are filled with **🤖 bot players** that pick randomly, so you can demo a whole tournament alone (press Join yourself to play against them, or don't, for a bots-only demo). Bots never get XP and are never saved in stats.
 
 **Duels (anyone can host, no XP ever, 5-second cooldown):** `/duel game:<RPS/Dice/Trivia> mode:<1v1/2v2/3v3/4v4/Free for all>`.
 - **1v1** (the default): add `opponent:@member`. They have 30 seconds to **Accept**. Same round rules as tournaments (ties replay). Trivia can use `questions:` (1-10) for a mini quiz with sudden death.
-- **2v2 / 3v3 / 4v4:** a team lobby with **Join Team A**, **Join Team B**, **Leave** and **Start** (host only). Pressing the other team's button switches teams. Team size = the mode (a full team says "Team A is full."). The game starts only when the teams are **even** (at least 1 each); otherwise the host privately sees which team needs players. A lobby that isn't started within **2 minutes** closes. The host only plays if they join a team.
+- **2v2 / 3v3 / 4v4:** a team lobby with **Join Team A**, **Join Team B**, **Leave** and **Start** (host only). Pressing the other team's button switches teams. Team size = the mode (a full team says "Team A is full."; when both teams are full, extra joins get "Lobby is full."). The host can start whenever the teams are **even**, from 1 each up to the mode size; otherwise the host privately sees which team needs players. A lobby that isn't started within **2 minutes** closes. The host only plays if they join a team.
   - **RPS:** random pairs (one from each team). Each pair plays; draws replay inside the pair. More pair wins wins; a tie → one **⚡ sudden-death pair**.
   - **Dice:** everyone presses Roll; team totals are shown with a short animation. Higher total wins; equal totals → everyone re-rolls.
   - **Trivia:** everyone answers the same `questions` (1-10, default 3). Most correct answers in total wins; a tie → **⚡ sudden death**, one question at a time (a fair random pick after 5).
   - A player who doesn't answer within 30 seconds loses their pair (RPS) or scores 0 (dice/trivia).
   - The results card shows the winning team 👑 and what each player did (✅ beat @x / 🎲 rolled 5 / 🧠 3 correct).
-- **Free for all (3-10 players):** `max_players:` (default 6). Join / Leave / Start now like a tournament, with a hard cap. Starts after 60 seconds, or when the host presses Start now with at least 3. Played with the tournament rules and podium (🥇🥈🥉), no XP, no mod needed.
+- **Free for all (2-100 players):** `max_players:` (2-100, default 8, anyone can choose it). Join / Leave / Start now like a tournament, with the same hard cap ("Lobby is full.", **FULL (X/X)**, leaving frees a spot). Starts after 60 seconds with 2 or more, or when the host presses Start now with at least 2. Fewer than 2 = cancelled ("at least 2 are needed"; the host only counts if they pressed Join). Played with the tournament rules and podium; with exactly 2 players it's one match (🥇🥈, no 🥉). No XP, no mod needed.
 - **One game per player at a time:** joining a second duel lobby (or challenging while in one) is refused privately.
 - **Test mode (mods only):** `test_mode:True` fills empty team spots / free-for-all spots with 🤖 bots so you can try every mode alone. Bots never get stats.
 - If the bot restarts during a duel, the game is cancelled with a message and nothing is saved.
@@ -254,7 +254,15 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - If the host leaves, the game simply continues.
 - `/duelstats` keeps 1v1 duels, team duels, free-for-all podiums and tournament podiums separate.
 
-**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, duels giving no XP, 10-question trivia quizzes, quiz timeouts, categories with fewer questions than asked, trivia sudden death, Open Trivia DB (with a fake local server), broken trivia files, `check_trivia.py` passing on the real files, 2v2 RPS (plus a sudden-death pair), 3v3 dice (plus re-rolls), 2v2 trivia with a tie and sudden death, uneven teams refused, timeouts, free for all with 3, 5 and 10 players, the host not joining, lobby timeouts, one game per player, restarts, no XP anywhere in duels, scoreboard edits and the final card, the host panel for the host and a mod but not a normal member, the panel never showing picks, removing a player, skip waiting, cancel with confirm, and a removal down to fewer than 2 players cancelling the game.
+**Big games (up to 100 players) stay safe:**
+- Lobby lists show the first 20 names, then "…and N more". The scoreboard shows the **top 10** plus totals (🟢 in · ❌ out · ⏳ waiting …), and anyone can press **📍 My position** to privately see "You: #X".
+- All matches of a bracket round are played **at the same time** (30 seconds max), in **one combined message** per round with one set of buttons (only players of a match can press). A round with 50 matches takes as long as a round with 1.
+- Only players who still have to act are pinged, split into messages under Discord's 2000-character limit. Never @everyone or @here. Results of a round are combined into a few messages.
+- The scoreboard is edited at most once every 2 seconds (updates are batched), the bot posts at most a couple of messages per second, and if Discord rate-limits it, it slows down and keeps going.
+- The Host panel shows counts plus the first 20 pending players; Skip waiting still works. The Remove menu lists up to 25 players, pending players first.
+- Every embed is trimmed to fit Discord's limits.
+
+**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, duels giving no XP, 10-question trivia quizzes, quiz timeouts, categories with fewer questions than asked, trivia sudden death, Open Trivia DB (with a fake local server), broken trivia files, `check_trivia.py` passing on the real files, 2v2 RPS (plus a sudden-death pair), 3v3 dice (plus re-rolls), 2v2 trivia with a tie and sudden death, uneven teams refused, timeouts, free for all with 3, 5 and 10 players, the host not joining, lobby timeouts, one game per player, restarts, no XP anywhere in duels, scoreboard edits and the final card, the host panel for the host and a mod but not a normal member, the panel never showing picks, removing a player, skip waiting, cancel with confirm, a removal down to fewer than 2 players cancelling the game, 20/21/63/64/99/100-player tournaments in all three games (byes included), a lobby hitting the cap of 100, team lobbies refusing extra joins, the 2000-character ping limit, parallel bracket rounds, batched scoreboard edits, rate limits, and every embed staying inside Discord's limits.
 
 Settings (round time, podium XP, max players) are at the top of `cogs/tournament.py`; the rules are in `tournament_engine.py`.
 

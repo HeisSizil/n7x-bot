@@ -17,6 +17,7 @@ Scoring:
 - Still tied after MAX_REPLAYS re-rolls / sudden deaths: a fair random pick.
 """
 
+import asyncio
 import secrets
 
 import tournament_engine as te
@@ -68,12 +69,12 @@ class TeamEngine:
         await self.announce("team_pairs", pairs=pairs)
         wins = {"A": 0, "B": 0}
         notes = {}
-        for number, (a, b) in enumerate(pairs, start=1):
-            winner, loser = await pair_engine.match(a, b, f"Pair {number}")
+        results = await pair_engine.play_matches(pairs, "Pair")   # all pairs at the same time
+        for winner, loser in results:
             wins["A" if winner in team_a else "B"] += 1
             notes[winner] = f"✅ beat {loser.mention}"
             notes[loser] = f"❌ lost to {winner.mention}"
-            await self.announce("team_score", score_a=wins["A"], score_b=wins["B"])
+        await self.announce("team_score", score_a=wins["A"], score_b=wins["B"])
 
         if wins["A"] == wins["B"]:
             a, b = _rng.choice(team_a), _rng.choice(team_b)

@@ -6,8 +6,8 @@ Anyone can host a duel. Duels NEVER give XP: just bragging rights.
 - 2v2 / 3v3 / 4v4: a team lobby with Join Team A / Join Team B / Leave / Start.
   Teams must be the same size (at least 1 each) to start. The lobby closes after 2 minutes.
   Scoring rules: team_engine.py.
-- Free for all (3-10 players): a lobby like /tournament, played with the tournament rules
-  and podium. Starts when the timer ends or the host presses Start now (at least 3).
+- Free for all (2-100 players): a lobby like /tournament, played with the tournament rules
+  and podium. Starts when the timer ends or the host presses Start now (at least 2).
 - The host only plays if they join. One game per player at a time.
 - Test mode (mods only): empty spots are filled with 🤖 bots. Bots never get stats.
 """
@@ -25,15 +25,17 @@ import team_engine
 import tournament_engine as te
 import trivia_bank
 from cogs.games import COLOR_DRAW, COLOR_LOSE, COLOR_WIN, DICE_FACES
-from cogs.tournament import (COLOR_GOLD, FREE_FOR_ALL_MIN, GAME_CHOICES, GAMES, ROUND_SECONDS, BotPlayer, DuelInvite,
+from cogs.tournament import (COLOR_GOLD, FREE_FOR_ALL_MIN, GAME_CHOICES, GAMES, MAX_PLAYERS_LIMIT, ROUND_SECONDS,
+                             BotPlayer, DuelInvite,
                              LobbyView, Session, is_bot, is_mod, podium_text, t_embed)
+from game_panel import fit_embed
 
 log = logging.getLogger("n7x.duels")
 
 # --- Settings you can tweak ---
 TEAM_LOBBY_SECONDS = 120      # a team lobby that doesn't start in time is closed
 FREE_FOR_ALL_SECONDS = 60     # join time for free for all
-FREE_FOR_ALL_MAX = 10
+FREE_FOR_ALL_MAX = MAX_PLAYERS_LIMIT   # 100
 DICE_FRAME_DELAY = 0.6        # seconds between team dice animation frames
 HEADER = "⚔️ N7X Duel"
 
@@ -73,6 +75,8 @@ class TeamLobbyView(discord.ui.View):
         return self.teams["A"] + self.teams["B"]
 
     def embed(self, status=None):
+        if not status and self.is_full():
+            status = f"✅ Both teams are FULL. Host: press **Start**! Lobby closes <t:{self.closes_at}:R>."
         status = status or (f"⏱️ The host presses **Start** when teams are even. "
                             f"Lobby closes <t:{self.closes_at}:R>.")
         embed = t_embed(f"👥 {GAMES[self.kind]} {self.size}v{self.size}",
@@ -87,7 +91,10 @@ class TeamLobbyView(discord.ui.View):
                         inline=False)
         if self.test_mode:
             embed.add_field(name="🧪 Test mode", value="Empty spots will be filled with 🤖 bots (no stats).")
-        return embed
+        return fit_embed(embed)
+
+    def is_full(self):
+        return all(len(members) >= self.size for members in self.teams.values())
 
     async def refresh(self, interaction):
         await interaction.response.edit_message(embed=self.embed(), view=self, allowed_mentions=NO_PING)
@@ -97,6 +104,9 @@ class TeamLobbyView(discord.ui.View):
         current = self.team_of(user)
         if current == name:
             await interaction.response.send_message(f"You're already in Team {name}.", ephemeral=True)
+            return
+        if current is None and self.is_full():
+            await interaction.response.send_message("Lobby is full.", ephemeral=True)
             return
         if len(self.teams[name]) >= self.size:
             await interaction.response.send_message(f"Team {name} is full.", ephemeral=True)
@@ -275,11 +285,11 @@ class Duels(commands.Cog):
                 pass
 
     # ------------------------------------------------------------------ /duel
-    @app_commands.command(name="duel", description="⚔️ Duel: 1v1, team modes (2v2-4v4) or free for all. No XP")
+    @app_commands.command(name="duel", description="⚔️ Duel: 1v1, teams (2v2-4v4) or free for all (2-100 players). No XP")
     @app_commands.describe(game="Which game", mode="1v1 (default), 2v2, 3v3, 4v4 or Free for all",
                            opponent="1v1 only: who you challenge",
                            questions="Trivia only: how many questions (1-10)",
-                           max_players=f"Free for all only: most players ({FREE_FOR_ALL_MIN}-{FREE_FOR_ALL_MAX}, default 6)",
+                           max_players=f"Free for all only: most players ({FREE_FOR_ALL_MIN}-{FREE_FOR_ALL_MAX}, default 8)",
                            test_mode="Mods only: fill empty spots with 🤖 bots (team and free for all)")
     @app_commands.choices(game=GAME_CHOICES, mode=MODE_CHOICES)
     @app_commands.guild_only()
@@ -287,7 +297,7 @@ class Duels(commands.Cog):
     async def duel(self, interaction: discord.Interaction, game: app_commands.Choice[str],
                    mode: app_commands.Choice[str] = None, opponent: discord.Member = None,
                    questions: app_commands.Range[int, 1, 10] = None,
-                   max_players: app_commands.Range[int, FREE_FOR_ALL_MIN, FREE_FOR_ALL_MAX] = 6,
+                   max_players: app_commands.Range[int, FREE_FOR_ALL_MIN, FREE_FOR_ALL_MAX] = 8,
                    test_mode: bool = False):
         mode_key = mode.value if mode else "1v1"
         kind = game.value
@@ -351,6 +361,7 @@ class Duels(commands.Cog):
             engine = te.Engine(kind, session.collect, session.announce, questions, session.removed)
             await session.start_board(invite.challenger, [invite.challenger, invite.opponent], f"{GAMES[kind]} duel")
             winner, loser = await engine.match(invite.challenger, invite.opponent, "Duel")
+            await session.flush()   # post any queued results first
             await session.board.finish(f"🏆 {winner.mention} beats {loser.mention}!")
             database.record_duel(interaction.guild.id, winner.id, loser.id)   # wins/losses only - duels give no XP
             await interaction.channel.send(
@@ -406,6 +417,7 @@ class Duels(commands.Cog):
             session.board.teams = {"A": team_a, "B": team_b}
             await session.refresh_board()
             result = await engine.play(team_a, team_b)
+            await session.flush()   # post any queued results first
             await session.board.finish(f"🏆 Team {result.winner} wins! 🔵 **{result.score_a}** - "
                                        f"**{result.score_b}** 🔴")
             await self.finish_team_game(channel, guild, result, session.removed)
@@ -475,6 +487,7 @@ class Duels(commands.Cog):
                      sum(map(is_bot, players)), lobby.kind)
             await session.start_board(lobby.host, players, f"{GAMES[lobby.kind]} Free for all")
             podium = await engine.run_tournament(players)
+            await session.flush()   # post any queued results first
             await session.board.finish(podium_text(podium, session.removed))
 
             removed = session.removed

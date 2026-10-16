@@ -23,11 +23,13 @@ Tournaments:
 - 2 players: one match. Winner is 1st, loser is 2nd, no 3rd place.
 - 3 players: one group round. If 2 advance, the 1 out gets 3rd and the 2 play the final.
   If only 1 advances, they're 1st and the 2 who are out play for 2nd and 3rd.
-- 4+ players: single elimination. The bracket is the next power of two (4, 8, 16);
-  free passes (byes) are drawn at random in round 1, so a player gets at most one bye
-  and every semi-final is a real match. Semi-final losers play for 3rd, then the final.
+- 4+ players: single elimination (a group round is ONLY for exactly 3 players). The bracket
+  is the next power of two (4, 8, 16 ... 128); free passes (byes) are drawn at random in
+  round 1, so a player gets at most one bye and every semi-final is a real match. All matches
+  of a round are played at the same time. Semi-final losers play for 3rd, then the final.
 """
 
+import asyncio
 import secrets
 
 # --- Settings you can tweak ---
@@ -200,6 +202,12 @@ class Engine:
         advance, eliminated = await self.play_round([a, b], label)
         return advance[0], eliminated[0]
 
+    async def play_matches(self, pairs, name):
+        """All matches of a bracket round at the same time (a round of 50 matches is as quick as 1).
+        Returns [(winner, loser), ...] in the same order as the pairs."""
+        return await asyncio.gather(*(self.match(a, b, f"{name} {number}")
+                                      for number, (a, b) in enumerate(pairs, start=1)))
+
     async def run_tournament(self, players):
         """Returns (first, second, third). third is None with only 2 players."""
         players = list(players)
@@ -229,26 +237,19 @@ class Engine:
 
         # Round 1 (only the drawn pairs play; bye players go straight through).
         name = round_name(bracket_size(len(players)))
-        alive = list(byes)
-        semi_losers = []
-        for number, (a, b) in enumerate(pairs, start=1):
-            winner, loser = await self.match(a, b, f"{name} {number}")
-            alive.append(winner)
-            if name == "Semi-final":
-                semi_losers.append(loser)
+        results = await self.play_matches(pairs, name)
+        alive = list(byes) + [winner for winner, _ in results]
+        semi_losers = [loser for _, loser in results] if name == "Semi-final" else []
 
         # Following rounds: always a power of two, so no more byes.
         while len(alive) > 2:
             _rng.shuffle(alive)
             name = round_name(len(alive))
-            next_round = []
-            for number in range(len(alive) // 2):
-                a, b = alive[2 * number], alive[2 * number + 1]
-                winner, loser = await self.match(a, b, f"{name} {number + 1}")
-                next_round.append(winner)
-                if name == "Semi-final":
-                    semi_losers.append(loser)
-            alive = next_round
+            pairs = [(alive[2 * n], alive[2 * n + 1]) for n in range(len(alive) // 2)]
+            results = await self.play_matches(pairs, name)
+            alive = [winner for winner, _ in results]
+            if name == "Semi-final":
+                semi_losers = [loser for _, loser in results]
 
         third, _ = await self.match(semi_losers[0], semi_losers[1], "3rd place match")
         first, second = await self.match(alive[0], alive[1], "Final")

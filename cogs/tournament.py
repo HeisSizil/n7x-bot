@@ -1,11 +1,11 @@
 """
-cogs/tournament.py - /tournament, /duel and /duelstats (the Discord side).
+cogs/tournament.py - /tournament, plus the lobby, round and session code /duel reuses.
 
 The rules live in tournament_engine.py. This file handles the buttons and messages:
 - /tournament (mods only): a lobby with Join / Leave / Start now. The host is NOT a
   player unless they press Join too. It starts when the join timer ends (or the host
-  presses Start now) with whoever joined. Max players is a hard cap; at least 2 are needed
-  (2 players = one final, no 3rd place).
+  presses Start now) with whoever joined. Max players (2-100) is a hard cap; at least 2 are
+  needed (2 players = one final, no 3rd place).
   Then rounds are played in the channel with buttons.
 - /duel and /duelstats live in cogs/duels.py (they reuse the classes here).
 
@@ -29,7 +29,7 @@ from discord.ext import commands
 import database
 import tournament_engine as te
 import trivia_bank
-from game_panel import Scoreboard, is_mod
+from game_panel import MAX_NAMES, Scoreboard, clip, clip_list, fit_embed, is_mod, mention_chunks
 from cogs.games import (COLOR_DRAW, COLOR_GAME, COLOR_LOSE, COLOR_WIN, DAILY_GAME_XP_CAP, DICE_FACES, FOOTER,
                         LETTER_EMOJI, LETTERS, load_trivia, today)
 
@@ -38,9 +38,14 @@ log = logging.getLogger("n7x.tournament")
 # --- Settings you can tweak ---
 ROUND_SECONDS = 30            # a player who doesn't respond in time loses that round
 PODIUM_XP = (50, 30, 20)      # bonus game XP for 1st, 2nd, 3rd (still limited by the daily cap)
-MAX_PLAYERS_LIMIT = 16
-FREE_FOR_ALL_MIN = 3          # /duel free for all needs at least this many players
-SEND_GAP = 1.0                # pause after each channel message (keeps us inside Discord's rate limits)
+MAX_PLAYERS_LIMIT = 100      # biggest lobby for /tournament and /duel free for all
+FREE_FOR_ALL_MIN = 2          # /duel free for all needs at least this many players
+SEND_GAP = 0.5                # pause after each channel message (keeps us well inside Discord's rate limits)
+SEND_RETRIES = 3              # a rate-limited message is retried this many times
+RATE_LIMIT_PAUSE = 2.0        # seconds to slow down when rate-limited (if Discord doesn't say)
+BATCH_WINDOW = 0.3            # matches/results arriving within this many seconds are posted together
+MAX_MATCH_LINES = 20          # matches listed in one round message before "and N more"
+LOCKED_IN_EDIT_GAP = 2.0      # update a round's "Locked in" line at most this often
 COLOR_GOLD = 0xFACC15
 
 GAMES = {"rps": "🪨📄✂️ Rock Paper Scissors", "dice": "🎲 Dice", "trivia": "🧠 Trivia"}
@@ -114,6 +119,7 @@ class RoundView(discord.ui.View):
         self.all_done = asyncio.Event()
         self.closed = False
         self.message = None
+        self.last_edit = 0.0
 
         if kind == "rps":
             options = [(shape.capitalize(), emoji, shape) for shape, emoji in te.RPS_SHAPES.items()]
@@ -131,7 +137,12 @@ class RoundView(discord.ui.View):
             if player in self.removed:
                 return "🚫"
             return "✅" if player in self.responses else "⏳"
-        return " · ".join(f"{mark(player)} {player.display_name}" for player in self.humans.values())
+        players = list(self.humans.values())
+        if len(players) > MAX_NAMES:   # big round: counts plus the first pending names
+            pending = [p.display_name for p in players if p not in self.responses]
+            done = len(players) - len(pending)
+            return clip(f"✅ {done}/{len(players)} locked in · ⏳ waiting for: " + clip_list(pending, sep=", "), 1000)
+        return clip(" · ".join(f"{mark(player)} {player.display_name}" for player in players), 1000)
 
     async def interaction_check(self, interaction):
         player = self.humans.get(interaction.user.id)
@@ -166,7 +177,8 @@ class RoundView(discord.ui.View):
 
             if all(p in self.responses for p in self.humans.values()):
                 self.all_done.set()
-            elif self.message:
+            elif self.message and time.monotonic() - self.last_edit >= LOCKED_IN_EDIT_GAP:
+                self.last_edit = time.monotonic()   # big rounds: at most one "locked in" edit every few seconds
                 embed = self.message.embeds[0] if self.message.embeds else None
                 if embed:
                     embed.set_field_at(0, name="Locked in", value=self.waiting_line(), inline=False)
@@ -183,8 +195,44 @@ class RoundView(discord.ui.View):
             item.disabled = True
 
 
+class RoundRequest:
+    """One match (or group round) waiting for answers. Matches that start together share one message."""
+
+    def __init__(self, players, humans, label, attempt, responses):
+        self.players = players
+        self.humans = humans
+        self.label = label
+        self.attempt = attempt
+        self.responses = responses       # bots and removed players are filled in already
+        self.done = asyncio.Event()
+
+
+def round_title(requests):
+    """One title for a batch: "Final", or "Quarter-final (8 matches)" for many matches."""
+    first = requests[0]
+    again = f" (replay {first.attempt - 1})" if first.attempt > 1 else ""
+    if len(requests) == 1:
+        return first.label + again
+    head, _, tail = first.label.partition(" • ")
+    words = head.split(" ")
+    if len(words) > 1 and words[-1].isdigit():
+        head = " ".join(words[:-1])           # "Quarter-final 3" -> "Quarter-final"
+    name = head + (f" • {tail}" if tail else "")
+    replays = " replays" if all(r.attempt > 1 for r in requests) else ""
+    return f"{name} ({len(requests)} matches{replays})"
+
+
 class Session:
-    """One tournament or duel in one channel: gives the engine its collect() and announce()."""
+    """
+    One tournament or duel in one channel: gives the engine its collect() and announce().
+
+    Built for big games too:
+    - Matches that start at the same time (a bracket round runs in parallel) are posted as ONE
+      message with one set of buttons, and only players who still have to act are pinged,
+      in batches that fit Discord's 2000-character limit. Never @everyone/@here.
+    - Results of matches that finish together are combined into as few messages as possible.
+    - Messages are spaced out (SEND_GAP) and a rate-limited send is retried instead of crashing.
+    """
 
     def __init__(self, channel, kind, header, quiz_questions=1, points_mode=False):
         self.channel = channel
@@ -192,13 +240,20 @@ class Session:
         self.header = header
         self.quiz_questions = quiz_questions   # trivia: questions per round (1 = first right & fastest)
         self.points_mode = points_mode or quiz_questions > 1   # trivia scored by points (team games too)
-        self.question = None
+        self.question = None                   # the latest trivia question asked
+        self.last_question = {}                # player -> the trivia question they last saw
         self.asked = []                        # trivia questions already used in this game
         self.removed = set()                   # players the host removed (they lose every round)
         self.board = None                      # live scoreboard (game_panel.Scoreboard)
         self.current_view = None               # the round being played right now (for the host panel)
         self.task = None                       # the asyncio task running this game (to cancel it)
         self.cancelled = False
+        self.pending = []                      # matches waiting to be posted together
+        self.batch_open = False                # a batch is still gathering matches
+        self.batch_tasks = set()
+        self.buffer = []                       # results waiting to be posted together: (embed, short line)
+        self.flush_task = None
+        self.send_lock = asyncio.Lock()
 
     # ------------------------------------------------------ scoreboard / host panel
     async def start_board(self, host, players, title):
@@ -214,8 +269,7 @@ class Session:
 
     async def note(self, text):
         """A short public note about a host action (never pings anyone)."""
-        await self.channel.send(embed=t_embed("🎛️ Host action", text, COLOR_DRAW, header=self.header),
-                                allowed_mentions=discord.AllowedMentions.none())
+        await self.send(t_embed("🎛️ Host action", text, COLOR_DRAW, header=self.header))
 
     async def skip(self, by):
         """Host panel: stop waiting. Players who haven't answered count as timed out. Returns how many."""
@@ -256,20 +310,84 @@ class Session:
         log.info("Host panel: cancel by user=%s in #%s", by.id, self.channel.name)
         if self.current_view:
             self.current_view.close()
+        self.buffer.clear()
         text = f"🛑 {by.mention} cancelled the game. No results were saved." + (f"\n{reason}" if reason else "")
         if self.board:
             await self.board.finish(text, cancelled=True)
         await self.note(text)
+        for task in list(self.batch_tasks) + [self.flush_task]:
+            if task and task is not asyncio.current_task():
+                task.cancel()
         if self.task and self.task is not asyncio.current_task():
             self.task.cancel()
 
-    async def send(self, embed, view=None, ping=()):
-        message = await self.channel.send(embed=embed, view=view,
-                                          allowed_mentions=discord.AllowedMentions(everyone=False, roles=False,
-                                                                                    users=list(ping)))
+    # ------------------------------------------------------------- sending
+    async def raw_send(self, **kwargs):
+        """channel.send that never pings @everyone/@here or roles, waits SEND_GAP afterwards, and
+        slows down instead of crashing when Discord rate-limits us."""
+        mentions = kwargs.pop("allowed_mentions", None) or discord.AllowedMentions.none()
+        mentions.everyone = False
+        mentions.roles = False
+        if kwargs.get("embed") is not None:
+            kwargs["embed"] = fit_embed(kwargs["embed"])
+        message = None
+        for attempt in range(1, SEND_RETRIES + 1):
+            try:
+                message = await self.channel.send(allowed_mentions=mentions, **kwargs)
+                break
+            except discord.HTTPException as error:
+                if error.status == 429 and attempt < SEND_RETRIES:
+                    wait = float(getattr(error, "retry_after", 0) or RATE_LIMIT_PAUSE)
+                    log.warning("Rate limited in #%s - slowing down for %.1fs", self.channel.name, wait)
+                    await asyncio.sleep(wait)
+                    continue
+                log.warning("Couldn't send a game message in #%s (%s)", self.channel.name, error.status)
+                break
         await asyncio.sleep(SEND_GAP)
         return message
 
+    async def send(self, embed, view=None, ping=()):
+        """Post now (earlier buffered results go first, so the order stays right)."""
+        await self.flush()
+        async with self.send_lock:
+            return await self.raw_send(embed=embed, view=view,
+                                       allowed_mentions=discord.AllowedMentions(users=list(ping)))
+
+    async def post_result(self, embed, short):
+        """Queue a result. Results arriving together are combined into one message."""
+        self.buffer.append((embed, short))
+        if self.flush_task is None or self.flush_task.done():
+            self.flush_task = asyncio.create_task(self._flush_soon())
+
+    async def _flush_soon(self):
+        await asyncio.sleep(BATCH_WINDOW)
+        await self.flush()
+
+    async def flush(self):
+        """Post every queued result now: one message, or a few combined ones for big rounds."""
+        if not self.buffer:
+            return
+        async with self.send_lock:
+            items, self.buffer = self.buffer, []
+            if len(items) == 1:
+                await self.raw_send(embed=items[0][0], allowed_mentions=discord.AllowedMentions.none())
+                return
+            # Many results: compact lines packed into as few embeds as possible.
+            pages, page = [], ""
+            for _, short in items:
+                line = clip(short, 600)
+                if len(page) + len(line) + 1 > 3900:
+                    pages.append(page)
+                    page = ""
+                page += line + "\n"
+            pages.append(page)
+            for number, text in enumerate(pages, start=1):
+                part = f" ({number}/{len(pages)})" if len(pages) > 1 else ""
+                await self.raw_send(embed=t_embed(f"📣 Results: {len(items)} matches{part}", text, COLOR_WIN,
+                                                  header=self.header),
+                                    allowed_mentions=discord.AllowedMentions.none())
+
+    # ---------------------------------------------------------- collecting
     async def collect(self, players, kind, label, attempt):
         if kind == "trivia" and self.points_mode:
             return await self.collect_quiz(players, label, attempt)
@@ -288,36 +406,74 @@ class Session:
                     points[player] += 1
                     if self.board:
                         self.board.score[player] += 1   # live scoreboard: total correct answers
-            q = self.question
-            right = [p.mention for p, r in responses.items() if r and r[0]]
-            score_line = " · ".join(f"{p.mention} **{points[p]}**" for p in players)
-            await self.send(t_embed(f"✅ {title}: answer",
-                                    f"**{LETTERS[q['answer']]}** - {q['choices'][q['answer']]}\n"
-                                    + (f"💡 {q['explain']}\n" if q["explain"] else "")
-                                    + f"\nRight: {', '.join(right) or 'nobody'}\n🧮 Points: {score_line}",
-                                    COLOR_WIN, header=self.header))
+            q = self.last_question.get(players[0])
+            if q:   # (bots-only matches have no visible question)
+                right = [p.mention for p, r in responses.items() if r and r[0]]
+                score_line = " · ".join(f"{p.mention} **{points[p]}**" for p in players)
+                await self.post_result(
+                    t_embed(f"✅ {title}: answer",
+                            f"**{LETTERS[q['answer']]}** - {q['choices'][q['answer']]}\n"
+                            + (f"💡 {q['explain']}\n" if q["explain"] else "")
+                            + f"\nRight: {clip_list(right, sep=', ') or 'nobody'}\n🧮 Points: {score_line}",
+                            COLOR_WIN, header=self.header),
+                    f"✅ **{title}**: {score_line}")
             await self.refresh_board()
         return points
 
     async def ask(self, players, kind, label, attempt):
+        """Get one answer from each player. Matches asked at the same moment share one message."""
+        responses = {player: None for player in players if player in self.removed}   # removed = no answer
+        responses.update({player: bot_response(kind, None) for player in players
+                          if is_bot(player) and player not in self.removed})
+        humans = [player for player in players if not is_bot(player) and player not in self.removed]
+        if not humans:
+            for player in players:
+                self.last_question[player] = None
+            return responses  # bots only: instant, nothing to post
+        request = RoundRequest(list(players), humans, label, attempt, responses)
+        self.pending.append(request)
+        if not self.batch_open:
+            self.batch_open = True
+            task = asyncio.create_task(self.run_batch(kind))
+            self.batch_tasks.add(task)
+            task.add_done_callback(self.batch_tasks.discard)
+        await request.done.wait()
+        return request.responses
+
+    async def run_batch(self, kind):
+        """Post every waiting match in one message, wait for the answers (max ROUND_SECONDS), share them out."""
+        try:
+            await asyncio.sleep(BATCH_WINDOW)  # let every match of this round queue up
+        finally:
+            self.batch_open = False
+        requests, self.pending = self.pending, []
+        try:
+            await self.play_batch(kind, requests)
+        finally:
+            for request in requests:            # never leave a match waiting, even after an error
+                for player in request.players:
+                    request.responses.setdefault(player, None)
+                request.done.set()
+
+    async def play_batch(self, kind, requests):
         question = new_trivia_question(self.asked) if kind == "trivia" else None
         if question:
             self.asked.append(question["question"])
         self.question = question
-        responses = {player: None for player in players if player in self.removed}   # removed = no answer
-        responses.update({player: bot_response(kind, question) for player in players
-                          if is_bot(player) and player not in self.removed})
-        humans = [player for player in players if not is_bot(player) and player not in self.removed]
+        responses = {}
+        humans = []
+        for request in requests:
+            responses.update(request.responses)
+            humans += [p for p in request.humans if p not in humans]
+            for player in request.players:
+                self.last_question[player] = question
+        title = round_title(requests)
         if self.board:
-            self.board.round_label = label + (f" (replay {attempt - 1})" if attempt > 1 else "")
-            self.board.set_status(players, "in")
+            self.board.round_label = title
+            self.board.set_status([p for r in requests for p in r.players], "in")
             self.board.set_status(humans, "waiting")
             await self.board.refresh()
-        if not humans:
-            return responses  # bots only: instant
 
-        vs = " vs ".join(player.mention for player in players)
-        again = f" (replay {attempt - 1})" if attempt > 1 else ""
         if kind == "rps":
             ask = "Pick your move! Picks stay hidden until everyone has chosen."
         elif kind == "dice":
@@ -326,35 +482,50 @@ class Session:
             ask = (f"**{question['question']}**\n"
                    + "\n".join(f"{LETTER_EMOJI[l]} {c}" for l, c in zip(LETTERS, question["choices"]))
                    + "\nRight and fastest goes through.")
+        matches = [" vs ".join(p.mention for p in r.players) for r in requests]
+        listing = clip_list(matches, MAX_MATCH_LINES) if len(requests) > 1 else matches[0]
         ends = int(time.time()) + ROUND_SECONDS
-        embed = t_embed(f"⚔️ {label}{again}", f"{vs}\n\n{ask}\n⏱️ Closes <t:{ends}:R> - no answer = you lose this round",
-                        header=self.header)
+        extra = "\nOnly players of a match can press. One shared set of buttons for every match." \
+            if len(requests) > 1 else ""
+        embed = t_embed(f"⚔️ {title}", f"{listing}\n\n{ask}{extra}\n⏱️ Closes <t:{ends}:R> - no answer = you lose "
+                        "this round", header=self.header)
         view = RoundView(humans, kind, question, responses, self.removed)
         self.current_view = view
         embed.add_field(name="Locked in", value=view.waiting_line(), inline=False)
-        view.message = await self.channel.send(embed=embed, view=view,
-                                               allowed_mentions=discord.AllowedMentions(users=humans,
-                                                                                         everyone=False, roles=False))
+
+        # Ping only the players who have to act, in messages that fit the 2000-character limit.
+        chunks = mention_chunks(humans)
+        await self.flush()
+        async with self.send_lock:
+            view.message = await self.raw_send(content=chunks[0], embed=embed, view=view,
+                                               allowed_mentions=discord.AllowedMentions(users=humans))
+            for chunk in chunks[1:]:
+                await self.raw_send(content=chunk, allowed_mentions=discord.AllowedMentions(users=humans))
+        view.ends_at = time.monotonic() + ROUND_SECONDS
         try:
             await asyncio.wait_for(view.all_done.wait(), ROUND_SECONDS)
         except asyncio.TimeoutError:
             pass
         view.close()
-        self.current_view = None
+        if self.current_view is view:
+            self.current_view = None
         for player in humans:
             responses.setdefault(player, None)
         if self.board:
             self.board.set_status(humans, "in")
         embed.set_field_at(0, name="Locked in", value=view.waiting_line() + "\n🔒 Round closed", inline=False)
-        try:
-            await view.message.edit(embed=embed, view=view)
-        except discord.HTTPException:
-            pass
-        return responses
+        if view.message:
+            try:
+                await view.message.edit(embed=fit_embed(embed), view=view)
+            except discord.HTTPException:
+                pass
+        for request in requests:
+            request.responses = {player: responses.get(player) for player in request.players}
 
+    # ------------------------------------------------------- announcements
     def response_lines(self, responses):
-        return "\n".join(f"{player.mention}: {describe_response(self.kind, response, self.question)}"
-                         for player, response in responses.items())
+        lines = [f"{player.mention}: {describe_response(self.kind, response)}" for player, response in responses.items()]
+        return clip_list(lines)
 
     def update_board(self, event, details):
         board = self.board
@@ -379,23 +550,25 @@ class Session:
         await self.refresh_board()
 
     async def _announce(self, event, **details):
+        names = lambda players: clip_list((p.mention for p in players), sep=", ")
         if event == "group_start":
-            names = ", ".join(p.mention for p in details["players"])
-            await self.send(t_embed("👥 Group round", f"3 players: {names}\nOne round decides who's out. "
-                                    "Then it's the final!", header=self.header))
+            await self.send(t_embed("👥 Group round", f"3 players: {names(details['players'])}\nOne round decides "
+                                    "who's out. Then it's the final!", header=self.header))
         elif event == "bracket_start":
             lines = [f"⚔️ {a.mention} vs {b.mention}" for a, b in details["pairs"]]
+            text = clip_list(lines, MAX_MATCH_LINES)
             if details["byes"]:
-                lines.append("\n🎟️ **Free pass** to the next round: " + ", ".join(p.mention for p in details["byes"]))
-            await self.send(t_embed(f"🗂️ Bracket of {details['size']}", "\n".join(lines), header=self.header))
+                text += f"\n\n🎟️ **Free pass** to the next round ({len(details['byes'])}): {names(details['byes'])}"
+            await self.send(t_embed(f"🗂️ Bracket of {details['size']}", text, header=self.header))
         elif event == "round_result":
             text = self.response_lines(details["responses"])
-            if self.kind == "trivia" and self.question and not self.points_mode:
-                q = self.question
+            q = self.last_question.get(details["advance"][0])
+            if self.kind == "trivia" and q and not self.points_mode:
                 text += f"\n\n✅ Answer: **{LETTERS[q['answer']]}** - {q['choices'][q['answer']]}"
-            text += ("\n\n➡️ Through: " + ", ".join(p.mention for p in details["advance"])
-                     + "\n❌ Out: " + ", ".join(p.mention for p in details["eliminated"]))
-            await self.send(t_embed(f"📣 {details['label']}: result", text, COLOR_WIN, header=self.header))
+            text += f"\n\n➡️ Through: {names(details['advance'])}\n❌ Out: {names(details['eliminated'])}"
+            await self.post_result(
+                t_embed(f"📣 {details['label']}: result", text, COLOR_WIN, header=self.header),
+                f"**{details['label']}**: ➡️ {names(details['advance'])} · ❌ {names(details['eliminated'])}")
         elif event == "replay":
             reason = {"rps": "All the same or all different shapes",
                       "dice": "Tied lowest roll",
@@ -405,19 +578,23 @@ class Session:
             text = self.response_lines(details["responses"])
             if all(r is None for r in details["responses"].values()) and not self.points_mode:
                 reason = "Nobody answered"
-            await self.send(t_embed(f"🔁 {details['label']}: replay!", f"{text}\n\n{reason}, so we go again.",
-                                    COLOR_DRAW, header=self.header))
+            await self.post_result(
+                t_embed(f"🔁 {details['label']}: replay!", f"{text}\n\n{reason}, so we go again.", COLOR_DRAW,
+                        header=self.header),
+                f"🔁 **{details['label']}**: {reason.lower()}, replay")
         elif event == "removed_result":
-            await self.send(t_embed(f"🚫 {details['label']}: decided by the host",
-                                    f"Removed: {', '.join(p.mention for p in details['eliminated'])} (a loss)\n"
-                                    f"➡️ Through: {', '.join(p.mention for p in details['advance'])}",
-                                    COLOR_DRAW, header=self.header))
+            await self.post_result(
+                t_embed(f"🚫 {details['label']}: decided by the host",
+                        f"Removed: {names(details['eliminated'])} (a loss)\n➡️ Through: {names(details['advance'])}",
+                        COLOR_DRAW, header=self.header),
+                f"🚫 **{details['label']}**: removed {names(details['eliminated'])} · ➡️ {names(details['advance'])}")
         elif event == "random_result":
-            await self.send(t_embed(f"🎲 {details['label']}: fair random pick",
-                                    f"Still undecided after {te.MAX_REPLAYS} replays, so a secure random draw decides.\n"
-                                    f"➡️ Through: {', '.join(p.mention for p in details['advance'])}\n"
-                                    f"❌ Out: {', '.join(p.mention for p in details['eliminated'])}",
-                                    COLOR_DRAW, header=self.header))
+            await self.post_result(
+                t_embed(f"🎲 {details['label']}: fair random pick",
+                        f"Still undecided after {te.MAX_REPLAYS} replays, so a secure random draw decides.\n"
+                        f"➡️ Through: {names(details['advance'])}\n❌ Out: {names(details['eliminated'])}",
+                        COLOR_DRAW, header=self.header),
+                f"🎲 **{details['label']}** (random after {te.MAX_REPLAYS} replays): ➡️ {names(details['advance'])}")
 
 
 def podium_text(podium, removed=()):
@@ -453,7 +630,9 @@ class LobbyView(discord.ui.View):
         return len(self.players) >= self.max_players
 
     def embed(self, closed=False):
-        listing = "\n".join(f"{i}. {p.mention}" for i, p in enumerate(self.players, start=1)) or "_nobody yet - press **Join**!_"
+        # Big lobbies: the first 20 names, then "and N more" (keeps the embed inside Discord's limits).
+        listing = clip_list(f"{i}. {p.mention}" for i, p in enumerate(self.players, start=1)) \
+            or "_nobody yet - press **Join**!_"
         status = ("🔒 Registration closed." if closed else
                   f"⏱️ Starts <t:{self.ends_at}:R>, or when the host presses **Start now**.")
         if self.free_for_all:
@@ -476,7 +655,7 @@ class LobbyView(discord.ui.View):
         if self.test_mode:
             embed.add_field(name="🧪 Test mode", value="Empty spots will be filled with 🤖 bot players "
                                                       "(they pick randomly and never get XP).")
-        return embed
+        return fit_embed(embed)
 
     async def refresh(self, interaction):
         await interaction.response.edit_message(embed=self.embed(), view=self,
@@ -568,7 +747,7 @@ class Tournament(commands.Cog):
         return task
 
     # ------------------------------------------------------------ /tournament
-    @app_commands.command(name="tournament", description="🏆 [Mods] Host a tournament: RPS, dice or trivia")
+    @app_commands.command(name="tournament", description="🏆 [Mods] Host a tournament (2-100 players): RPS, dice or trivia")
     @app_commands.describe(game="Which game", max_players=f"Most players allowed (2-{MAX_PLAYERS_LIMIT}); fewer is fine",
                            join_seconds="How long people can join (15-300 seconds)",
                            test_mode="Fill empty spots with 🤖 bot players for a demo (they never get XP)",
@@ -633,6 +812,7 @@ class Tournament(commands.Cog):
                      sum(map(is_bot, players)), lobby.kind)
             await session.start_board(lobby.host, players, f"{GAMES[lobby.kind]} Tournament")
             podium = await engine.run_tournament(players)
+            await session.flush()   # post any queued results first
             await session.board.finish(podium_text(podium, session.removed))
             await self.finish_tournament(channel, guild, players, podium, session.removed)
         except asyncio.CancelledError:
