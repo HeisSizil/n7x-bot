@@ -154,7 +154,7 @@ class Engine:
     announce(event, **details)                                                (async; posts updates)
     """
 
-    def __init__(self, kind, collect, announce, quiz_questions=1):
+    def __init__(self, kind, collect, announce, quiz_questions=1, removed=None):
         if kind not in RESOLVERS:
             raise ValueError(f"unknown game {kind!r}")
         self.kind = kind
@@ -162,11 +162,22 @@ class Engine:
         self.announce = announce
         # Trivia with several questions per round is scored by points (collect returns {player: points}).
         self.resolver = resolve_score if kind == "trivia" and quiz_questions > 1 else RESOLVERS[kind]
+        # Players removed by the host: they lose every round they're in (shared set, can grow mid-game).
+        self.removed = removed if removed is not None else set()
 
     async def play_round(self, players, label):
         """Play (and replay) a round until somebody is out. Returns (advance, eliminated)."""
         for attempt in range(1, MAX_REPLAYS + 2):
+            gone = [player for player in players if player in self.removed]
+            active = [player for player in players if player not in self.removed]
+            if gone and active:
+                await self.announce("removed_result", label=label, advance=active, eliminated=gone)
+                return active, gone
+            if gone:
+                break   # everyone here was removed: a fair random pick below
             responses = await self.collect(list(players), self.kind, label, attempt)
+            if any(player in self.removed for player in players):
+                continue   # someone was removed during this round: decided at the top of the loop
             result = self.resolver({player: responses.get(player) for player in players})
             # A head-to-head round must end with exactly one winner.
             if result and len(players) == 2 and (len(result[0]) != 1 or len(result[1]) != 1):
@@ -178,7 +189,8 @@ class Engine:
             if attempt <= MAX_REPLAYS:
                 await self.announce("replay", label=label, responses=responses, attempt=attempt)
         # Still undecided after MAX_REPLAYS replays: a fair random result keeps things moving.
-        loser = _rng.choice(list(players))
+        removed = [player for player in players if player in self.removed]
+        loser = _rng.choice(removed or list(players))   # a removed player never wins a random pick
         advance = [player for player in players if player != loser]
         await self.announce("random_result", label=label, advance=advance, eliminated=[loser])
         return advance, [loser]

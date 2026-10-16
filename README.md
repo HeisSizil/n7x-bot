@@ -16,6 +16,7 @@ assistant_text.py Mod assistant: everything it says (5 built-in languages, other
 assistant_memory.py Mod assistant: short per-mod conversation memory (5 messages / 5 minutes)
 tournament_engine.py Tournament & duel rules (no Discord code, fully tested)
 team_engine.py    /duel team mode rules: 2v2, 3v3, 4v4 (no Discord code, fully tested)
+game_panel.py     Live scoreboard + 🎛️ Host panel for tournaments and duels
 trivia_bank.py    Trivia questions: loads trivia/, makes Fun Maths, optional Open Trivia DB
 check_trivia.py   Checks every trivia file: python check_trivia.py
 cogs/             One file per feature (add a file here to add a feature)
@@ -240,9 +241,20 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - **One game per player at a time:** joining a second duel lobby (or challenging while in one) is refused privately.
 - **Test mode (mods only):** `test_mode:True` fills empty team spots / free-for-all spots with 🤖 bots so you can try every mode alone. Bots never get stats.
 - If the bot restarts during a duel, the game is cancelled with a message and nothing is saved.
+
+**Live scoreboard and 🎛️ Host panel (tournaments and every duel mode):**
+- When a game starts, the bot posts **one scoreboard message** and edits it after every round or question: each player's score (rounds won, or right answers in trivia quizzes), their status (🟢 in · ❌ out · 🎟️ bye · ⏳ waiting · 🚫 removed) and 👑 for the leader. Tournaments also show the round name and a short bracket summary; team duels show both teams with their totals.
+- At the end the scoreboard becomes the **final card** (🥇🥈🥉 or the winning team) and its Host panel button is disabled. The usual results card is still posted too.
+- The **🎛️ Host panel** button works for the **host** of the game (even if they're not playing) or **any mod** (on any running game). Anyone else gets "Only the host or a mod can use this." It opens a private panel with the current round, who has answered ✅, who is still pending ⏳ and the seconds left. **It never shows what anyone picked.**
+- Controls:
+  - **Skip waiting:** stop waiting now; pending players count as timed out (they lose that round / score 0).
+  - **Remove a player:** pick from a menu. They lose every round they're in, and get no XP and no podium credit. A removal that would leave fewer than 2 players cancels the game instead.
+  - **Cancel game:** asks "Cancel the whole game?" first. Nothing is saved.
+  - Each use writes one short line to the Termux log (who did what, no message text) and posts a public note like "🚫 Host removed @player".
+- If the host leaves, the game simply continues.
 - `/duelstats` keeps 1v1 duels, team duels, free-for-all podiums and tournament podiums separate.
 
-**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, duels giving no XP, 10-question trivia quizzes, quiz timeouts, categories with fewer questions than asked, trivia sudden death, Open Trivia DB (with a fake local server), broken trivia files, `check_trivia.py` passing on the real files, 2v2 RPS (plus a sudden-death pair), 3v3 dice (plus re-rolls), 2v2 trivia with a tie and sudden death, uneven teams refused, timeouts, free for all with 3, 5 and 10 players, the host not joining, lobby timeouts, one game per player, restarts, and no XP anywhere in duels.
+**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, full lobbies, leaving freeing a spot, the host starting with 2/3/max players, the timer starting with 2, 2-player finals with no 🥉 in all three games, the host not joining (3 other players / only 1 player), the host joining as a player, a non-mod trying to start a tournament, duels giving no XP, 10-question trivia quizzes, quiz timeouts, categories with fewer questions than asked, trivia sudden death, Open Trivia DB (with a fake local server), broken trivia files, `check_trivia.py` passing on the real files, 2v2 RPS (plus a sudden-death pair), 3v3 dice (plus re-rolls), 2v2 trivia with a tie and sudden death, uneven teams refused, timeouts, free for all with 3, 5 and 10 players, the host not joining, lobby timeouts, one game per player, restarts, no XP anywhere in duels, scoreboard edits and the final card, the host panel for the host and a mod but not a normal member, the panel never showing picks, removing a player, skip waiting, cancel with confirm, and a removal down to fewer than 2 players cancelling the game.
 
 Settings (round time, podium XP, max players) are at the top of `cogs/tournament.py`; the rules are in `tournament_engine.py`.
 

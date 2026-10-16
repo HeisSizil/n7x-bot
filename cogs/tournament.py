@@ -29,6 +29,7 @@ from discord.ext import commands
 import database
 import tournament_engine as te
 import trivia_bank
+from game_panel import Scoreboard, is_mod
 from cogs.games import (COLOR_DRAW, COLOR_GAME, COLOR_LOSE, COLOR_WIN, DAILY_GAME_XP_CAP, DICE_FACES, FOOTER,
                         LETTER_EMOJI, LETTERS, load_trivia, today)
 
@@ -59,11 +60,6 @@ class BotPlayer:
 
 def is_bot(player):
     return isinstance(player, BotPlayer)
-
-
-def is_mod(member):
-    perms = member.guild_permissions
-    return perms.moderate_members or perms.manage_messages
 
 
 def t_embed(title, description="", color=COLOR_GAME, header="🏆 N7X Tournament"):
@@ -106,9 +102,11 @@ def describe_response(kind, response, question=None):
 class RoundView(discord.ui.View):
     """Buttons for one round. Only players in the round can press, once each; picks stay hidden."""
 
-    def __init__(self, humans, kind, question, responses):
+    def __init__(self, humans, kind, question, responses, removed=()):
         super().__init__(timeout=ROUND_SECONDS + 10)
         self.humans = {player.id: player for player in humans}
+        self.removed = removed                              # players the host removed (shown as 🚫)
+        self.ends_at = time.monotonic() + ROUND_SECONDS     # for the host panel's "time left"
         self.kind = kind
         self.question = question
         self.responses = responses
@@ -129,8 +127,11 @@ class RoundView(discord.ui.View):
             self.add_item(button)
 
     def waiting_line(self):
-        return " · ".join(f"{'✅' if player in self.responses else '⏳'} {player.display_name}"
-                          for player in self.humans.values())
+        def mark(player):
+            if player in self.removed:
+                return "🚫"
+            return "✅" if player in self.responses else "⏳"
+        return " · ".join(f"{mark(player)} {player.display_name}" for player in self.humans.values())
 
     async def interaction_check(self, interaction):
         player = self.humans.get(interaction.user.id)
@@ -160,6 +161,8 @@ class RoundView(discord.ui.View):
                 self.responses[player] = (value == self.question["answer"], seconds)
                 note = f"Answer **{LETTERS[value]}** locked in after {seconds}s"
             await interaction.response.send_message(note, ephemeral=True)
+            if player in self.removed:
+                self.responses[player] = None   # removed while picking: still counts as a loss
 
             if all(p in self.responses for p in self.humans.values()):
                 self.all_done.set()
@@ -191,6 +194,74 @@ class Session:
         self.points_mode = points_mode or quiz_questions > 1   # trivia scored by points (team games too)
         self.question = None
         self.asked = []                        # trivia questions already used in this game
+        self.removed = set()                   # players the host removed (they lose every round)
+        self.board = None                      # live scoreboard (game_panel.Scoreboard)
+        self.current_view = None               # the round being played right now (for the host panel)
+        self.task = None                       # the asyncio task running this game (to cancel it)
+        self.cancelled = False
+
+    # ------------------------------------------------------ scoreboard / host panel
+    async def start_board(self, host, players, title):
+        """Post the live scoreboard (with the Host panel button) and remember the running task."""
+        self.task = asyncio.current_task()
+        self.board = Scoreboard(self, host, players, title)
+        await self.board.post()
+        await asyncio.sleep(SEND_GAP)
+
+    async def refresh_board(self):
+        if self.board:
+            await self.board.refresh()
+
+    async def note(self, text):
+        """A short public note about a host action (never pings anyone)."""
+        await self.channel.send(embed=t_embed("🎛️ Host action", text, COLOR_DRAW, header=self.header),
+                                allowed_mentions=discord.AllowedMentions.none())
+
+    async def skip(self, by):
+        """Host panel: stop waiting. Players who haven't answered count as timed out. Returns how many."""
+        view = self.current_view
+        if view is None or view.closed:
+            return None
+        pending = [p for p in view.humans.values() if p not in view.responses]
+        view.all_done.set()
+        log.info("Host panel: skip waiting by user=%s in #%s (%d pending)", by.id, self.channel.name, len(pending))
+        await self.note(f"⏭️ {by.mention} skipped waiting: {len(pending)} player(s) count as timed out.")
+        return len(pending)
+
+    async def remove(self, player, by):
+        """Host panel: remove a player (a loss, no XP). Returns "removed", "cancelled" or "gone"."""
+        board = self.board
+        if player not in board.active():
+            return "gone"
+        if len(board.active()) - 1 < te.MIN_PLAYERS:
+            await self.cancel(by, f"Removing {player.mention} would leave fewer than {te.MIN_PLAYERS} players.")
+            return "cancelled"
+        self.removed.add(player)
+        board.status[player] = "removed"
+        view = self.current_view
+        if view and not view.closed and player.id in view.humans:
+            view.responses[player] = None     # loses the round being played right now
+            if all(p in view.responses for p in view.humans.values()):
+                view.all_done.set()
+        log.info("Host panel: removed user=%s by user=%s in #%s", player.id, by.id, self.channel.name)
+        await self.note(f"🚫 Host removed {player.mention} (counts as a loss, no XP).")
+        await board.refresh()
+        return "removed"
+
+    async def cancel(self, by, reason=""):
+        """Host panel: stop the whole game. Nothing is saved."""
+        if self.cancelled:
+            return
+        self.cancelled = True
+        log.info("Host panel: cancel by user=%s in #%s", by.id, self.channel.name)
+        if self.current_view:
+            self.current_view.close()
+        text = f"🛑 {by.mention} cancelled the game. No results were saved." + (f"\n{reason}" if reason else "")
+        if self.board:
+            await self.board.finish(text, cancelled=True)
+        await self.note(text)
+        if self.task and self.task is not asyncio.current_task():
+            self.task.cancel()
 
     async def send(self, embed, view=None, ping=()):
         message = await self.channel.send(embed=embed, view=view,
@@ -215,6 +286,8 @@ class Session:
             for player, response in responses.items():
                 if response and response[0]:
                     points[player] += 1
+                    if self.board:
+                        self.board.score[player] += 1   # live scoreboard: total correct answers
             q = self.question
             right = [p.mention for p, r in responses.items() if r and r[0]]
             score_line = " · ".join(f"{p.mention} **{points[p]}**" for p in players)
@@ -223,6 +296,7 @@ class Session:
                                     + (f"💡 {q['explain']}\n" if q["explain"] else "")
                                     + f"\nRight: {', '.join(right) or 'nobody'}\n🧮 Points: {score_line}",
                                     COLOR_WIN, header=self.header))
+            await self.refresh_board()
         return points
 
     async def ask(self, players, kind, label, attempt):
@@ -230,8 +304,15 @@ class Session:
         if question:
             self.asked.append(question["question"])
         self.question = question
-        responses = {player: bot_response(kind, question) for player in players if is_bot(player)}
-        humans = [player for player in players if not is_bot(player)]
+        responses = {player: None for player in players if player in self.removed}   # removed = no answer
+        responses.update({player: bot_response(kind, question) for player in players
+                          if is_bot(player) and player not in self.removed})
+        humans = [player for player in players if not is_bot(player) and player not in self.removed]
+        if self.board:
+            self.board.round_label = label + (f" (replay {attempt - 1})" if attempt > 1 else "")
+            self.board.set_status(players, "in")
+            self.board.set_status(humans, "waiting")
+            await self.board.refresh()
         if not humans:
             return responses  # bots only: instant
 
@@ -248,7 +329,8 @@ class Session:
         ends = int(time.time()) + ROUND_SECONDS
         embed = t_embed(f"⚔️ {label}{again}", f"{vs}\n\n{ask}\n⏱️ Closes <t:{ends}:R> - no answer = you lose this round",
                         header=self.header)
-        view = RoundView(humans, kind, question, responses)
+        view = RoundView(humans, kind, question, responses, self.removed)
+        self.current_view = view
         embed.add_field(name="Locked in", value=view.waiting_line(), inline=False)
         view.message = await self.channel.send(embed=embed, view=view,
                                                allowed_mentions=discord.AllowedMentions(users=humans,
@@ -258,8 +340,11 @@ class Session:
         except asyncio.TimeoutError:
             pass
         view.close()
+        self.current_view = None
         for player in humans:
             responses.setdefault(player, None)
+        if self.board:
+            self.board.set_status(humans, "in")
         embed.set_field_at(0, name="Locked in", value=view.waiting_line() + "\n🔒 Round closed", inline=False)
         try:
             await view.message.edit(embed=embed, view=view)
@@ -271,7 +356,29 @@ class Session:
         return "\n".join(f"{player.mention}: {describe_response(self.kind, response, self.question)}"
                          for player, response in responses.items())
 
+    def update_board(self, event, details):
+        board = self.board
+        if not board:
+            return
+        if event == "bracket_start":
+            board.set_status(details["byes"], "bye")
+            board.bracket = (f"🗂️ Bracket of {details['size']}: {len(details['pairs'])} match(es)"
+                             + (f", {len(details['byes'])} free pass(es)" if details["byes"] else ""))
+        elif event in ("round_result", "random_result", "removed_result"):
+            if not self.points_mode:
+                for player in details["advance"]:
+                    board.score[player] += 1    # live scoreboard: rounds won
+            board.set_status(details["advance"], "in")
+            board.set_status(details["eliminated"], "out")
+            if board.bracket:
+                board.bracket = f"🗂️ {len(board.active())} player(s) still in"
+
     async def announce(self, event, **details):
+        self.update_board(event, details)
+        await self._announce(event, **details)
+        await self.refresh_board()
+
+    async def _announce(self, event, **details):
         if event == "group_start":
             names = ", ".join(p.mention for p in details["players"])
             await self.send(t_embed("👥 Group round", f"3 players: {names}\nOne round decides who's out. "
@@ -300,12 +407,23 @@ class Session:
                 reason = "Nobody answered"
             await self.send(t_embed(f"🔁 {details['label']}: replay!", f"{text}\n\n{reason}, so we go again.",
                                     COLOR_DRAW, header=self.header))
+        elif event == "removed_result":
+            await self.send(t_embed(f"🚫 {details['label']}: decided by the host",
+                                    f"Removed: {', '.join(p.mention for p in details['eliminated'])} (a loss)\n"
+                                    f"➡️ Through: {', '.join(p.mention for p in details['advance'])}",
+                                    COLOR_DRAW, header=self.header))
         elif event == "random_result":
             await self.send(t_embed(f"🎲 {details['label']}: fair random pick",
                                     f"Still undecided after {te.MAX_REPLAYS} replays, so a secure random draw decides.\n"
                                     f"➡️ Through: {', '.join(p.mention for p in details['advance'])}\n"
                                     f"❌ Out: {', '.join(p.mention for p in details['eliminated'])}",
                                     COLOR_DRAW, header=self.header))
+
+
+def podium_text(podium, removed=()):
+    """🥇/🥈/🥉 lines for the final scoreboard."""
+    return "\n".join(f"{medal} {player.mention}" + (" (removed)" if player in removed else "")
+                     for medal, player in zip(("🥇", "🥈", "🥉"), podium) if player is not None)
 
 
 class LobbyView(discord.ui.View):
@@ -484,6 +602,7 @@ class Tournament(commands.Cog):
     async def run_tournament(self, interaction, lobby, join_seconds, test_mode):
         channel = interaction.channel
         guild = interaction.guild
+        session = None
         try:
             try:
                 await asyncio.wait_for(lobby.start_now.wait(), join_seconds)
@@ -509,11 +628,17 @@ class Tournament(commands.Cog):
                 return
 
             session = Session(channel, lobby.kind, "🏆 N7X Tournament", lobby.questions)
-            engine = te.Engine(lobby.kind, session.collect, session.announce, lobby.questions)
+            engine = te.Engine(lobby.kind, session.collect, session.announce, lobby.questions, session.removed)
             log.info("Tournament started in #%s: %d players (%d bots), game=%s", channel.name, len(players),
                      sum(map(is_bot, players)), lobby.kind)
+            await session.start_board(lobby.host, players, f"{GAMES[lobby.kind]} Tournament")
             podium = await engine.run_tournament(players)
-            await self.finish_tournament(channel, guild, players, podium)
+            await session.board.finish(podium_text(podium, session.removed))
+            await self.finish_tournament(channel, guild, players, podium, session.removed)
+        except asyncio.CancelledError:
+            if session and session.cancelled:
+                return   # the host cancelled: the scoreboard already says so
+            raise
         except Exception:
             log.exception("Tournament in #%s crashed", getattr(channel, "name", "?"))
             try:
@@ -524,13 +649,16 @@ class Tournament(commands.Cog):
         finally:
             self.busy_channels.discard(channel.id)
 
-    async def finish_tournament(self, channel, guild, players, podium):
+    async def finish_tournament(self, channel, guild, players, podium, removed=()):
         lines = []
         for medal, player, xp in zip(("🥇", "🥈", "🥉"), podium, PODIUM_XP):
             if player is None:
                 continue   # only 2 players: no 3rd place
             if is_bot(player):
                 lines.append(f"{medal} {player.mention} - test bot, no XP")
+                continue
+            if player in removed:
+                lines.append(f"{medal} {player.mention} - removed by the host, no XP")
                 continue
             given, earned = database.give_game_xp(guild.id, player.id, xp, today(), DAILY_GAME_XP_CAP)
             if given == xp:
@@ -542,7 +670,7 @@ class Tournament(commands.Cog):
             lines.append(f"{medal} {player.mention} - ✨ {bonus}")
 
         database.record_tournament(guild.id, [p.id for p in players if not is_bot(p)],
-                                   [None if p is None or is_bot(p) else p.id for p in podium])
+                                   [None if p is None or is_bot(p) or p in removed else p.id for p in podium])
         embed = t_embed("🏆 Tournament results", "\n".join(lines) + f"\n\n{len(players)} players · thanks for playing!",
                         COLOR_GOLD)
         await channel.send(embed=embed, allowed_mentions=discord.AllowedMentions(

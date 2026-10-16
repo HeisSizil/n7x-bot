@@ -26,7 +26,7 @@ import tournament_engine as te
 import trivia_bank
 from cogs.games import COLOR_DRAW, COLOR_LOSE, COLOR_WIN, DICE_FACES
 from cogs.tournament import (COLOR_GOLD, FREE_FOR_ALL_MIN, GAME_CHOICES, GAMES, ROUND_SECONDS, BotPlayer, DuelInvite,
-                             LobbyView, Session, is_bot, is_mod, t_embed)
+                             LobbyView, Session, is_bot, is_mod, podium_text, t_embed)
 
 log = logging.getLogger("n7x.duels")
 
@@ -170,7 +170,19 @@ class TeamSession(Session):
     def team_name(self, player):
         return "🔵 A" if player in self.team_a else "🔴 B"
 
-    async def announce(self, event, **details):
+    def update_board(self, event, details):
+        board = self.board
+        if not board:
+            return
+        if event in ("round_result", "random_result", "removed_result"):   # an RPS pair was decided
+            for player in details["advance"]:
+                board.score[player] += 1
+        elif event == "team_points" and self.kind == "dice":
+            board.score.update(details["points"])                          # the latest roll counts
+        elif event == "team_pairs":
+            board.bracket = f"⚔️ {len(details['pairs'])} pair(s)"
+
+    async def _announce(self, event, **details):
         if event == "team_pairs":
             lines = [f"⚔️ {a.mention} (🔵 A) vs {b.mention} (🔴 B)" for a, b in details["pairs"]]
             await self.send(t_embed("🎲 Random pairs", "\n".join(lines) + "\n\nMost pair wins takes it!",
@@ -191,7 +203,7 @@ class TeamSession(Session):
             await self.send(t_embed("🎲 Fair random pick", f"Still tied after {te.MAX_REPLAYS} tries, so a secure "
                                     f"random draw picks Team {details['winner']}.", COLOR_DRAW, header=HEADER))
         else:
-            await super().announce(event, **details)
+            await super()._announce(event, **details)
 
     async def show_points(self, details):
         points = details["points"]
@@ -323,6 +335,7 @@ class Duels(commands.Cog):
         self.run_in_background(self.run_duel(interaction, invite, kind, questions), interaction.channel)
 
     async def run_duel(self, interaction, invite, kind, questions=1):
+        session = None
         try:
             try:
                 await asyncio.wait_for(invite.answer.wait(), ROUND_SECONDS)
@@ -335,14 +348,18 @@ class Duels(commands.Cog):
                 return
 
             session = Session(interaction.channel, kind, HEADER, questions)
-            engine = te.Engine(kind, session.collect, session.announce, questions)
+            engine = te.Engine(kind, session.collect, session.announce, questions, session.removed)
+            await session.start_board(invite.challenger, [invite.challenger, invite.opponent], f"{GAMES[kind]} duel")
             winner, loser = await engine.match(invite.challenger, invite.opponent, "Duel")
+            await session.board.finish(f"🏆 {winner.mention} beats {loser.mention}!")
             database.record_duel(interaction.guild.id, winner.id, loser.id)   # wins/losses only - duels give no XP
             await interaction.channel.send(
                 embed=t_embed("🏅 Duel result", f"🏆 {winner.mention} beats {loser.mention}!", COLOR_GOLD,
                               header=HEADER),
                 allowed_mentions=discord.AllowedMentions(users=[winner, loser]))
         except asyncio.CancelledError:
+            if session and session.cancelled:
+                return
             raise
         except Exception:
             log.exception("Duel crashed")
@@ -359,6 +376,7 @@ class Duels(commands.Cog):
                                                   TEAM_LOBBY_SECONDS), interaction.channel)
 
     async def run_team_game(self, channel, guild, lobby, questions, lobby_seconds):
+        session = None
         try:
             try:
                 await asyncio.wait_for(lobby.start_now.wait(), lobby_seconds)
@@ -382,11 +400,18 @@ class Duels(commands.Cog):
                 return
 
             session = TeamSession(channel, lobby.kind, questions, team_a, team_b)
-            engine = team_engine.TeamEngine(lobby.kind, session.collect, session.announce)
+            engine = team_engine.TeamEngine(lobby.kind, session.collect, session.announce, session.removed)
             log.info("Team duel started in #%s: %dv%d %s", channel.name, len(team_a), len(team_b), lobby.kind)
+            await session.start_board(lobby.host, team_a + team_b, f"{GAMES[lobby.kind]} {lobby.size}v{lobby.size}")
+            session.board.teams = {"A": team_a, "B": team_b}
+            await session.refresh_board()
             result = await engine.play(team_a, team_b)
-            await self.finish_team_game(channel, guild, result)
+            await session.board.finish(f"🏆 Team {result.winner} wins! 🔵 **{result.score_a}** - "
+                                       f"**{result.score_b}** 🔴")
+            await self.finish_team_game(channel, guild, result, session.removed)
         except asyncio.CancelledError:
+            if session and session.cancelled:
+                return
             raise
         except Exception:
             log.exception("Team duel in #%s crashed", getattr(channel, "name", "?"))
@@ -395,7 +420,7 @@ class Duels(commands.Cog):
             for member in lobby.members():
                 self.release(member)
 
-    async def finish_team_game(self, channel, guild, result):
+    async def finish_team_game(self, channel, guild, result, removed=()):
         winner_icon = "🔵" if result.winner == "A" else "🔴"
         embed = t_embed(f"🏆 {winner_icon} Team {result.winner} wins!",
                         f"🔵 Team A **{result.score_a}** - **{result.score_b}** Team B 🔴"
@@ -406,8 +431,10 @@ class Duels(commands.Cog):
             lines = "\n".join(f"{p.mention}: {result.contributions.get(p, '-')}" for p in team)
             crown = " 👑" if name == result.winner else ""
             embed.add_field(name=f"{'🔵' if name == 'A' else '🔴'} Team {name}{crown}", value=lines, inline=False)
-        database.record_team_game(guild.id, [p.id for p in result.winners if not is_bot(p)],
-                                  [p.id for p in result.losers if not is_bot(p)])
+        # A removed player counts as a loss, even if their team won.
+        database.record_team_game(guild.id, [p.id for p in result.winners if not is_bot(p) and p not in removed],
+                                  [p.id for p in result.losers + [p for p in result.winners if p in removed]
+                                   if not is_bot(p)])
         await channel.send(embed=embed, allowed_mentions=discord.AllowedMentions(
             users=[p for p in result.winners + result.losers if not is_bot(p)], everyone=False, roles=False))
         log.info("Team duel finished in #%s", channel.name)
@@ -422,6 +449,7 @@ class Duels(commands.Cog):
                                                      FREE_FOR_ALL_SECONDS), interaction.channel)
 
     async def run_free_for_all(self, channel, guild, lobby, join_seconds):
+        session = None
         try:
             try:
                 await asyncio.wait_for(lobby.start_now.wait(), join_seconds)
@@ -442,15 +470,18 @@ class Duels(commands.Cog):
                 return
 
             session = Session(channel, lobby.kind, HEADER, lobby.questions)
-            engine = te.Engine(lobby.kind, session.collect, session.announce, lobby.questions)
+            engine = te.Engine(lobby.kind, session.collect, session.announce, lobby.questions, session.removed)
             log.info("Free for all started in #%s: %d players (%d bots), game=%s", channel.name, len(players),
                      sum(map(is_bot, players)), lobby.kind)
+            await session.start_board(lobby.host, players, f"{GAMES[lobby.kind]} Free for all")
             podium = await engine.run_tournament(players)
+            await session.board.finish(podium_text(podium, session.removed))
 
-            lines = [f"{medal} {p.mention}" + (" - test bot" if is_bot(p) else "")
+            removed = session.removed
+            lines = [f"{medal} {p.mention}" + (" - test bot" if is_bot(p) else "") + (" - removed" if p in removed else "")
                      for medal, p in zip(("🥇", "🥈", "🥉"), podium) if p is not None]
             database.record_free_for_all(guild.id, [p.id for p in players if not is_bot(p)],
-                                         [None if p is None or is_bot(p) else p.id for p in podium])
+                                         [None if p is None or is_bot(p) or p in removed else p.id for p in podium])
             await channel.send(embed=t_embed("🏆 Free for all results",
                                              "\n".join(lines) + f"\n\n{len(players)} players · no XP, just "
                                              "bragging rights. 😎", COLOR_GOLD, header=HEADER),
@@ -458,6 +489,8 @@ class Duels(commands.Cog):
                                    users=[p for p in podium if p is not None and not is_bot(p)],
                                    everyone=False, roles=False))
         except asyncio.CancelledError:
+            if session and session.cancelled:
+                return
             raise
         except Exception:
             log.exception("Free for all in #%s crashed", getattr(channel, "name", "?"))

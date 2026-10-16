@@ -44,12 +44,14 @@ class TeamResult:
 
 
 class TeamEngine:
-    def __init__(self, kind, collect, announce):
+    def __init__(self, kind, collect, announce, removed=None):
         if kind not in te.RESOLVERS:
             raise ValueError(f"unknown game {kind!r}")
         self.kind = kind
         self.collect = collect
         self.announce = announce
+        # Players removed by the host: they lose their pair (RPS) or score 0 (dice/trivia).
+        self.removed = removed if removed is not None else set()
 
     async def play(self, team_a, team_b):
         team_a, team_b = list(team_a), list(team_b)
@@ -61,7 +63,7 @@ class TeamEngine:
 
     # --------------------------------------------------------------- RPS
     async def _rps(self, team_a, team_b):
-        pair_engine = te.Engine("rps", self.collect, self.announce)
+        pair_engine = te.Engine("rps", self.collect, self.announce, removed=self.removed)
         pairs = pair_up(team_a, team_b)
         await self.announce("team_pairs", pairs=pairs)
         wins = {"A": 0, "B": 0}
@@ -90,7 +92,8 @@ class TeamEngine:
         label = "Team roll" if self.kind == "dice" else "Team quiz"
         for attempt in range(1, te.MAX_REPLAYS + 2):
             responses = await self.collect(players, self.kind, label, attempt)
-            points = {player: self.points(responses.get(player)) for player in players}
+            points = {player: 0 if player in self.removed else self.points(responses.get(player))
+                      for player in players}
             if self.kind == "dice":
                 totals = points                       # a re-roll replaces the earlier roll
             else:
