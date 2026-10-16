@@ -26,7 +26,7 @@ On Windows, tick **"Add Python to PATH"** during install.
 ### 2. Create the bot on Discord
 1. Go to the [Discord Developer Portal](https://discord.com/developers/applications) and click **New Application**. Name it (e.g. "N7X Bot").
 2. Open the **Bot** tab and click **Reset Token**. Copy the token. **Keep it secret** — anyone with it can control your bot.
-3. On the same page, under **Privileged Gateway Intents**, you can leave everything off for now. (Later stages will tell you which to switch on.)
+3. On the same page, under **Privileged Gateway Intents**, switch ON **Server Members Intent** and **Message Content Intent**, then click **Save Changes**. The bot will refuse to start without these.
 
 ### 3. Invite the bot to your test server
 1. Open **OAuth2 → URL Generator**.
@@ -88,6 +88,8 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 
 ## Troubleshooting
 
+- **"privileged intents are switched off":** do step 2.3 above (turn on Server Members Intent and Message Content Intent), then restart the bot.
+- **Messages aren't counted for XP:** watch the terminal while you chat. Each message prints a `Counted message...` or `Skipped message...` line. If **nothing** prints, the bot can't see that channel: give its role **View Channels** and **Read Message History** there.
 - **Commands don't appear:** check `GUILD_ID` is set, restart the bot, then restart Discord (Ctrl + R).
 - **"DISCORD_TOKEN is missing":** your `.env` file is missing or the token line is empty.
 - **"Improper token has been passed":** reset the token in the Developer Portal and paste the new one.

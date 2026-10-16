@@ -10,6 +10,7 @@ How it works:
 Commands: /rank, /leaderboard
 """
 
+import logging
 import random
 import time
 
@@ -20,6 +21,7 @@ from discord.ext import commands
 import config
 import database
 
+log = logging.getLogger("n7x.ranks")
 # --- Settings you can tweak ---
 XP_COOLDOWN_SECONDS = 60  # how often someone can earn XP
 XP_MIN = 15               # smallest XP reward per message
@@ -56,17 +58,37 @@ class Ranks(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         """Runs for every message the bot can see."""
+        who = f"{message.author} ({message.author.id})"
+
         # Ignore bots (including ourselves) and private DMs.
-        if message.author.bot or message.guild is None:
+        if message.author.bot:
+            log.info("Skipped message from %s: author is a bot", who)
+            return
+        if message.guild is None:
+            log.info("Skipped message from %s: sent in a DM", who)
             return
 
-        database.record_message(
-            guild_id=message.guild.id,
-            user_id=message.author.id,
-            xp_amount=random.randint(XP_MIN, XP_MAX),
-            now=time.time(),
-            cooldown_seconds=XP_COOLDOWN_SECONDS,
-        )
+        # NOTE: we deliberately do NOT look at message.content here.
+        # Short messages, emoji-only messages, images and stickers all count.
+
+        xp_amount = random.randint(XP_MIN, XP_MAX)
+        try:
+            got_xp = database.record_message(
+                guild_id=message.guild.id,
+                user_id=message.author.id,
+                xp_amount=xp_amount,
+                now=time.time(),
+                cooldown_seconds=XP_COOLDOWN_SECONDS,
+            )
+        except Exception:
+            log.exception("Could not save message count for %s", who)
+            return
+
+        # We log WHO and WHERE, but never WHAT they said.
+        if got_xp:
+            log.info("Counted message from %s in #%s: +%d XP", who, message.channel, xp_amount)
+        else:
+            log.info("Counted message from %s in #%s: no XP (cooldown)", who, message.channel)
 
     @app_commands.command(name="rank", description="Show a member's level, XP and position")
     @app_commands.describe(member="Whose rank to show (leave empty for yourself)")

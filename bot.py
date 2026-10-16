@@ -26,8 +26,13 @@ log = logging.getLogger("n7x")
 
 
 # --- Intents: what events Discord sends to the bot ---
-# We start with the defaults and only switch on extras when a feature needs them.
+# We start with the defaults and switch on the extras our features need.
+# message_content and members are "privileged": you MUST also switch them on in the
+# Developer Portal (your app -> Bot -> Privileged Gateway Intents), or the bot won't start.
 intents = discord.Intents.default()
+intents.message_content = True  # read message text (spam filter, /summarize)
+intents.members = True          # see members joining (welcome messages)
+intents.voice_states = True     # see who is in voice channels (voice ranks)
 
 
 class N7XBot(commands.Bot):
@@ -66,6 +71,10 @@ class N7XBot(commands.Bot):
 
     async def on_ready(self):
         log.info("Logged in as %s (ID: %s)", self.user, self.user.id)
+        log.info(
+            "Intents: message_content=%s members=%s voice_states=%s",
+            self.intents.message_content, self.intents.members, self.intents.voice_states,
+        )
         await self.change_presence(activity=discord.Game(name="/help | N7X"))
 
 
@@ -103,4 +112,11 @@ async def on_app_command_error(interaction: discord.Interaction, error: app_comm
 if __name__ == "__main__":
     if not config.DISCORD_TOKEN:
         raise SystemExit("DISCORD_TOKEN is missing. Copy .env.example to .env and add your token.")
-    bot.run(config.DISCORD_TOKEN, log_handler=None)
+    try:
+        bot.run(config.DISCORD_TOKEN, log_handler=None)
+    except discord.PrivilegedIntentsRequired:
+        raise SystemExit(
+            "Discord refused the connection because privileged intents are switched off.\n"
+            "Fix: go to https://discord.com/developers/applications -> your app -> Bot ->\n"
+            "turn ON 'Server Members Intent' and 'Message Content Intent', click Save, then restart."
+        )
