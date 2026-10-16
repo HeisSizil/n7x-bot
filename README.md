@@ -31,6 +31,7 @@ cogs/             One file per feature (add a file here to add a feature)
   welcome.py      Welcome embed for new members, /testwelcome
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
+  chat.py         Answers everyone who @mentions the bot (questions, prices; mod requests go to the mod assistant)
   mod_assistant.py  AI mod assistant: mods ask in plain words, confirm with a button
 facts.md          The official N7X facts: the ONLY source for /ask, /about and tagged answers about N7X
 n7x_facts.py      Reads facts.md (sections for /about, release dates for link questions)
@@ -164,6 +165,21 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Members only see "N7X Bot" under answers. **Which AI answered is shown only in the terminal**, e.g. `/ask by sam: answered by Groq (llama-3.3-70b-versatile) in 2.1s`, along with why any provider failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
 - The bot shows "N7X Bot is thinking..." instantly, so slow AI answers never time out. Discord itself blocks questions over 500 characters.
 
+### How tagged questions work (everyone)
+**@mention the bot** (or use Discord's **Reply** on one of its messages) with a question or just chat, in any language: `@N7X Bot what is N7X building?`, `@N7X Bot c'est quoi un agent IA ?`, `@N7X Bot price of eth`.
+- **Same rules and source as `/ask`:** N7X answers come ONLY from `facts.md`; anything else about N7X gets "I don't know yet, please ask a mod." Links, docs, roadmap or whitepaper get the October 20 / October 22 dates, never an invented link. General AI, Web3 and crypto questions are answered normally. Answers stay under 1500 characters.
+- **Same language:** the bot answers in the language you wrote in (built-in sentences in English, Spanish, French, Portuguese and German; other languages are translated by the AI).
+- **Prices:** "price of btc", "how much is sol?" → the same CoinGecko card as `/price` (price, 24h change, "Source: CoinGecko, updated Xs ago"), up to 3 coins at once.
+- **Moderation requests stay mod-only:** warn, timeout, kick, show/clear warnings, remove a timeout, summarize and so on.
+  - From a **mod**: handled by the mod assistant (below), with Confirm as usual.
+  - From **anyone else**: "Sorry, only mods can do that. 🙂 I'm happy to answer your questions ... instead!"
+  - A **question** from a mod is answered like anyone else's.
+- **Cooldown:** one tagged question every **10 seconds** per person; faster gets "⏳ Slow down a little" (deleted after 10 seconds).
+- **Memory:** the bot remembers your last 5 messages for 5 minutes (in memory only, never saved), so follow-ups like "and how do they vote?" work. Never anyone else's messages.
+- **Safe replies:** the bot replies directly to your message and never pings anyone (not you, not @everyone, @here or roles). It never answers other bots or messages that don't tag it.
+- **Logs:** the terminal only shows who asked (ID), the kind of message, the language and which AI answered, never the text. If every AI fails: "🤖 I'm having trouble, try again in a minute."
+- Settings (cooldown, answer length) are at the top of `cogs/chat.py`.
+
 ### How the welcome message works
 - When someone joins, the bot posts a branded embed in the welcome channel, mentioning the new member.
 - **Setup:** right-click your welcome channel → **Copy Channel ID**, and add it to `.env`: `WELCOME_CHANNEL_ID=123456789012345678`. Give the bot **View Channel**, **Send Messages** and **Embed Links** there, then restart the bot. Leave it empty to turn welcomes off.
@@ -288,7 +304,7 @@ Settings (round time, podium XP, max players) are at the top of `cogs/tournament
 ### How the mod assistant works
 Mods can ask the bot to do moderation in plain words instead of slash commands.
 
-**It only answers when you tag it:** **@mention the bot**, or use Discord's **Reply** on one of the bot's messages. Normal chat, even in the mod-assistant channel, is never sent to the AI.
+**It only answers when you tag it:** **@mention the bot**, or use Discord's **Reply** on one of the bot's messages. Normal chat, even in the mod-assistant channel, is never sent to the AI. The bot first works out whether a tagged message is a moderation request (→ the mod assistant, mods only) or a question (→ answered for everyone, see "How tagged questions work").
 
 **Optional private channel:** `MOD_ASSISTANT_CHANNEL_ID` only decides where *private* results (warnings lists, summaries) are shown. Asked there (or in mod-log), they're posted in the channel; asked anywhere else, they're sent to you by **DM**.
 1. Create a private channel only mods can see, e.g. `#mod-assistant`. Give the bot **View Channel**, **Send Messages**, **Embed Links** and **Read Message History** there.

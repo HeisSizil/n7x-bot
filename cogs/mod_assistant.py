@@ -4,6 +4,8 @@ cogs/mod_assistant.py - An AI assistant for mods, in plain language, with multi-
 How mods use it - ONLY when they:
 - @mention the bot, or
 - use Discord's Reply on one of the bot's messages.
+cogs/chat.py reads those messages first: questions are answered for everyone, and only
+moderation requests from mods come here (handle_tagged).
 (MOD_ASSISTANT_CHANNEL_ID only decides where private results are shown: there instead of by DM.)
 Examples:
   "@bot what has @sam done"
@@ -303,14 +305,15 @@ class ModAssistant(commands.Cog):
     # Receiving a request
     # ------------------------------------------------------------------
 
-    @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def handle_tagged(self, message: discord.Message):
+        """
+        A mod tagged the bot with a moderation request. cogs/chat.py decides that (it reads every
+        message that tags the bot, answers questions, and sends mod actions from mods here).
+        """
         if message.author.bot or message.guild is None or not isinstance(message.author, discord.Member):
             return
         if not self.is_mod(message.author):
-            return  # not a mod: ignore silently
-        if not await self.is_for_me(message):
-            return  # only when tagged or replied to
+            return  # safety net: mod actions stay mod-only
 
         me = message.guild.me
         request = re.sub(rf"<@!?{me.id}>", "", message.content).strip()

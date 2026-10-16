@@ -1,5 +1,5 @@
 """
-assistant_memory.py - Short-term conversation memory for the mod assistant.
+assistant_memory.py - Short-term conversation memory (mod assistant and tagged questions).
 
 For each (server, channel, mod) we keep the last few exchanges:
 what THAT mod said to the bot, and what the bot replied.
@@ -56,11 +56,11 @@ class ConversationMemory:
                 return turn["ids"][0] if len(turn["ids"]) == 1 else None
         return None
 
-    def as_prompt(self, key):
-        """The remembered conversation as text for the AI (the mod's own words + the bot's replies only)."""
+    def as_prompt(self, key, speaker="Moderator"):
+        """The remembered conversation as text for the AI (that person's own words + the bot's replies only)."""
         lines = []
         for turn in self._fresh_turns(key):
-            lines.append(f"Moderator: {turn['mod']}")
+            lines.append(f"{speaker}: {turn['mod']}")
             if turn["bot"]:
                 lines.append(f"Bot: {turn['bot']}")
         return "\n".join(lines)

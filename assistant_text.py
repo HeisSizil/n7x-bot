@@ -1,5 +1,5 @@
 """
-assistant_text.py - Everything the mod assistant says, in several languages.
+assistant_text.py - Everything the mod assistant (and tagged-question replies) say, in several languages.
 
 The confirmation text is always built by CODE from the checked plan (never
 written by the AI), so what the mod confirms is exactly what will run.
@@ -75,6 +75,9 @@ TEXTS = {
         "member_left": "{member} is no longer in the server.",
         "mod_left": "The mod who made this plan is no longer in the server.",
         "not_timed_out_now": "{member} isn't timed out anymore, so there was nothing to remove.",
+        "chat_only_mods": "Sorry, only mods can do that. 🙂 I'm happy to answer your questions about AI, Web3, crypto or N7X instead!",
+        "chat_hello": "👋 Hi! Ask me anything about AI agents, Web3, crypto or N7X. For example: `what is an AI agent?` or `what is N7X building?`",
+        "chat_rephrase": "🤔 I'm not sure how to answer that. Could you rephrase it?",
     },
     "es": {
         "what_to_do": "¿Qué quieres hacer con {member}? Por ejemplo:",
@@ -131,6 +134,9 @@ TEXTS = {
         "member_left": "{member} ya no está en el servidor.",
         "mod_left": "El moderador que hizo este plan ya no está en el servidor.",
         "not_timed_out_now": "{member} ya no está aislado, así que no había nada que quitar.",
+        "chat_only_mods": "Lo siento, solo los moderadores pueden hacer eso. 🙂 ¡Con gusto respondo tus preguntas sobre IA, Web3, cripto o N7X!",
+        "chat_hello": "👋 ¡Hola! Pregúntame lo que quieras sobre agentes de IA, Web3, cripto o N7X. Por ejemplo: `¿qué es un agente de IA?` o `¿qué está construyendo N7X?`",
+        "chat_rephrase": "🤔 No sé bien cómo responder a eso. ¿Puedes decirlo de otra forma?",
     },
     "fr": {
         "what_to_do": "Que veux-tu faire avec {member} ? Par exemple :",
@@ -187,6 +193,9 @@ TEXTS = {
         "member_left": "{member} n'est plus sur le serveur.",
         "mod_left": "Le modérateur qui a fait ce plan n'est plus sur le serveur.",
         "not_timed_out_now": "{member} n'est plus exclu, il n'y avait donc rien à lever.",
+        "chat_only_mods": "Désolé, seuls les modérateurs peuvent faire ça. 🙂 Je réponds volontiers à tes questions sur l'IA, le Web3, la crypto ou N7X !",
+        "chat_hello": "👋 Salut ! Pose-moi tes questions sur les agents IA, le Web3, la crypto ou N7X. Par exemple : `c'est quoi un agent IA ?` ou `que construit N7X ?`",
+        "chat_rephrase": "🤔 Je ne sais pas trop comment répondre. Peux-tu reformuler ?",
     },
     "pt": {
         "what_to_do": "O que você quer fazer com {member}? Por exemplo:",
@@ -243,6 +252,9 @@ TEXTS = {
         "member_left": "{member} não está mais no servidor.",
         "mod_left": "O moderador que fez este plano não está mais no servidor.",
         "not_timed_out_now": "{member} não está mais de castigo, então não havia nada para remover.",
+        "chat_only_mods": "Desculpe, só os moderadores podem fazer isso. 🙂 Mas respondo com prazer suas perguntas sobre IA, Web3, cripto ou N7X!",
+        "chat_hello": "👋 Oi! Pergunte o que quiser sobre agentes de IA, Web3, cripto ou N7X. Por exemplo: `o que é um agente de IA?` ou `o que a N7X está construindo?`",
+        "chat_rephrase": "🤔 Não sei bem como responder isso. Pode reformular?",
     },
     "de": {
         "what_to_do": "Was möchtest du mit {member} machen? Zum Beispiel:",
@@ -299,6 +311,9 @@ TEXTS = {
         "member_left": "{member} ist nicht mehr auf dem Server.",
         "mod_left": "Der Mod, der diesen Plan erstellt hat, ist nicht mehr auf dem Server.",
         "not_timed_out_now": "{member} hat kein Timeout mehr, es gab also nichts aufzuheben.",
+        "chat_only_mods": "Sorry, das können nur Mods. 🙂 Deine Fragen zu KI, Web3, Krypto oder N7X beantworte ich aber gern!",
+        "chat_hello": "👋 Hi! Frag mich alles über KI-Agenten, Web3, Krypto oder N7X. Zum Beispiel: `Was ist ein KI-Agent?` oder `Was baut N7X?`",
+        "chat_rephrase": "🤔 Ich weiß nicht genau, wie ich das beantworten soll. Kannst du es anders formulieren?",
     },
 }
 

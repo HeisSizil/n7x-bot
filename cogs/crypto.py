@@ -101,6 +101,30 @@ def pick_best_match(query, coins):
     return coins[0] if coins else None
 
 
+def price_embed(data, fetched_at):
+    """The price card: price, 24h change, market cap, rank and the CoinGecko source footer."""
+    change = data.get("price_change_percentage_24h") or 0.0
+    arrow = "🟢 ▲" if change >= 0 else "🔴 ▼"
+
+    embed = discord.Embed(
+        title=f"{data['name']} ({data['symbol'].upper()})",
+        url=f"https://www.coingecko.com/en/coins/{data['id']}",
+        color=0x16C784 if change >= 0 else 0xEA3943,  # green up, red down
+    )
+    if data.get("image"):
+        embed.set_thumbnail(url=data["image"])
+    embed.add_field(name="Price", value=format_price(data["current_price"]))
+    embed.add_field(name="24h change", value=f"{arrow} {change:+.2f}%")
+    if data.get("market_cap"):
+        embed.add_field(name="Market cap", value=format_big_number(data["market_cap"]))
+    if data.get("market_cap_rank"):
+        embed.add_field(name="Rank", value=f"#{data['market_cap_rank']}")
+    # Tell members how old the price is, since other sites may show a slightly different number.
+    age = format_age(seconds_since_update(data, fetched_at))
+    embed.set_footer(text=f"Source: CoinGecko, updated {age} • Not financial advice")
+    return embed
+
+
 class Crypto(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -161,6 +185,27 @@ class Crypto(commands.Cog):
         self.cache[key] = (fetched_at, coin)
         return coin, fetched_at
 
+    async def lookup(self, coin):
+        """Price card for one coin: returns (embed, None), or (None, a friendly error message).
+        Used by /price and by tagged price questions."""
+        try:
+            data, fetched_at = await self.get_coin(coin)
+        except CoinNotFound:
+            return None, (f"🤔 I couldn't find a coin called **{discord.utils.escape_markdown(coin)}**. "
+                          f"Check the spelling, or try its full name (e.g. `bitcoin` instead of `bitcoinn`).")
+        except RateLimited:
+            log.warning("CoinGecko rate limit hit")
+            return None, "⏳ Too many price checks right now. Please try again in a minute."
+        except (aiohttp.ClientError, TimeoutError) as error:
+            # CoinGecko is down, slow, or returned an error. Not our bug: one short log line.
+            log.warning("CoinGecko request failed for %r: %s", coin, str(error) or "timed out")
+            return None, "⚠️ I couldn't reach the price service. Please try again in a minute."
+        except Exception:
+            # Something unexpected (e.g. CoinGecko changed its data format): full details.
+            log.exception("Unexpected error getting the price of %r", coin)
+            return None, "⚠️ Something went wrong getting that price. Please try again later."
+        return price_embed(data, fetched_at), None
+
     @app_commands.command(name="price", description="Current price and 24h change of a crypto coin")
     @app_commands.describe(coin="Coin name or ticker, e.g. bitcoin, btc, eth, sol")
     @app_commands.checks.cooldown(1, 5)  # each user: once every 5 seconds
@@ -172,50 +217,11 @@ class Crypto(commands.Cog):
 
         # CoinGecko can take a few seconds; "defer" shows "Bot is thinking..."
         await interaction.response.defer()
-
-        try:
-            data, fetched_at = await self.get_coin(coin)
-        except CoinNotFound:
-            await interaction.followup.send(
-                f"🤔 I couldn't find a coin called **{discord.utils.escape_markdown(coin)}**. "
-                f"Check the spelling, or try its full name (e.g. `bitcoin` instead of `bitcoinn`)."
-            )
-            return
-        except RateLimited:
-            log.warning("CoinGecko rate limit hit")
-            await interaction.followup.send("⏳ Too many price checks right now. Please try again in a minute.")
-            return
-        except (aiohttp.ClientError, TimeoutError) as error:
-            # CoinGecko is down, slow, or returned an error. Not our bug: one short log line.
-            log.warning("CoinGecko request failed for %r: %s", coin, str(error) or "timed out")
-            await interaction.followup.send("⚠️ I couldn't reach the price service. Please try again in a minute.")
-            return
-        except Exception:
-            # Something unexpected (e.g. CoinGecko changed its data format): full details.
-            log.exception("Unexpected error in /price for %r", coin)
-            await interaction.followup.send("⚠️ Something went wrong getting that price. Please try again later.")
-            return
-
-        change = data.get("price_change_percentage_24h") or 0.0
-        arrow = "🟢 ▲" if change >= 0 else "🔴 ▼"
-
-        embed = discord.Embed(
-            title=f"{data['name']} ({data['symbol'].upper()})",
-            url=f"https://www.coingecko.com/en/coins/{data['id']}",
-            color=0x16C784 if change >= 0 else 0xEA3943,  # green up, red down
-        )
-        if data.get("image"):
-            embed.set_thumbnail(url=data["image"])
-        embed.add_field(name="Price", value=format_price(data["current_price"]))
-        embed.add_field(name="24h change", value=f"{arrow} {change:+.2f}%")
-        if data.get("market_cap"):
-            embed.add_field(name="Market cap", value=format_big_number(data["market_cap"]))
-        if data.get("market_cap_rank"):
-            embed.add_field(name="Rank", value=f"#{data['market_cap_rank']}")
-        # Tell members how old the price is, since other sites may show a slightly different number.
-        age = format_age(seconds_since_update(data, fetched_at))
-        embed.set_footer(text=f"Source: CoinGecko, updated {age} • Not financial advice")
-        await interaction.followup.send(embed=embed)
+        embed, problem = await self.lookup(coin)
+        if problem:
+            await interaction.followup.send(problem)
+        else:
+            await interaction.followup.send(embed=embed)
 
 
 async def setup(bot):
