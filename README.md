@@ -9,11 +9,13 @@ Built with Python, [discord.py](https://discordpy.readthedocs.io/), and SQLite.
 bot.py            Starts the bot, loads features, catches errors
 config.py         Reads settings from .env
 database.py       All SQLite database code
+ai_providers.py   Talks to Gemini / Groq / OpenRouter with automatic fallback
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
   voice.py        Voice time, /voicerank, /voiceleaderboard
   crypto.py       /price (CoinGecko)
+  ask.py          /ask (AI answers, N7X facts from facts.md)
 facts.md          Facts about N7X that /ask is allowed to use
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
@@ -79,6 +81,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/voicerank [member]` | Shows voice time and position |
 | `/voiceleaderboard` | Top 10 members by voice time |
 | `/price <coin>` | Current price and 24h change, e.g. `/price btc` |
+| `/ask <question>` | AI answer about AI agents, crypto, Web3 or N7X |
 
 ### How message XP works
 - Every message is counted. XP (15-25 per message) is given at most **once every 60 seconds** per member, so spamming doesn't farm XP.
@@ -96,6 +99,17 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Each price is reused for **15 seconds** (`PRICE_CACHE_SECONDS` at the top of `cogs/crypto.py`), and each member can use `/price` once every 5 seconds, to stay inside CoinGecko's free limit.
 - The footer shows how old the price is (e.g. "Source: CoinGecko, updated 12s ago"), using CoinGecko's own update time. Prices can differ slightly from exchanges and other sites.
 - Optional: if you often see "Too many price checks", get a free CoinGecko **demo** key and put it in `.env` as `COINGECKO_API_KEY`.
+
+### How /ask works
+- **Free AI with fallback:** the bot tries **Gemini** first, then **Groq**, then **OpenRouter** (free models only). If one fails or hits its free limit, it tries the next. If all fail, it says "Try again in a minute."
+- **Keys:** you need at least one; providers without a key are skipped. All three are free:
+  - Gemini: https://aistudio.google.com/apikey
+  - Groq: https://console.groq.com/keys
+  - OpenRouter: https://openrouter.ai/keys
+- **Models** are set in `.env` (`GEMINI_MODEL`, `GROQ_MODEL`, `OPENROUTER_MODEL`). If a provider retires a model, just put the new name there. OpenRouter models must end in `:free`, or the bot skips OpenRouter (so you can never be billed).
+- **N7X questions are answered ONLY from `facts.md`.** If the answer isn't there, the bot says "I don't know yet, please ask a mod." Add facts as lines starting with `- `; the bot re-reads the file on every question, so no restart is needed.
+- Each member can ask **3 questions per minute** (setting at the top of `cogs/ask.py`).
+- The terminal shows which provider answered, or why each one failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
 
 ## Adding a new feature
 

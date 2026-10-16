@@ -23,10 +23,18 @@ def _get_int(name):
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN", "").strip()
 GUILD_ID = _get_int("GUILD_ID")
 
-# --- AI provider keys (used in Stage 5) ---
+# --- AI providers (Stage 5) ---
+# The bot tries them in this order: Gemini -> Groq -> OpenRouter.
+# A provider with no key is simply skipped.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
+
+# Model names. Change them in .env when providers release new models.
+# "or" means: use the default if the .env line is missing or empty.
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "").strip() or "gemini-2.5-flash"
+GROQ_MODEL = os.getenv("GROQ_MODEL", "").strip() or "llama-3.3-70b-versatile"
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "").strip() or "meta-llama/llama-3.3-70b-instruct:free"
 
 # --- Crypto prices (Stage 4) ---
 # Optional. The bot works without it; a free CoinGecko "demo" key just raises the rate limit.
