@@ -93,7 +93,8 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 
 ### How /price works
 - Type a name (`bitcoin`), ticker (`btc`) or CoinGecko ID (`solana`). Prices come from the free [CoinGecko API](https://www.coingecko.com/en/api) - no key needed.
-- Each price is reused for 60 seconds, and each member can use `/price` once every 5 seconds, to stay inside CoinGecko's free limit.
+- Each price is reused for **15 seconds** (`PRICE_CACHE_SECONDS` at the top of `cogs/crypto.py`), and each member can use `/price` once every 5 seconds, to stay inside CoinGecko's free limit.
+- The footer shows how old the price is (e.g. "Source: CoinGecko, updated 12s ago"), using CoinGecko's own update time. Prices can differ slightly from exchanges and other sites.
 - Optional: if you often see "Too many price checks", get a free CoinGecko **demo** key and put it in `.env` as `COINGECKO_API_KEY`.
 
 ## Adding a new feature

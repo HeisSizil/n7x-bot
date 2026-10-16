@@ -6,14 +6,15 @@ cogs/crypto.py - Crypto prices from the free CoinGecko API.
 How it works:
 1. Ask CoinGecko's search to turn what the user typed into a coin ID.
 2. Ask CoinGecko for that coin's current price and 24-hour change.
-3. Remember the answer for a minute, so many people asking at once
-   doesn't use up the free API limit.
+3. Remember the answer for a few seconds (PRICE_CACHE_SECONDS), so many
+   people asking at once doesn't use up the free API limit.
 
 Commands: /price
 """
 
 import logging
 import time
+from datetime import datetime
 
 import aiohttp
 import discord
@@ -26,7 +27,8 @@ log = logging.getLogger("n7x.crypto")
 
 # --- Settings you can tweak ---
 API_URL = "https://api.coingecko.com/api/v3"
-CACHE_SECONDS = 60      # reuse a price for this long before asking CoinGecko again
+PRICE_CACHE_SECONDS = 15  # reuse a price for this long before asking CoinGecko again
+                          # (lower = fresher, but uses more of the free API limit)
 REQUEST_TIMEOUT = 10    # give up on CoinGecko after this many seconds
 
 
@@ -53,6 +55,30 @@ def format_big_number(number):
         if number >= limit:
             return f"${number / limit:.2f}{suffix}"
     return f"${number:,.0f}"
+
+
+def seconds_since_update(coin, fetched_at):
+    """
+    How old is this price, in seconds?
+    CoinGecko tells us when IT last updated the price ("last_updated"), which is
+    the honest answer. If that's missing, we use when the bot fetched it.
+    """
+    updated_at = fetched_at
+    last_updated = coin.get("last_updated")
+    if last_updated:
+        try:
+            # e.g. "2026-10-16T12:47:20.123Z" ("Z" means UTC)
+            updated_at = datetime.fromisoformat(last_updated.replace("Z", "+00:00")).timestamp()
+        except ValueError:
+            pass  # unexpected format: keep the fetch time
+    return max(0, int(time.time() - updated_at))
+
+
+def format_age(seconds):
+    """Turn 42 into '42s ago' and 150 into '2m ago'."""
+    if seconds < 120:
+        return f"{seconds}s ago"
+    return f"{seconds // 60}m ago"
 
 
 def pick_best_match(query, coins):
@@ -122,14 +148,18 @@ class Crypto(commands.Cog):
         return markets[0]
 
     async def get_coin(self, query):
-        """Like fetch_coin, but reuses recent answers from the cache."""
+        """
+        Like fetch_coin, but reuses recent answers from the cache.
+        Returns (coin data, time we fetched it).
+        """
         key = query.lower()
         saved = self.cache.get(key)
-        if saved and time.time() - saved[0] < CACHE_SECONDS:
-            return saved[1]
+        if saved and time.time() - saved[0] < PRICE_CACHE_SECONDS:
+            return saved[1], saved[0]
         coin = await self.fetch_coin(query)
-        self.cache[key] = (time.time(), coin)
-        return coin
+        fetched_at = time.time()
+        self.cache[key] = (fetched_at, coin)
+        return coin, fetched_at
 
     @app_commands.command(name="price", description="Current price and 24h change of a crypto coin")
     @app_commands.describe(coin="Coin name or ticker, e.g. bitcoin, btc, eth, sol")
@@ -144,7 +174,7 @@ class Crypto(commands.Cog):
         await interaction.response.defer()
 
         try:
-            data = await self.get_coin(coin)
+            data, fetched_at = await self.get_coin(coin)
         except CoinNotFound:
             await interaction.followup.send(
                 f"🤔 I couldn't find a coin called **{discord.utils.escape_markdown(coin)}**. "
@@ -182,7 +212,9 @@ class Crypto(commands.Cog):
             embed.add_field(name="Market cap", value=format_big_number(data["market_cap"]))
         if data.get("market_cap_rank"):
             embed.add_field(name="Rank", value=f"#{data['market_cap_rank']}")
-        embed.set_footer(text="Data from CoinGecko • Not financial advice")
+        # Tell members how old the price is, since other sites may show a slightly different number.
+        age = format_age(seconds_since_update(data, fetched_at))
+        embed.set_footer(text=f"Source: CoinGecko, updated {age} • Not financial advice")
         await interaction.followup.send(embed=embed)
 
 
