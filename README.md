@@ -12,6 +12,7 @@ database.py       All SQLite database code
 cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
+  voice.py        Voice time, /voicerank, /voiceleaderboard
 facts.md          Facts about N7X that /ask is allowed to use
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
@@ -74,11 +75,19 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/ping` | Checks the bot is online |
 | `/rank [member]` | Shows level, XP, message count and position |
 | `/leaderboard` | Top 10 members by messages |
+| `/voicerank [member]` | Shows voice time and position |
+| `/voiceleaderboard` | Top 10 members by voice time |
 
 ### How message XP works
 - Every message is counted. XP (15-25 per message) is given at most **once every 60 seconds** per member, so spamming doesn't farm XP.
 - Only counts and XP are stored. **Message text is never saved.**
 - To change the reward or cooldown, edit the settings at the top of `cogs/ranks.py`.
+
+### How voice time works
+- Once a minute, the bot checks every voice channel. If **at least 2 real people** are in a channel, each of them gets 1 minute.
+- Time spent **alone** (or alone with only bots) doesn't count. The server's AFK channel is ignored.
+- The bot needs **View Channel** on voice channels to see who is in them.
+- To change the timing or the minimum number of people, edit the settings at the top of `cogs/voice.py`.
 
 ## Adding a new feature
 

@@ -35,6 +35,15 @@ TABLES = [
         PRIMARY KEY (guild_id, user_id)
     )
     """,
+    # Stage 3: voice ranks. Total seconds spent in voice with at least one other person.
+    """
+    CREATE TABLE IF NOT EXISTS voice_stats (
+        guild_id  INTEGER NOT NULL,
+        user_id   INTEGER NOT NULL,
+        seconds   INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (guild_id, user_id)
+    )
+    """,
 ]
 
 
@@ -139,6 +148,52 @@ def top_by_messages(guild_id, limit=10):
         SELECT user_id, messages, xp FROM message_stats
         WHERE guild_id = ?
         ORDER BY messages DESC, xp DESC
+        LIMIT ?
+        """,
+        (guild_id, limit),
+    )
+
+
+# =====================================================================
+# Stage 3: Voice ranks
+# =====================================================================
+
+def add_voice_seconds(guild_id, user_ids, seconds):
+    """Add `seconds` of voice time to every user in `user_ids` (all in one go)."""
+    with connect() as conn:
+        for user_id in user_ids:
+            conn.execute(
+                "INSERT OR IGNORE INTO voice_stats (guild_id, user_id) VALUES (?, ?)",
+                (guild_id, user_id),
+            )
+            conn.execute(
+                "UPDATE voice_stats SET seconds = seconds + ? WHERE guild_id = ? AND user_id = ?",
+                (seconds, guild_id, user_id),
+            )
+
+
+def get_voice_stats(guild_id, user_id):
+    """Return a user's voice seconds and position (1 = top), or None."""
+    row = fetch_one(
+        "SELECT seconds FROM voice_stats WHERE guild_id = ? AND user_id = ?",
+        (guild_id, user_id),
+    )
+    if row is None:
+        return None
+    above = fetch_one(
+        "SELECT COUNT(*) AS n FROM voice_stats WHERE guild_id = ? AND seconds > ?",
+        (guild_id, row["seconds"]),
+    )
+    return {"seconds": row["seconds"], "position": above["n"] + 1}
+
+
+def top_by_voice(guild_id, limit=10):
+    """Return the top users by voice time."""
+    return fetch_all(
+        """
+        SELECT user_id, seconds FROM voice_stats
+        WHERE guild_id = ?
+        ORDER BY seconds DESC
         LIMIT ?
         """,
         (guild_id, limit),
