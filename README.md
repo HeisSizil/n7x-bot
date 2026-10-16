@@ -109,7 +109,8 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - **Models** are set in `.env` (`GEMINI_MODEL`, `GROQ_MODEL`, `OPENROUTER_MODEL`). If a provider retires a model, just put the new name there. OpenRouter models must end in `:free`, or the bot skips OpenRouter (so you can never be billed).
 - **N7X questions are answered ONLY from `facts.md`.** If the answer isn't there, the bot says "I don't know yet, please ask a mod." Add facts as lines starting with `- `; the bot re-reads the file on every question, so no restart is needed.
 - Each member can ask **3 questions per minute** (setting at the top of `cogs/ask.py`).
-- The terminal shows which provider answered, or why each one failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
+- Members only see "N7X Bot" under answers. **Which AI answered is shown only in the terminal**, e.g. `/ask by sam: answered by Groq (llama-3.3-70b-versatile) in 2.1s`, along with why any provider failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
+- The bot shows "N7X Bot is thinking..." instantly, so slow AI answers never time out. Discord itself blocks questions over 500 characters.
 
 ## Adding a new feature
 

@@ -14,6 +14,7 @@ Commands: /ask
 import logging
 import os
 import re
+import time
 
 import discord
 from discord import app_commands
@@ -29,6 +30,7 @@ QUESTIONS_PER_MINUTE = 3   # per member
 MAX_QUESTION_LENGTH = 500  # characters
 
 DONT_KNOW = "I don't know yet, please ask a mod."
+FOOTER = "N7X Bot"  # shown under every /ask answer
 FACTS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "facts.md")
 
 SYSTEM_PROMPT = """You are the helpful assistant of N7X, a Discord community about AI agents and Web3.
@@ -80,27 +82,36 @@ class Ask(commands.Cog):
     @app_commands.command(name="ask", description="Ask the AI about AI agents, crypto, Web3 or N7X")
     @app_commands.describe(question="Your question")
     @app_commands.checks.cooldown(QUESTIONS_PER_MINUTE, 60)  # per member
-    async def ask(self, interaction: discord.Interaction, question: str):
+    async def ask(
+        self,
+        interaction: discord.Interaction,
+        # Range makes Discord itself block questions that are too long,
+        # so the bot never has to check (or reply) before deferring.
+        question: app_commands.Range[str, 1, MAX_QUESTION_LENGTH],
+    ):
+        # FIRST THING: tell Discord we're working on it. Discord only waits 3 seconds
+        # for a reply; defer() shows "N7X Bot is thinking..." and gives us 15 minutes.
+        try:
+            await interaction.response.defer(thinking=True)
+        except discord.NotFound:
+            # The 3 seconds had already passed before we got here (slow network or
+            # a busy bot). Nothing we can send anymore - just log it.
+            log.warning("/ask: interaction expired before we could defer (bot or network too slow)")
+            return
+        started = time.monotonic()
+
         question = question.strip()
         if not question:
-            await interaction.response.send_message("Please type a question.", ephemeral=True)
+            await interaction.followup.send("Please type a question.")
             return
-        if len(question) > MAX_QUESTION_LENGTH:
-            await interaction.response.send_message(
-                f"Please keep your question under {MAX_QUESTION_LENGTH} characters.", ephemeral=True
-            )
-            return
-
-        # AI can take a few seconds; this shows "Bot is thinking..."
-        await interaction.response.defer()
 
         facts = load_facts()
 
         # Shortcut: an N7X question with no facts at all can only have one honest answer.
         # We don't even ask the AI, so it can't make anything up.
         if not facts and mentions_n7x(question):
-            log.info("/ask: N7X question but facts.md is empty -> don't know")
-            answer, footer = DONT_KNOW, "Source: facts.md"
+            answer = DONT_KNOW
+            log.info("/ask by %s: N7X question but facts.md is empty -> don't know", interaction.user)
         else:
             system_prompt = SYSTEM_PROMPT.format(
                 dont_know=DONT_KNOW,
@@ -108,14 +119,16 @@ class Ask(commands.Cog):
             )
             try:
                 answer, source = await self.ai.ask(system_prompt, f"<question>{question}</question>")
-                footer = f"Answered by {source} • AI can make mistakes"
             except AllProvidersFailed:
+                log.warning("/ask by %s: all AI providers failed", interaction.user)
                 await interaction.followup.send("🤖 I'm a bit overloaded. Try again in a minute.")
                 return
+            # Which AI answered goes to the terminal only - members never see it.
+            log.info("/ask by %s: answered by %s in %.1fs", interaction.user, source, time.monotonic() - started)
 
         embed = discord.Embed(description=shorten(answer, 4000), color=config.BRAND_COLOR)
         embed.set_author(name=shorten(f"Q: {question}", 250), icon_url=interaction.user.display_avatar.url)
-        embed.set_footer(text=footer)
+        embed.set_footer(text=FOOTER)
 
         # allowed_mentions=none: even if the AI writes @everyone, nobody gets pinged.
         await interaction.followup.send(embed=embed, allowed_mentions=discord.AllowedMentions.none())
