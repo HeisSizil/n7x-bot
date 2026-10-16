@@ -2,17 +2,18 @@
 cogs/tournament.py - /tournament, /duel and /duelstats (the Discord side).
 
 The rules live in tournament_engine.py. This file handles the buttons and messages:
-- /tournament: a lobby with Join / Leave / Start now. It starts when the join timer
-  ends (or the host presses Start now) with whoever joined. Max players is only a cap;
-  at least 3 are needed. Then rounds are played in the channel with buttons.
-- /duel @member: a 1-vs-1 challenge using the same match rules.
-- /duelstats [member]: duel record and tournament podium finishes.
+- /tournament (mods only): a lobby with Join / Leave / Start now. The host is NOT a
+  player unless they press Join too. It starts when the join timer ends (or the host
+  presses Start now) with whoever joined. Max players is only a cap; at least 3 are needed.
+  Then rounds are played in the channel with buttons.
+- /duel @member: a 1-vs-1 challenge using the same match rules. Duels give NO XP.
+- /duelstats [member]: duel wins/losses and tournament podium finishes.
 
-Rules shared with the other games: secure randomness (secrets), game XP capped at
-100 per day (00:00 UTC), XP only - no real prizes.
+Tournament podium bonus XP (50/30/20) uses the shared game XP daily cap (100, resets
+00:00 UTC). Secure randomness (secrets). XP only - no real prizes.
 
-Test mode (mods only): empty spots are filled with 🤖 bot players that pick randomly,
-so a whole tournament can be demoed alone. Bots never get XP or stats.
+Test mode: empty spots are filled with 🤖 bot players that pick randomly, so a whole
+tournament can be demoed alone. Bots never get XP or stats.
 """
 
 import asyncio
@@ -35,7 +36,6 @@ log = logging.getLogger("n7x.tournament")
 # --- Settings you can tweak ---
 ROUND_SECONDS = 30            # a player who doesn't respond in time loses that round
 PODIUM_XP = (50, 30, 20)      # bonus game XP for 1st, 2nd, 3rd (still limited by the daily cap)
-DUEL_WIN_XP = 10
 MAX_PLAYERS_LIMIT = 16
 SEND_GAP = 1.0                # pause after each channel message (keeps us inside Discord's rate limits)
 COLOR_GOLD = 0xFACC15
@@ -278,7 +278,10 @@ class Session:
 
 
 class LobbyView(discord.ui.View):
-    """Join / Leave / Start now. Max players is only a cap."""
+    """
+    Join / Leave / Start now. Max players is only a cap.
+    The host is NOT added automatically: they press Join like everyone else if they want to play.
+    """
 
     def __init__(self, host, kind, max_players, ends_at):
         super().__init__(timeout=None)
@@ -286,19 +289,21 @@ class LobbyView(discord.ui.View):
         self.kind = kind
         self.max_players = max_players
         self.ends_at = ends_at
-        self.players = [host]
+        self.players = []   # only people who pressed Join (the host too, if they joined)
         self.start_now = asyncio.Event()
         self.message = None
 
     def embed(self, closed=False):
-        listing = "\n".join(f"{i}. {p.mention}" for i, p in enumerate(self.players, start=1)) or "_nobody yet_"
+        listing = "\n".join(f"{i}. {p.mention}" for i, p in enumerate(self.players, start=1)) or "_nobody yet - press **Join**!_"
         status = ("🔒 Registration closed." if closed else
-                  f"⏱️ Starts <t:{self.ends_at}:R> (or when {self.host.mention} presses **Start now**).")
+                  f"⏱️ Starts <t:{self.ends_at}:R>, or when the host presses **Start now**.")
         embed = t_embed(f"🏆 {GAMES[self.kind]} Tournament",
-                        f"Hosted by {self.host.mention}\n{status}\n\n"
-                        f"**Players ({len(self.players)}/{self.max_players})**\n{listing}\n\n"
+                        f"{status}\n\n"
                         f"Needs at least {te.MIN_PLAYERS} players. 🥇 {PODIUM_XP[0]} · 🥈 {PODIUM_XP[1]} · "
                         f"🥉 {PODIUM_XP[2]} bonus game XP. No real prizes.")
+        embed.add_field(name="🎙️ Host", value=f"Hosted by {self.host.mention}\n_(plays only if they press Join)_",
+                        inline=False)
+        embed.add_field(name=f"👥 Players ({len(self.players)}/{self.max_players})", value=listing, inline=False)
         return embed
 
     async def refresh(self, interaction):
@@ -383,10 +388,10 @@ class Tournament(commands.Cog):
         return task
 
     # ------------------------------------------------------------ /tournament
-    @app_commands.command(name="tournament", description="🏆 Host a tournament: RPS, dice or trivia")
+    @app_commands.command(name="tournament", description="🏆 [Mods] Host a tournament: RPS, dice or trivia")
     @app_commands.describe(game="Which game", max_players=f"Most players allowed (3-{MAX_PLAYERS_LIMIT}); fewer is fine",
                            join_seconds="How long people can join (15-300 seconds)",
-                           test_mode="Mods only: fill empty spots with 🤖 bot players for a demo")
+                           test_mode="Fill empty spots with 🤖 bot players for a demo (they never get XP)")
     @app_commands.choices(game=GAME_CHOICES)
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 60)
@@ -394,8 +399,8 @@ class Tournament(commands.Cog):
                          max_players: app_commands.Range[int, 3, MAX_PLAYERS_LIMIT] = 8,
                          join_seconds: app_commands.Range[int, 15, 300] = 60,
                          test_mode: bool = False):
-        if test_mode and not is_mod(interaction.user):
-            await interaction.response.send_message("🔒 Test mode is for mods only.", ephemeral=True)
+        if not is_mod(interaction.user):
+            await interaction.response.send_message("Only mods can start tournaments.", ephemeral=True)
             return
         if interaction.channel.id in self.busy_channels:
             await interaction.response.send_message("A tournament is already running in this channel.", ephemeral=True)
@@ -436,9 +441,10 @@ class Tournament(commands.Cog):
                     players.append(BotPlayer(id=-number, display_name=f"🤖 Bot {number}"))
             if len(players) < te.MIN_PLAYERS:
                 await channel.send(embed=t_embed(
-                    "❌ Tournament cancelled",
-                    f"Only **{len(players)}** player(s) joined, but at least **{te.MIN_PLAYERS}** are needed. "
-                    f"Try again with more friends!", COLOR_LOSE))
+                    "❌ Tournament cancelled: not enough players",
+                    f"**{len(players)}** player(s) joined, but at least **{te.MIN_PLAYERS}** are needed.\n\n"
+                    f"ℹ️ The host ({lobby.host.mention}) only counts as a player if they pressed **Join**.",
+                    COLOR_LOSE), allowed_mentions=discord.AllowedMentions.none())
                 return
 
             session = Session(channel, lobby.kind, "🏆 N7X Tournament")
@@ -501,7 +507,7 @@ class Tournament(commands.Cog):
         invite = DuelInvite(challenger, opponent)
         embed = t_embed(f"⚔️ {GAMES[game.value]} duel", f"{challenger.mention} challenges {opponent.mention}!\n"
                         f"{opponent.mention}, accept within {ROUND_SECONDS} seconds.\n"
-                        f"Winner: ✨ +{DUEL_WIN_XP} game XP.", header="⚔️ N7X Duel")
+                        f"Just for bragging rights. 😎", header="⚔️ N7X Duel")
         await interaction.response.send_message(content=opponent.mention, embed=embed, view=invite,
                                                 allowed_mentions=discord.AllowedMentions(users=[opponent]))
         self.run_in_background(self.run_duel(interaction, invite, game.value))
@@ -521,11 +527,9 @@ class Tournament(commands.Cog):
             session = Session(interaction.channel, kind, "⚔️ N7X Duel")
             engine = te.Engine(kind, session.collect, session.announce)
             winner, loser = await engine.match(invite.challenger, invite.opponent, "Duel")
-            database.record_duel(interaction.guild.id, winner.id, loser.id)
-            given, _ = database.give_game_xp(interaction.guild.id, winner.id, DUEL_WIN_XP, today(), DAILY_GAME_XP_CAP)
-            bonus = f"✨ +{given} XP" if given else "daily game XP cap reached"
+            database.record_duel(interaction.guild.id, winner.id, loser.id)   # wins/losses only - duels give no XP
             await interaction.channel.send(
-                embed=t_embed("🏅 Duel result", f"🏆 {winner.mention} beats {loser.mention}!\n{bonus}",
+                embed=t_embed("🏅 Duel result", f"🏆 {winner.mention} beats {loser.mention}!",
                               COLOR_GOLD, header="⚔️ N7X Duel"),
                 allowed_mentions=discord.AllowedMentions(users=[winner, loser]))
         except Exception:

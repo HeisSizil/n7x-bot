@@ -1,0 +1,267 @@
+"""
+Tests for /tournament and /duel with fake Discord objects (no internet, no real server).
+Uses a temporary database, so your real n7x.db is never touched.
+
+Run from the project folder:
+    python -m unittest discover tests -v
+"""
+
+import asyncio
+import os
+import tempfile
+import time
+import unittest
+from types import SimpleNamespace as NS
+
+import database
+
+
+class FakeMember:
+    """Looks enough like a discord.Member for the tournament code."""
+
+    def __init__(self, user_id, name, mod=False):
+        self.id = user_id
+        self.display_name = name
+        self.mention = f"<@{user_id}>"
+        self.bot = False
+        self.guild_permissions = NS(moderate_members=mod, manage_messages=mod)
+        self.display_avatar = NS(url="https://example.com/avatar.png")
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        return getattr(other, "id", None) == self.id
+
+
+class FakeMessage:
+    def __init__(self, embed=None, view=None):
+        self.embeds = [embed] if embed else []
+        self.view = view
+
+    async def edit(self, embed=None, **kwargs):
+        if embed:
+            self.embeds = [embed]
+
+
+class FakeChannel:
+    """Records every message. When a round starts, presses buttons for players listed in `plan`."""
+
+    id = 777
+    name = "games"
+
+    def __init__(self, tc):
+        self.tc = tc
+        self.sent = []          # (embed, pinged user ids)
+        self.plan = {}          # member id -> function(view) -> button index (missing = never presses)
+
+    async def send(self, embed=None, view=None, allowed_mentions=None, content=None, **kwargs):
+        pinged = [u.id for u in (allowed_mentions.users or [])] if allowed_mentions and isinstance(
+            allowed_mentions.users, list) else []
+        self.sent.append((embed, pinged))
+        if isinstance(view, self.tc.RoundView):
+            for player in list(view.humans.values()):
+                choose = self.plan.get(player.id)
+                if choose:
+                    asyncio.get_running_loop().create_task(self.press(view, player, choose(view)))
+        return FakeMessage(embed, view)
+
+    async def press(self, view, player, index):
+        await asyncio.sleep(0.01)
+        interaction = NS(user=player, response=NS(send_message=self.ignore))
+        if await view.interaction_check(interaction):
+            await view.children[index].callback(interaction)
+
+    @staticmethod
+    async def ignore(*args, **kwargs):
+        pass
+
+    def titles(self):
+        return [embed.title for embed, _ in self.sent if embed]
+
+    def all_text(self):
+        parts = []
+        for embed, _ in self.sent:
+            if embed:
+                parts.append(f"{embed.title} {embed.description or ''} " + " ".join(f.value for f in embed.fields))
+        return "\n".join(parts)
+
+
+ROCK, PAPER, SCISSORS = 0, 1, 2
+
+
+class TournamentDiscordTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.old_db = database.DB_FILE
+        database.DB_FILE = os.path.join(self.tmp, "test.db")
+        database.setup_database()
+
+        import cogs.tournament as tc
+        self.tc = tc
+        tc.SEND_GAP = 0
+        tc.ROUND_SECONDS = 2
+        self.channel = FakeChannel(tc)
+        self.guild = NS(id=1)
+        self.host = FakeMember(1, "host", mod=True)
+        self.alt = FakeMember(2, "alt")
+        self.kim = FakeMember(3, "kim")
+        self.lee = FakeMember(4, "lee")
+
+    def tearDown(self):
+        database.DB_FILE = self.old_db
+
+    async def run_lobby(self, players, test_mode=False, max_players=8, kind="rps"):
+        """Run a tournament as if `players` pressed Join and the join timer ended."""
+        cog = self.tc.Tournament(None)
+        lobby = self.tc.LobbyView(self.host, kind, max_players, int(time.time()) + 60)
+        lobby.players = list(players)
+        lobby.message = FakeMessage()
+        await cog.run_tournament(NS(channel=self.channel, guild=self.guild), lobby, 0.01, test_mode)
+
+    def podium_row(self, member):
+        stats = database.get_duel_stats(1, member.id)
+        return stats["gold"], stats["silver"], stats["bronze"], stats["tournaments_played"]
+
+    # ------------------------------------------------------------------ lobby
+    async def test_host_is_not_added_automatically(self):
+        lobby = self.tc.LobbyView(self.host, "rps", 8, int(time.time()) + 60)
+        self.assertEqual(lobby.players, [])
+        embed = lobby.embed()
+        fields = {f.name: f.value for f in embed.fields}
+        self.assertIn("Hosted by <@1>", fields["🎙️ Host"])
+        players_field = next(v for name, v in fields.items() if name.startswith("👥 Players"))
+        self.assertNotIn("<@1>", players_field)
+
+    async def test_host_can_join_and_leave_like_everyone(self):
+        lobby = self.tc.LobbyView(self.host, "rps", 8, int(time.time()) + 60)
+        response = NS(edit_message=self.channel.ignore, send_message=self.channel.ignore)
+        await lobby.join.callback(NS(user=self.host, response=response))
+        self.assertEqual(lobby.players, [self.host])
+        await lobby.leave.callback(NS(user=self.host, response=response))
+        self.assertEqual(lobby.players, [])
+
+    async def test_only_host_can_start_now(self):
+        lobby = self.tc.LobbyView(self.host, "rps", 8, int(time.time()) + 60)
+        replies = []
+
+        async def reply(text, **kwargs):
+            replies.append(text)
+        await lobby.start.callback(NS(user=self.alt, response=NS(send_message=reply)))
+        self.assertFalse(lobby.start_now.is_set())
+        self.assertIn("Only the host", replies[0])
+        await lobby.start.callback(NS(user=self.host, response=NS(defer=self.channel.ignore)))
+        self.assertTrue(lobby.start_now.is_set())
+
+    # ---------------------------------------------------- host not playing
+    async def test_host_not_joined_and_three_other_players(self):
+        # alt & kim scissors, lee paper -> lee 3rd; final: alt rock beats kim scissors.
+        self.channel.plan = {
+            2: lambda v: SCISSORS if len(v.humans) == 3 else ROCK,
+            3: lambda v: SCISSORS,
+            4: lambda v: PAPER,
+        }
+        await self.run_lobby([self.alt, self.kim, self.lee])
+
+        self.assertEqual(self.channel.titles()[-1], "🏆 Tournament results")
+        self.assertEqual(self.podium_row(self.alt), (1, 0, 0, 1))
+        self.assertEqual(self.podium_row(self.kim), (0, 1, 0, 1))
+        self.assertEqual(self.podium_row(self.lee), (0, 0, 1, 1))
+        # The host never played, was never pinged, and isn't in any round or result.
+        self.assertEqual(self.podium_row(self.host), (0, 0, 0, 0))
+        for _, pinged in self.channel.sent:
+            self.assertNotIn(self.host.id, pinged)
+        self.assertNotIn("<@1>", self.channel.all_text())
+
+    async def test_host_not_joined_and_only_two_players_cancels(self):
+        await self.run_lobby([self.alt, self.kim])
+        embed, _ = self.channel.sent[-1]
+        self.assertIn("cancelled", embed.title)
+        self.assertIn("**2** player(s) joined", embed.description)
+        self.assertIn("at least **3** are needed", embed.description)
+        self.assertIn("only counts as a player if they pressed **Join**", embed.description)
+        self.assertEqual(self.podium_row(self.alt), (0, 0, 0, 0))
+
+    async def test_host_joined_as_player(self):
+        # host & alt scissors, kim paper -> kim 3rd; final: host rock beats alt scissors.
+        self.channel.plan = {
+            1: lambda v: SCISSORS if len(v.humans) == 3 else ROCK,
+            2: lambda v: SCISSORS,
+            3: lambda v: PAPER,
+        }
+        await self.run_lobby([self.host, self.alt, self.kim])
+        self.assertEqual(self.podium_row(self.host), (1, 0, 0, 1))
+        self.assertEqual(database.get_game_profile(1, self.host.id, self.tc.today())["game_xp_today"], 50)
+        self.assertTrue(any(self.host.id in pinged for _, pinged in self.channel.sent))
+
+    async def test_test_mode_with_host_not_playing_is_bots_only(self):
+        await self.run_lobby([], test_mode=True, max_players=4)
+        self.assertEqual(self.channel.titles()[-1], "🏆 Tournament results")
+        self.assertNotIn("<@1>", self.channel.all_text())
+        self.assertEqual(database.fetch_all("SELECT user_id FROM duel_stats"), [])
+
+    # ------------------------------------------------------ mods only
+    async def test_non_mod_cannot_start_a_tournament(self):
+        cog = self.tc.Tournament(None)
+        replies = []
+
+        async def reply(text=None, **kwargs):
+            replies.append((text, kwargs.get("ephemeral")))
+        interaction = NS(user=self.alt, channel=self.channel, response=NS(send_message=reply))
+        await cog.tournament.callback(cog, interaction, NS(value="rps"), 8, 60, False)
+        self.assertEqual(replies, [("Only mods can start tournaments.", True)])
+        self.assertEqual(self.channel.sent, [])
+
+    async def test_mod_can_start_a_tournament(self):
+        cog = self.tc.Tournament(None)
+        started = []
+        cog.run_in_background = lambda coro: (started.append(coro), coro.close())
+        sent = []
+
+        async def send_message(embed=None, **kwargs):
+            sent.append(embed)
+
+        async def original_response():
+            return FakeMessage()
+        interaction = NS(user=self.host, channel=self.channel,
+                         response=NS(send_message=send_message), original_response=original_response)
+        await cog.tournament.callback(cog, interaction, NS(value="rps"), 8, 60, True)
+        self.assertEqual(len(sent), 1)
+        self.assertEqual(len(started), 1)
+
+    # ------------------------------------------------------------- duels
+    async def test_duel_gives_no_xp(self):
+        cog = self.tc.Tournament(None)
+        invite = self.tc.DuelInvite(self.host, self.alt)
+        self.channel.plan = {1: lambda v: PAPER, 2: lambda v: ROCK}
+
+        async def edit_original_response(**kwargs):
+            pass
+        task = asyncio.get_running_loop().create_task(
+            cog.run_duel(NS(channel=self.channel, guild=self.guild, edit_original_response=edit_original_response),
+                         invite, "rps"))
+        await asyncio.sleep(0.02)
+        await invite.accept.callback(NS(user=self.alt, response=NS(edit_message=self.channel.ignore)))
+        await task
+
+        self.assertEqual(database.get_duel_stats(1, self.host.id)["duel_wins"], 1)
+        self.assertEqual(database.get_duel_stats(1, self.alt.id)["duel_losses"], 1)
+        for member in (self.host, self.alt):
+            profile = database.get_game_profile(1, member.id, self.tc.today())
+            self.assertEqual((profile["total_xp"], profile["game_xp"], profile["game_xp_today"]), (0, 0, 0))
+        self.assertNotIn("XP", self.channel.all_text())
+
+    async def test_duel_invite_mentions_no_xp(self):
+        cog = self.tc.Tournament(None)
+        cog.run_in_background = lambda coro: coro.close()
+        shown = []
+
+        async def send_message(content=None, embed=None, **kwargs):
+            shown.append(embed)
+        interaction = NS(user=self.host, response=NS(send_message=send_message))
+        await cog.duel.callback(cog, interaction, self.alt, NS(value="rps"))
+        self.assertNotIn("XP", shown[0].description)
+
+
+if __name__ == "__main__":
+    unittest.main()

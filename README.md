@@ -106,8 +106,8 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/highlow` | 🃏 Higher or Lower: guess the next number (1-13) and build a streak |
 | `/gameprofile [member]` | 🎮 Level, title, game XP, wins and best streaks |
 | `/gamesleaderboard` | 🏆 Top 10 by game wins, with plays and win rate |
-| `/tournament <game> [max_players] [join_seconds] [test_mode]` | 🏆 Host an RPS, dice or trivia tournament (3+ players) |
-| `/duel <member> <game>` | ⚔️ Challenge a member to a 1-vs-1 RPS, dice or trivia duel |
+| `/tournament <game> [max_players] [join_seconds] [test_mode]` | 🏆 **Mods only** (Manage Messages or Timeout Members): host an RPS, dice or trivia tournament (3+ players) |
+| `/duel <member> <game>` | ⚔️ Challenge a member to a 1-vs-1 RPS, dice or trivia duel (no XP, just bragging rights) |
 | `/duelstats [member]` | 📊 Duel wins/losses and tournament 🥇🥈🥉 finishes |
 
 **Mod commands** (hidden from regular members; Discord checks the mod's permissions):
@@ -188,10 +188,12 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Upgrading from Stage 7: your existing game stats are kept. Lifetime game XP and streaks start counting from this version.
 
 ### How tournaments and duels work
-**Starting a tournament:** `/tournament game:<RPS/Dice/Trivia>` with optional `max_players` (3-16, default 8), `join_seconds` (15-300, default 60) and `test_mode`.
-- A lobby appears with **Join**, **Leave** and **Start now**. The host is in automatically.
-- `max_players` is only a **cap**: the tournament starts when the join timer ends with whoever joined, or earlier when the **host** presses **Start now**.
-- At least **3 players** are needed; otherwise it's cancelled with a clear message.
+**Starting a tournament (mods only):** `/tournament game:<RPS/Dice/Trivia>` with optional `max_players` (3-16, default 8), `join_seconds` (15-300, default 60) and `test_mode`.
+- Only members with **Manage Messages** or **Timeout Members** can start one. Anyone else gets a private "Only mods can start tournaments."
+- A lobby appears with **Join**, **Leave** and **Start now**. It shows **"Hosted by @host"** separately from the player list.
+- **The host is not a player automatically.** To play, the host presses **Join** like everyone else; otherwise they just host. A host who didn't join is never pinged and never put in the bracket.
+- `max_players` is only a **cap**: the tournament starts when the join timer ends with whoever joined, or earlier when the **host** presses **Start now** (only the host can).
+- At least **3 players** are needed, counting only people who pressed Join (plus 🤖 bots in test mode). Otherwise it's cancelled with a message saying how many joined, how many are needed, and that the host only counts if they pressed Join.
 - One tournament per channel at a time.
 
 **Playing a round:** the players in the round are pinged and press buttons (others can watch but not press). Picks stay hidden until everyone has chosen. **No answer within 30 seconds = you lose that round.**
@@ -205,13 +207,13 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - **4+ players:** single elimination. If the number of players doesn't fit the bracket (5, 6, 7, 9...), random **free passes (byes)** are given in round 1 only, so nobody gets two byes and every semi-final is a real match. The two semi-final losers play a **3rd place match**, then the **final**.
 - **Results card:** 🥇 🥈 🥉 with mentions and bonus game XP: **50 / 30 / 20**, still limited by the 100 game XP daily cap. Podium finishes are saved and shown in `/duelstats`.
 
-**Test mode** (mods only: Timeout Members or Manage Messages): empty spots up to `max_players` are filled with **🤖 bot players** that pick randomly, so you can demo a whole tournament alone. Bots never get XP and are never saved in stats.
+**Test mode:** empty spots up to `max_players` are filled with **🤖 bot players** that pick randomly, so you can demo a whole tournament alone (press Join yourself to play against them, or don't, for a bots-only demo). Bots never get XP and are never saved in stats.
 
-**Duels:** `/duel @member game:<RPS/Dice/Trivia>`. They have 30 seconds to **Accept**. Same round rules as tournaments (ties replay). The winner gets **+10 game XP** (daily cap applies) and the result is saved for `/duelstats`.
+**Duels:** `/duel @member game:<RPS/Dice/Trivia>`. They have 30 seconds to **Accept**. Same round rules as tournaments (ties replay). **Duels give no XP**: just bragging rights. Wins and losses are saved for `/duelstats` (which shows duel wins/losses and tournament 🥇🥈🥉 finishes, never XP).
 
-**Tests:** the tournament rules have automatic tests. Run them with `python -m unittest discover tests -v` (no extra installs). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes and timeouts.
+**Tests:** run `python -m unittest discover tests -v` (no extra installs, uses a temporary database). They cover 2 scissors vs 1 paper, all the same shape, all different shapes, 4/5/6/8 players, byes, timeouts, the host not joining (3 other players / only 2 players), the host joining as a player, a non-mod trying to start a tournament, and duels giving no XP.
 
-Settings (round time, podium XP, duel XP, max players) are at the top of `cogs/tournament.py`; the rules are in `tournament_engine.py`.
+Settings (round time, podium XP, max players) are at the top of `cogs/tournament.py`; the rules are in `tournament_engine.py`.
 
 ### How the mod helper works
 - **Set up a mod-log channel:** create a private channel only mods can see, give the bot **View Channel**, **Send Messages** and **Embed Links** there, then put its ID in `.env` as `MOD_LOG_CHANNEL_ID` (right-click the channel → Copy Channel ID).
