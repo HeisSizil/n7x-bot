@@ -13,6 +13,7 @@ cogs/             One file per feature (add a file here to add a feature)
   general.py      /ping and /help
   ranks.py        Message XP, /rank, /leaderboard
   voice.py        Voice time, /voicerank, /voiceleaderboard
+  crypto.py       /price (CoinGecko)
 facts.md          Facts about N7X that /ask is allowed to use
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
@@ -77,6 +78,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/leaderboard` | Top 10 members by messages |
 | `/voicerank [member]` | Shows voice time and position |
 | `/voiceleaderboard` | Top 10 members by voice time |
+| `/price <coin>` | Current price and 24h change, e.g. `/price btc` |
 
 ### How message XP works
 - Every message is counted. XP (15-25 per message) is given at most **once every 60 seconds** per member, so spamming doesn't farm XP.
@@ -88,6 +90,11 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Time spent **alone** (or alone with only bots) doesn't count. The server's AFK channel is ignored.
 - The bot needs **View Channel** on voice channels to see who is in them.
 - To change the timing or the minimum number of people, edit the settings at the top of `cogs/voice.py`.
+
+### How /price works
+- Type a name (`bitcoin`), ticker (`btc`) or CoinGecko ID (`solana`). Prices come from the free [CoinGecko API](https://www.coingecko.com/en/api) - no key needed.
+- Each price is reused for 60 seconds, and each member can use `/price` once every 5 seconds, to stay inside CoinGecko's free limit.
+- Optional: if you often see "Too many price checks", get a free CoinGecko **demo** key and put it in `.env` as `COINGECKO_API_KEY`.
 
 ## Adding a new feature
 

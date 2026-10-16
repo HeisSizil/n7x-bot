@@ -28,5 +28,9 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
 
+# --- Crypto prices (Stage 4) ---
+# Optional. The bot works without it; a free CoinGecko "demo" key just raises the rate limit.
+COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "").strip()
+
 # --- Branding ---
 BRAND_COLOR = 0x7B2FF7  # N7X purple, used for embeds
