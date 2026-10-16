@@ -21,11 +21,13 @@ cogs/             One file per feature (add a file here to add a feature)
   crypto.py       /price (CoinGecko)
   ask.py          /ask (AI answers, N7X facts from facts.md)
   games.py        /flip, /dice, /rps, /wheel, /gamesleaderboard
+  welcome.py      Welcome embed for new members, /testwelcome
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
   mod_assistant.py  AI mod assistant: mods ask in plain words, confirm with a button
 facts.md          Facts about N7X that /ask is allowed to use
 bad_words.txt     Words the auto-mod deletes (edit freely)
+welcome.md        The welcome message text (edit freely; {member} = the new member)
 .env.example      Template for your secret settings
 requirements.txt  Python packages the bot needs
 ```
@@ -109,6 +111,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/timeout <member> <minutes> <reason>` | Timeout Members | Mutes a member for up to 28 days |
 | `/untimeout <member> [reason]` | Timeout Members | Ends a member's timeout early (same code as the assistant's "unmute") |
 | `/summarize [channel]` | Manage Messages | Private AI summary of a channel's last 50 messages |
+| `/testwelcome [post_in_channel]` | Timeout Members | Private preview of the welcome message for yourself; optionally post it for real to test permissions |
 
 ### How message XP works
 - Every message is counted. XP (15-25 per message) is given at most **once every 60 seconds** per member, so spamming doesn't farm XP.
@@ -138,6 +141,15 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 - Each member can ask **3 questions per minute** (setting at the top of `cogs/ask.py`).
 - Members only see "N7X Bot" under answers. **Which AI answered is shown only in the terminal**, e.g. `/ask by sam: answered by Groq (llama-3.3-70b-versatile) in 2.1s`, along with why any provider failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
 - The bot shows "N7X Bot is thinking..." instantly, so slow AI answers never time out. Discord itself blocks questions over 500 characters.
+
+### How the welcome message works
+- When someone joins, the bot posts a branded embed in the welcome channel, mentioning the new member.
+- **Setup:** right-click your welcome channel → **Copy Channel ID**, and add it to `.env`: `WELCOME_CHANNEL_ID=123456789012345678`. Give the bot **View Channel**, **Send Messages** and **Embed Links** there, then restart the bot. Leave it empty to turn welcomes off.
+- **Change the text** in `welcome.md`. Write `{member}` where the @mention should go. The file is read fresh for every new member, so no restart is needed. Discord formatting (bold, links, #channels, emoji) works.
+- **Picture:** the embed shows the server's icon. To use another image, put a direct `https://` image link in `.env` as `WELCOME_IMAGE_URL` (then restart).
+- **Pings:** only the new member is pinged (so they get a notification). `@everyone`, `@here` and role mentions in `welcome.md` never ping anyone. Bots that join are not welcomed.
+- If the bot can't post (missing permissions or a wrong channel ID), it prints one short line in the terminal and keeps running.
+- **Preview:** `/testwelcome` (mods only) shows you a private preview, as if you just joined, and tells you if the bot is missing permissions in the welcome channel. Use `/testwelcome post_in_channel:True` to post a real test welcome.
 
 ### How the games work
 - **Fair:** every result uses Python's `secrets` module (secure randomness), so nobody can predict or rig it. In `/rps` the bot picks only *after* you press your button.

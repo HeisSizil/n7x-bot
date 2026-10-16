@@ -47,6 +47,12 @@ MOD_LOG_CHANNEL_ID = _get_int("MOD_LOG_CHANNEL_ID")
 # (warnings lists, summaries). Elsewhere they're sent by DM. The assistant only
 # answers when a mod @mentions the bot or replies to one of its messages.
 MOD_ASSISTANT_CHANNEL_ID = _get_int("MOD_ASSISTANT_CHANNEL_ID")
+# Where new members are welcomed (Stage 8). Empty = no welcome messages.
+WELCOME_CHANNEL_ID = _get_int("WELCOME_CHANNEL_ID")
+
+# --- Welcome (Stage 8) ---
+# Optional image for the welcome embed (must start with https://). Empty = the server's icon.
+WELCOME_IMAGE_URL = os.getenv("WELCOME_IMAGE_URL", "").strip()
 
 # --- Branding ---
 BRAND_COLOR = 0x7B2FF7  # N7X purple, used for embeds
