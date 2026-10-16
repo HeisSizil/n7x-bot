@@ -24,7 +24,7 @@ cogs/             One file per feature (add a file here to add a feature)
   ranks.py        Message XP, /rank, /leaderboard
   voice.py        Voice time, /voicerank, /voiceleaderboard
   crypto.py       /price (CoinGecko)
-  ask.py          /ask (AI answers, N7X facts from facts.md)
+  ask.py          /ask (AI answers, N7X facts from facts.md), /about
   games.py        N7X Arcade: /flip, /dice, /rps, /wheel, /trivia, /highlow, /gameprofile, /gamesleaderboard
   tournament.py   /tournament (and the lobby/round buttons duels reuse)
   duels.py        /duel (1v1, 2v2, 3v3, 4v4, free for all), /duelstats
@@ -32,7 +32,9 @@ cogs/             One file per feature (add a file here to add a feature)
   automod.py      Auto-deletes spam and bad words, warns, logs
   moderation.py   /warn, /warnings, /clearwarnings, /kick, /timeout, /untimeout, /summarize
   mod_assistant.py  AI mod assistant: mods ask in plain words, confirm with a button
-facts.md          Facts about N7X that /ask is allowed to use
+facts.md          The official N7X facts: the ONLY source for /ask, /about and tagged answers about N7X
+n7x_facts.py      Reads facts.md (sections for /about, release dates for link questions)
+qa.py             Shared answer rules for /ask and tagged questions
 bad_words.txt     Words the auto-mod deletes (edit freely)
 welcome.md        The welcome message text (edit freely; {member} = the new member)
 trivia/           Trivia questions, one JSON file per category (edit freely, see trivia/README.md)
@@ -104,6 +106,7 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
 | `/voiceleaderboard` | Top 10 members by voice time |
 | `/price <coin>` | Current price and 24h change, e.g. `/price btc` |
 | `/ask <question>` | AI answer about AI agents, crypto, Web3 or N7X |
+| `/about` | About N7X: what it is, what it's building, backed by ZeroSet AI, upcoming releases (from `facts.md`) |
 | `/flip <heads/tails>` | 🪙 Guess the coin flip (animated) |
 | `/dice` | 🎲 Roll a die against N7X Bot; higher number wins (animated) |
 | `/rps` | ✂️ Rock, paper, scissors against N7X Bot (buttons) |
@@ -153,7 +156,10 @@ You should see `Logged in as N7X Bot#1234` in the terminal. Press **Ctrl + C** t
   - Groq: https://console.groq.com/keys
   - OpenRouter: https://openrouter.ai/keys
 - **Models** are set in `.env` (`GEMINI_MODEL`, `GROQ_MODEL`, `OPENROUTER_MODEL`). If a provider retires a model, just put the new name there. OpenRouter models must end in `:free`, or the bot skips OpenRouter (so you can never be billed).
-- **N7X questions are answered ONLY from `facts.md`.** If the answer isn't there, the bot says "I don't know yet, please ask a mod." Add facts as lines starting with `- `; the bot re-reads the file on every question, so no restart is needed.
+- **N7X questions are answered ONLY from `facts.md`.** If the answer isn't there (e.g. "who is the founder?"), the bot says "I don't know yet, please ask a mod." It never invents names, dates, numbers, tokenomics or links.
+- **Links, docs, roadmap, whitepaper:** they aren't published yet, so the bot answers with the dates from `facts.md`: **October 20** Project Resources Release (social links, docs, roadmap, whitepaper) and **October 22** Official Website Launch. Any N7X link the AI makes up is removed, and if the AI forgets the dates the bot answers straight from `facts.md`. This answer works even when every AI is down.
+- **`facts.md`** holds the official facts from the founder's announcement in the N7X server. It's split into `## Sections` with `- ` lines. The bot re-reads it on every question, so no restart is needed. Only add links once they're really published (e.g. after October 20, add a `- Website: https://...` line under Links and documents).
+- **`/about`** shows `facts.md` as a card: the first section is the description, a one-line section becomes a bold line ("🤝 Backed by ZeroSet AI"), every other section becomes a field. Edit `facts.md` and `/about` changes with it. Footer "N7X Bot".
 - Each member can ask **3 questions per minute** (setting at the top of `cogs/ask.py`).
 - Members only see "N7X Bot" under answers. **Which AI answered is shown only in the terminal**, e.g. `/ask by sam: answered by Groq (llama-3.3-70b-versatile) in 2.1s`, along with why any provider failed, e.g. `AI: Gemini failed: rate limit / free quota reached (429) - trying next provider`.
 - The bot shows "N7X Bot is thinking..." instantly, so slow AI answers never time out. Discord itself blocks questions over 500 characters.
